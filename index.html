@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>homepage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+
+    <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" /> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png">
+    <style>
+     body {
+       font-family: 'Montserrat', sans-serif;
+       font-weight: 400;
+       color: #252a53;
+       margin: 0;
+       height: 100vh;
+       display: flex;
+       flex-direction: column;
+       justify-content: center;
+
+
+       overflow: hidden;
+
+       background-image: url('static/img/PREMIUM_icons/PNG/PREMIUM_EU_Illustration_Brain-graphics_01_RED.png');
+       background-size: 48% 60%;
+       background-repeat: no-repeat;
+       background-position: left bottom;
+
+     }
+
+     .header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       background-color: white;
+       position: fixed;
+       width: 100%;
+       height: 80px;
+       top: 0;
+       left: 0;
+       z-index: 1001;
+       padding: 20px 40px;
+     }
+     .main-content {
+       padding: 60px 0px 40px 0px;
+       flex-grow: 1;
+       display: flex;
+       align-items: top;
+       justify-content: center;
+     }
+     .container {
+       display: flex;
+       justify-content: space-between;
+       width: 100%;
+     }
+     .homepage-left {
+       width: 48%;
+       background: white;
+       flex-wrap: wrap;
+       padding: 40px;
+       font-size: 14px;
+     }
+     .homepage-right {
+       padding: 40px;
+       width: 48%;
+     }
+     .homepage-actions {
+       font-weight: 700;
+     }
+     .homepage-actions button {
+       display: flex;
+       margin-top: 20px;
+       padding: 20px;
+       cursor: pointer;
+       width: 100%;
+       color: #252a53;
+       font-size: 14px;
+       background-color: white;
+       transition: background-color 0.2s ease-in-out;
+       border: 5px solid #252a53;
+     }
+     .homepage-actions button:hover {
+       background-color: #252a53;
+       color: white;
+     }
+     .footer {
+       display: grid;
+       grid-template-columns: repeat(4, 1fr);
+       gap: 20px;
+       padding: 20px;
+       color: #252a53;
+       text-align: left;
+       font-size: small;
+     }
+     .footer-column {
+       padding: 0px 10px 0px 10px;
+     }
+     footer h1 {
+       font-size: 10px;
+       font-weight: 700;
+       margin-bottom: 8px;
+     }
+     footer h2 {
+       font-size: 8px;
+       font-weight: 700;
+       margin-bottom: 4px;
+     }
+     footer p {
+       margin-bottom: 6px;
+       font-size: 10px;
+     }
+
+    </style>
+
+  </head>
+  <body>
+    <div class="header">
+      <div><img src="static/img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png" class="h-12"></div>
+      <div style="font-family: 'Montserrat', sans-serif; font-size: 14px">
+        <button type="button"
+                onclick="window.location.href='about.html';"
+                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+          ABOUT
+        </button>
+        <button
+          type="button"
+          onclick="window.open('https://premium-eu.org/', '_blank')"
+          class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+          PROJECT PAGE</button>
+      </div>
+    </div>
+
+
+    <div class="main-content">
+      <div class="container">
+        <div class="homepage-left">
+          <br>
+          <br>
+          <p style="font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: #ac5737">
+            This is a prototype designed to demonstrate some elements of the layout and design of the future dashboard. It’s a static preview, so most elements aren’t interactive yet.
+
+          </p>
+          <br>
+          <br>
+
+          <h2 style="font-family: 'Lora', sans-serif; font-size: 24px; font-weight: 700;">Welcome to the PREMIUM_EU Dashboard</h2>
+          <br>
+          <p style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 400;">
+            Curious about how mobility is reshaping your region or how to make it work in your favour? You’re in the right place.
+            <br>
+            <br>
+
+            This dashboard helps policymakers understand demographic trends, regional development patterns, and policy solutions.
+            <br>
+            <br>
+
+            Here, you’ll find tailored insights into who’s moving, why they move, and what it means for regional development.
+            <br>
+            <br>
+
+            Explore your region’s mobility and development profile, compare with others, and discover real policy examples that tackle brain drain, attract newcomers, and boost resilience.
+
+            <br>
+            <br>
+            Start by selecting your region or dive into the data and stories that matter to you.
+            <br>
+            <br>
+
+          </p>
+        </div>
+
+
+        <div class="homepage-right">
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+
+          <br>
+          <div class="homepage-actions">
+
+            <a href="/regional.html">
+              <button>
+                Learn about your region and explore policy recommendations
+                <svg class="w-6 h-6" aria-hidden="true"
+                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+                </svg>
+              </button>
+            </a>
+
+            <a href="/development.html">
+              <button>Investigate the landscape of regional development in Europe
+                <svg class="w-6 h-6 " aria-hidden="true"
+                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+                </svg>
+              </button>
+            </a>
+
+
+            <a href="/migration.html">
+              <button>Explore migration trends in Europe
+                <svg class="w-6 h-6 " aria-hidden="true"
+                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+                </svg>
+              </button>
+            </a>
+
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+    <footer class="footer">
+      <div class="footer-column">
+        <img src="static/img/eu_logo.png" class="h-10">
+        <br>
+        <p style="width: 260px; color: white;">PREMIUM_EU was made possible thanks to funding from the European Union's Horizon Europe programme.</p>
+      </div>
+      <div class="footer-column">
+      </div>
+      <div class="footer-column">
+        <h1> _Site map </h1>
+        <p> About </p>
+        <p> Page </p>
+        <p> Page </p>
+        <p> Page </p>
+        <p> Page </p>
+        <p> Page </p>
+      </div>
+      <div class="footer-column">
+        <h1> _Contacts </h1>
+        <h2> Lead project manager: </h2>
+        <p>
+          Leo van Wissen <br>
+          wissen@nidi.nl <br>
+          Netherlands Interdisciplinary Demographic Institute
+        </p>
+        <h2> Communications: </h2>
+        <p>
+          Anne Katrine Ebbesen <br>
+          anne-katrine.ebbesen@nordregio.org <br>
+          Nordregio
+        </p>
+      </div>
+    </footer>
+
+
+  </body>
+</html>

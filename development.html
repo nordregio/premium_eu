@@ -1,0 +1,454 @@
+<!doctype html>
+<html data-theme="light">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>PREMIUM-EU</title>
+
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/deck.gl@^9.0.0/dist.min.js"></script>
+    <link
+      href="https://unpkg.com/deck.gl@^9.0.0/dist/stylesheet.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.js"></script>
+    <link
+      href="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+
+
+
+    <style>
+
+     body {
+       width: 100%;
+       height: 100%;
+       margin: 0;
+       padding: 0px 0px 10px 0px;
+       overflow: hidden;
+     }
+     .deck-widget {
+       --button-size: 36px;
+     }
+     .deck-tooltip {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 12px;
+       color: white  !important;
+       background-color: #252a53 !important;
+     }
+
+     .header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       background-color: white;
+       position: fixed;
+       width: 100%;
+       height: 80px;
+       top: 0;
+       left: 0;
+       z-index: 1001;
+       padding: 20px 40px;
+     }
+
+     #map-wrapper {
+       width: 100vw;
+       height: calc(100vh - 80px);
+       margin-top: 80px;
+       position: relative;
+     }
+
+     #overlay {
+       position: absolute;
+       top: 50px;
+       right: 50px;
+       width: 40%;
+       background-color: white;
+       border: 1px solid #252a53;
+       opacity: 1;
+       z-index: 1000;
+       color: #252a53;
+       padding: 20px;
+       font-family: 'Montserrat', sans-serif;
+       font-size: 10px;
+       padding: 20px 40px 40px 40px;
+     }
+     .indicator-buttons button {
+       font-family: 'Montserrat', sans-serif;
+       margin: 0px;
+       margin-right: 4px;
+       margin-bottom: 4px;
+       cursor: pointer;
+       color: white;
+       background-color: #252a53;
+       font-size: 12px;
+       padding: 0.5rem 1rem;
+       transition: background-color 0.2s ease-in-out;
+       border: 1px solid #252a53;
+     }
+     .indicator-buttons button:hover {
+       background-color: #ac5737;
+       border: 1px solid #ac5737;
+     }
+
+     .slider-container {
+       display: flex;
+       flex-direction: column;
+       align-items: left;
+       margin-top: 20px;
+       margin-right: 50px;
+       width: 100%;
+     }
+     .slider {
+       /* margin-top: 10px; */
+       -webkit-appearance: none;
+       width: 100%;
+       height: 6px;
+       background: #ddd;
+       border-radius: 5px;
+       outline: none;
+     }
+     .slider-labels {
+       display: flex;
+       justify-content: space-between;
+       width: 100%;
+       margin-top: 5px;
+     }
+     .slider::-webkit-slider-thumb {
+       -webkit-appearance: none;
+       appearance: none;
+       width: 16px;
+       height: 16px;
+       background: #ac5737;
+       border-radius: 50%;
+       cursor: pointer;
+       background-size: cover;
+     }
+     .legend {
+       display: flex;
+       width: 100%;
+     }
+     .legend-labels {
+       display: flex;
+       justify-content: space-between;
+       margin-top: 10px;
+     }
+     .box {
+       flex: 1;
+       height: 20px;
+     }
+     .box:nth-child(1) { background-color: rgba(251, 236, 212, 255); }
+     .box:nth-child(2) { background-color: rgba(240, 204, 163, 255); }
+     .box:nth-child(3) { background-color: rgba(224, 167, 121, 255); }
+     .box:nth-child(4) { background-color: rgba(201, 127, 85, 255); }
+     .box:nth-child(5) { background-color: rgba(172, 87, 55, 255); }
+     .loader {
+       position: absolute;
+       bottom: 30px;
+       right: 50%;
+       z-index: 1000;
+       width: 90px;
+       height: 14px;
+       background: repeating-linear-gradient(90deg,#252a53 0 calc(25% - 5px),#0000 0 25%) left/calc(4*100%/3) 100%;
+       animation: l1 0.5s infinite linear;
+     }
+     @keyframes l1 {
+       100% {background-position: right}
+     }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div>
+        <a href="index.html">
+          <img src="static/img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png" class="h-12">
+        </a>
+      </div>
+      <div style="font-family: 'Montserrat', sans-serif; font-size: 14px">
+        <button type="button"
+                onclick="window.location.href='about.html';"
+                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+          ABOUT
+        </button>
+        <button
+          type="button"
+          onclick="window.open('https://premium-eu.org/', '_blank')"
+          class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+          PROJECT PAGE</button>
+      </div>
+    </div>
+
+    <div id="map-wrapper">
+
+      <div id="loader" class="loader"></div>
+
+      <div id="overlay">
+
+        <h2 style="font-family: 'Lora', sans-serif; font-size: 20px; font-weight: 700;">
+          How does your region’s development compare to the rest of Europe?
+        </h2>
+
+        <br>
+
+
+        <p>
+          <i class="fas fa-map" style="margin-right: 6px;"></i> The interactive map offers a clear visual representation of regional development across Europe. It helps you explore how different areas are evolving over time, highlighting differences in growth, opportunities, and challenges.
+        </p>
+
+        <br>
+
+        <p>
+          Use the map to explore key progress measures and see where your region stands:
+        </p>
+        <br>
+
+
+        <ul style="list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 10px;">
+            <i class="fas fa-chart-line" style="margin-right: 6px;"></i>
+            Overall development – A combined measure of jobs, well-being, and quality of life in your region.
+          </li>
+          <li style="margin-bottom: 10px;">
+            <i class="fas fa-briefcase" style="margin-right: 6px;"></i>
+            Economic strength – The availability of jobs, income levels, and business growth that drive prosperity.
+          </li>
+          <li style="margin-bottom: 10px;">
+            <i class="fas fa-hands-helping" style="margin-right: 6px;"></i>
+            Social well-being – Access to education, healthcare, and essential services that support a thriving community.
+          </li>
+          <li style="margin-bottom: 10px;">
+            <i class="fas fa-home" style="margin-right: 6px;"></i>
+            Living environment – Infrastructure, housing, and environmental factors that shape daily life.
+          </li>
+        </ul>
+
+        <p>
+          By exploring these indicators, you can uncover clear trends, identify patterns across regions, and gain valuable insights into the factors shaping regional development. Start exploring and see how different regions are progressing over time!
+        </p>
+
+        <br>
+
+        <div class="indicator-buttons">
+          <button hx-on:click="setIndicator('development_score', 'fill_color_development_score', this)"
+                  style="background-color: #ac5737; border: 1px solid #ac5737;">
+            Overall development​
+          </button>
+          <button hx-on:click="setIndicator('econ_index', 'fill_color_econ_index', this)">Economic</button>
+          <button hx-on:click="setIndicator('social_index', 'fill_color_social_index', this)">Social​</button>
+          <button hx-on:click="setIndicator('living_env_index', 'fill_color_living_env_index', this)">Living environment​</button>
+        </div>
+
+        <!-- Hidden inputs to store selected indicator and fill color key -->
+        <input type="hidden" id="selectedIndicator" value="development_score">
+        <input type="hidden" id="selectedFillColorKey" value="fill_color_development_score">
+
+        <div class="slider-container">
+          <label style="display: none;" for="yearSlider">Year: <span id="yearValue">2010</span></label>
+          <input type="range" id="yearSlider" class="slider" min="2010" max="2021" value="2021" step="1" list="tickmarks" oninput="updateYear()">
+          <div class="slider-labels">
+            <span>2010</span><span>2011</span><span>2012</span><span>2013</span><span>2014</span>
+            <span>2015</span><span>2016</span><span>2017</span><span>2018</span><span>2019</span>
+            <span>2020</span><span>2021</span>
+          </div>
+
+          <br>
+
+          <br>
+
+          <div class="legend">
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+          </div>
+
+          <div class="legend-labels">
+            <span>Low</span>
+            <span>High</span>
+          </div>
+
+        </div>
+
+
+        <script>
+         const colorMaps = {
+           "development_score": ["rgba(251,236,212,1)", "rgba(240,204,163,1)", "rgba(224,167,121,1)", "rgba(201,127,85,1)", "rgba(172,87,55,1)"],
+           "econ_index": ["rgba(210,209,227,1)", "rgba(173,172,201,1)", "rgba(136,136,174,1)", "rgba(101,103,145,1)", "rgba(37,42,83,1)"],
+           "social_index": ["rgba(174,193,182,1)", "rgba(135,159,137,1)", "rgba(105,125,97,1)", "rgba(79,89,60,1)", "rgba(52,52,24,1)"],
+           "living_env_index": ["rgba(221,221,211,1)", "rgba(192,182,175,1)", "rgba(161,139,139,1)", "rgba(130,104,117,1)", "rgba(52,37,64,1)"],
+         };
+
+         let updateTimeout = null;
+
+         function createPolygonLayer(data) {
+           let fillColorKey = document.getElementById("selectedFillColorKey").value;
+
+           return new deck.PolygonLayer({
+             id: "PolygonLayer",
+             data: data || [],
+             pickable: true,
+             getPolygon: d => d.border || [],
+             getFillColor: d => d[fillColorKey] || [150, 150, 150, 255],
+             getLineColor: [255, 255, 255, 255],
+             lineWidthMinPixels: 0.3,
+             opacity: 1,
+           });
+         }
+
+         (async () => {
+           const { DeckGL, MapView, CompassWidget, ZoomWidget } = deck;
+           let polygonLayer = createPolygonLayer([]);
+
+           window.deckgl = new DeckGL({
+             container: 'map-wrapper',
+             map: maplibregl,
+             mapStyle: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+             initialViewState: {
+               bearing: 0,
+               latitude: 58,
+               longitude: 50,
+               maxZoom: 20,
+               minZoom: 3,
+               pitch: 0,
+               zoom: 3,
+             },
+             views: [new MapView({ id: "map", controller: true })],
+
+             layers: [polygonLayer],
+             getTooltip: ({ object }) =>
+               object
+               ? {
+                 html: `
+                   <div>
+                     <strong>${object.NUTS_NAME}</strong> (${object.NUTS_ID})<br>
+                     ${object.CNTR} <br><br>
+                     <table style="width: 100%; border-collapse: collapse;">
+                       <tr>
+                         <td style="text-align: left; font-weight: 700;">Overall score:</td>
+                         <td style="text-align: right;">${object.development_score}</td>
+                       </tr>
+                       <tr>
+                         <td style="text-align: left; font-weight: 400;">Economic: </td>
+                         <td style="text-align: right;">${object.econ_index}</td>
+                       </tr>
+                       <tr>
+                         <td style="text-align: left; font-weight: 400;">Social:</td>
+                         <td style="text-align: right;">${object.social_index}</td>
+                       </tr>
+                       <tr>
+                         <td style="text-align: left; font-weight: 400;">Living environment:  </td>
+                         <td style="text-align: right;">${object.living_env_index}</td>
+                       </tr>
+                     </table>
+                   </div>
+                 `,
+               }
+               : null,
+             getCursor: ({ isHovering }) => (isHovering ? 'crosshair' : 'default'),
+             widgets: [
+               new CompassWidget({ id: "compass", viewId: "map" }),
+               new ZoomWidget({ id: "zoom", viewId: "map" }),
+             ],
+           });
+
+           updateYear();
+         })();
+
+         function debounce(func, delay) {
+           let timeoutId;
+           return function(...args) {
+             clearTimeout(timeoutId);
+             timeoutId = setTimeout(() => func(...args), delay);
+           };
+         }
+
+         // Cache DOM elements
+         const yearSlider = document.getElementById("yearSlider");
+         const yearValue = document.getElementById("yearValue");
+         const selectedIndicatorEl = document.getElementById("selectedIndicator");
+         const selectedFillColorKeyEl = document.getElementById("selectedFillColorKey");
+         const indicatorButtons = document.querySelectorAll(".indicator-buttons button");
+         const legendBoxes = document.querySelectorAll(".legend .box");
+         const loaderEl = document.getElementById("loader");
+
+         async function handleYearUpdate() {
+           const year = yearSlider.value;
+           yearValue.textContent = year;
+
+           const selectedIndicator = selectedIndicatorEl.value;
+           const filePath = `static/data/dev-scores/indicators/${selectedIndicator}/${year}.json`;
+
+           const loaderTimeout = setTimeout(() => {
+             loaderEl.style.display = "block";
+           }, 50); // Show loader only if fetch takes more than 50ms
+
+           try {
+             const response = await fetch(filePath);
+             if (!response.ok) throw new Error(`Failed to load ${filePath}`);
+
+             let data = await response.json();
+             if (!Array.isArray(data)) {
+               console.error("Data is not an array. Wrapping it.");
+               data = [data];
+             }
+
+             if (window.deckgl) {
+               window.deckgl.setProps({
+                 layers: [createPolygonLayer(data)]
+               });
+             }
+           } catch (error) {
+             console.error(`Error loading data for indicator "${selectedIndicator}" and year "${year}":`, error);
+           } finally {
+             clearTimeout(loaderTimeout);
+             loaderEl.style.display = "none";
+           }
+         }
+
+         const updateYear = debounce(handleYearUpdate, 300);
+
+         function setIndicator(indicator, fillColorKey, button) {
+           selectedIndicatorEl.value = indicator;
+           selectedFillColorKeyEl.value = fillColorKey;
+           updateYear();
+
+           // UI part updates
+           indicatorButtons.forEach(btn => {
+             btn.style.backgroundColor = "";
+             btn.style.border = "";
+           });
+
+           button.style.backgroundColor = "#ac5737";
+           button.style.border = "1px solid #ac5737";
+
+           const colors = colorMaps[indicator];
+           legendBoxes.forEach((box, index) => {
+             box.style.backgroundColor = colors[index];
+           });
+         }
+
+         // Event listener to year slider
+         yearSlider.addEventListener("input", updateYear);
+
+
+         window.onload = function() {
+           updateYear();
+         };
+        </script>
+      </div>
+    </div>
+
+  </body>
+</html>

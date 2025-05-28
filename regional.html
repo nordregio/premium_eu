@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>regional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+
+    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+
+    <style>
+     body {
+       font-family: 'Montserrat', sans-serif;
+       font-weight: 400;
+       color: #252a53;
+       margin: 0;
+       padding: 40px 40px 40px 40px; /* top right bottom left */
+       display: flex;
+       flex-direction: column;
+       justify-content: top;
+       height: 100vh;
+       /* overflow: hidden;
+        */
+     }
+     .header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       background-color: white;
+       position: fixed;
+       width: 100%;
+       height: 80px;
+       top: 0;
+       left: 0;
+       z-index: 1001;
+       padding: 20px 40px;
+     }
+     .main-content {
+       padding: 80px 0px 40px 0px;
+       flex-grow: 1;
+       display: flex;
+       align-items: top;
+       justify-content: center;
+     }
+
+     .region-left {
+       width: 40%;
+       background: white;
+       flex-wrap: wrap;
+       padding: 20px;
+     }
+     .region-right {
+       padding: 20px;
+       width: 60%;
+       font-size: 12px;
+     }
+
+
+     .dropdown-container {
+       display: flex;
+       gap: 10px;
+       align-items: center;
+       font-weight: 300;
+       font-size: 14px;
+       /* padding: 0.5rem 1rem; */
+     }
+     .map-dropdown {
+       position: relative;
+       display: inline-block;
+       color: #252a53;
+     }
+
+     .region-tabs {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       margin-bottom: 20px;
+     }
+
+     .region-tabs button:not(:last-child) {
+       margin-right: 2px;
+     }
+
+     .region-tabs button {
+       flex: 1;
+       cursor: pointer;
+       color: #252a53;
+       background-color: white;
+       font-weight: 700;
+       font-size: 14px;
+       padding: 0.5rem 1rem;
+       transition: background-color 0.2s ease-in-out;
+       border: 3px solid #252a53;
+     }
+
+     .region-tabs button:hover, .region-tabs button.active {
+       background-color: #252a53;
+       color: white;
+     }
+
+     .tab-content {
+       /* padding: 20px; */
+       /* border: 2px solid #252a53; */
+     }
+
+     .hidden {
+       display: none;
+     }
+
+
+
+
+
+
+     .explore-comparable button {
+       font-weight: 400;
+       display: flex;
+       padding: 6px;
+       cursor: pointer;
+       width: 100%;
+       color: #252a53;
+       font-size: 12px;
+       background-color: white;
+       transition: background-color 0.2s ease-in-out;
+       border: 1px solid #252a53;
+       align-items: center;
+     }
+     .explore-comparable button:hover {
+       background-color: #252a53;
+       color: white;
+       font-weight: 700;
+     }
+
+
+
+     .policy-buttons {
+       display: flex;
+       flex-wrap: wrap;
+       width: 100%;
+       margin-bottom: 20px;
+     }
+     .policy-buttons button {
+       margin-right: 20px;
+       margin-bottom: 10px;
+       padding: 10px;
+       cursor: pointer;
+       color: #252a53;
+       background-color: #252a53;
+       font-weight: 400;
+       font-size: 12px;
+       border-radius: 0.5rem;
+       padding: 0.5rem 1rem;
+       transition: background-color 0.2s ease-in-out;
+       border: 1px solid #252a53;
+       background-color: #eee;
+       border: 1px solid #252a53;
+     }
+     .policy-buttons button:hover {
+       background-color: #252a53;
+       border: 1px solid #252a53;
+       color: white;
+     }
+
+
+     .policy-text-box-wrapper {
+       position: relative;
+       display: block;
+       margin-bottom: 40px;
+       width: 100%;
+     }
+     .policy-text-box {
+       width: 100%;
+       padding: 20px;
+       font-size: 12px;
+       border: 1px solid #252a53;
+       box-sizing: border-box;
+       background-color: #fff;
+     }
+     .policy-tags {
+       position: absolute;
+       bottom: -12px;
+       right: 10px;
+       display: flex;
+       flex-wrap: wrap;
+       gap: 10px;
+     }
+     .policy-tag {
+       background-color: #eee;
+       border: 1px solid #252a53;
+       border-radius: 0.5rem;
+       padding: 4px 10px;
+       font-size: 10px;
+       box-shadow: 0 1px 2px #252a53;
+     }
+
+
+     .policy-tooltip-container {
+       position: relative;
+       display: inline-block;
+       width: 100%;
+     }
+
+     .policy-tooltip {
+       visibility: hidden;
+       opacity: 0;
+       background-color: #252a53;
+       color: #fff;
+       text-align: left;
+       padding: 6px 10px;
+       border-radius: 6px;
+       position: absolute;
+       top: -45px;
+       left: 0;
+       z-index: 10;
+       font-size: 10px;
+       width: max-content;
+       max-width: 300px;
+       transition: opacity 0.3s ease;
+       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+     }
+
+     .policy-tooltip-container:hover .policy-tooltip {
+       visibility: visible;
+       opacity: 1;
+     }
+
+
+
+     .development-tags {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 10px;
+       width: 100%;
+       margin-bottom: 20px;
+
+     }
+
+     .development-tags button {
+       background: #eee;
+       border: none;
+       padding: 10px 16px;
+       cursor: default;
+       font-size: 12px;
+       text-align: center;
+       color: #252a53;
+       border: 1px solid #252a53;
+       /* flex: 1 1 120px; */
+       transition: transform 0.3s ease;
+
+     }
+     .development-tags button:hover {
+       transform: translateY(-5px);
+     }
+
+
+     .score-cards {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+       gap: 10px;
+       max-width: 100%;
+     }
+     .card {
+       background: #eee;
+       padding: 4px;
+       /* font-size: 10px; */
+       text-align: center;
+       transition: transform 0.3s ease;
+     }
+
+     .card:hover {
+       transform: translateY(-5px);
+     }
+     .card h3 {
+       margin: 0;
+     }
+     .card p {
+       margin-top: 2px;
+       font-weight: bold;
+     }
+     .total {
+       background: #252a53;
+       color: white;
+       border: 1px solid #252a53;
+
+     }
+
+
+     .controls {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 10px;              /* space between items */
+       margin-bottom: 20px;
+       width: 100%;
+     }
+
+     .control-group {
+       flex: 1 1 200px;         /* allow resizing, min width of 200px */
+       display: flex;
+       flex-direction: column;
+     }
+
+
+     .slider-container {
+       display: flex;
+       flex-direction: column;
+       align-items: left;
+       margin-top: 20px;
+       margin-right: 50px;
+       width: 100%;
+     }
+     .slider {
+       /* margin-top: 10px; */
+       -webkit-appearance: none;
+       width: 100%;
+       height: 6px;
+       background: #ddd;
+       border-radius: 5px;
+       outline: none;
+     }
+     .slider-labels {
+       display: flex;
+       justify-content: space-between;
+       width: 100%;
+       margin-top: 5px;
+     }
+     .slider::-webkit-slider-thumb {
+       -webkit-appearance: none;
+       appearance: none;
+       width: 16px;
+       height: 16px;
+       background: #4a3b55;
+       border-radius: 50%;
+       cursor: pointer;
+       background-size: cover;
+     }
+
+    </style>
+
+
+
+
+  </head>
+  <body>
+    <div class="header">
+      <div>
+        <a href="index.html">
+          <img src="static/img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png" class="h-12">
+        </a>
+      </div>
+      <div style="font-family: 'Montserrat', sans-serif; font-size: 14px">
+        <button type="button"
+                onclick="window.location.href='about.html';"
+                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+          ABOUT
+        </button>
+        <button
+          type="button"
+          onclick="window.open('https://premium-eu.org/', '_blank')"
+          class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+          PROJECT PAGE</button>
+      </div>
+    </div>
+
+    <div class="main-content">
+
+      <div class="region-left">
+
+        <div class="dropdown-container">
+          <div class="map-dropdown">
+            <label for="country"></label>
+            <select name="country" id="country"
+                    hx-get="/regions"
+                    hx-target="#regions"
+                    hx-trigger="change"
+                    hx-params="*">
+              <option value="">Country</option>
+              <option value="AT">Austria</option>
+              <option value="DE">Germany</option>
+              <option value="FR">France</option>
+              <!-- Populate dynamically if needed -->
+            </select>
+
+            <select id="regions" name="region">
+              <option value="">Region</option>
+            </select>          </div>
+          <p>or click on a map</p>
+        </div>
+
+
+
+        <br>
+
+        <!-- <p style="font-size: 20px; font-weight: 700; "> Vestland, Norway </p> <br> -->
+        <p id="region-title" style="font-size: 20px; font-weight: 700;"> Vestland, Norway</p>
+
+
+
+        <br>
+        <iframe src="static/map_NUTS3.html" width="100%" height="600px"></iframe>
+        <br>
+        <br>
+
+      </div>
+
+      <div class="region-right">
+
+
+
+        <div class="region-tabs">
+          <button class="tab-button active"
+                  hx-trigger="click"
+                  hx-on="click: document.querySelector('#tab-content').innerHTML = document.querySelector('#content-tab1').innerHTML">
+            Policy solutions
+          </button>
+          <button class="tab-button"
+                  hx-trigger="click"
+                  hx-on="click: document.querySelector('#tab-content').innerHTML = document.querySelector('#content-tab2').innerHTML">
+            Regional development
+          </button>
+          <button class="tab-button"
+                  hx-trigger="click"
+                  hx-on="click: document.querySelector('#tab-content').innerHTML = document.querySelector('#content-tab3').innerHTML">
+            Migration
+          </button>
+        </div>
+
+        <div id="tab-content" class="tab-content">
+          <p>Select a region</p>
+        </div>
+
+        <!-- Hidden content for tabs -->
+        <div id="content-tab1" class="hidden">
+          <h1 style="font-family: 'Lora', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 10px; color: #252a53"> Select policy areas</h1>
+          <div class="policy-buttons">
+            <button>Population decline​</button>
+            <button>High migration​</button>
+            <button>Policy area​</button>
+            <button>Changing labour needs​</button>
+            <button>Policy area​</button>
+            <button style="color: white; background-color: #252a53; border: 1px solid #252a53;">Aging population​</button>
+            <button>Aging population​</button>
+            <button>Youth desertion​</button>
+            <button style="color: white; background-color: #252a53; border: 1px solid #252a53;">Housing​</button>
+            <button>High migration​</button>
+            <button>Policy area​</button>
+            <button>Changing labour needs​</button>
+
+          </div>
+
+
+          <div class="policy-text-box-wrapper">
+            <div class="policy-text-box">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </div>
+            <div class="policy-tags">
+              <div class="policy-tag">Housing</div>
+              <div class="policy-tag">High migration</div>
+            </div>
+          </div>
+
+
+          <div class="policy-text-box-wrapper">
+            <div class="policy-text-box">
+              Policy description
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+
+            </div>
+            <div class="policy-tags">
+              <div class="policy-tag">Aging population</div>
+              <div class="policy-tag">Housing</div>
+            </div>
+          </div>
+
+          <div class="policy-text-box-wrapper">
+            <div class="policy-text-box">
+              Policy description
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+
+            </div>
+            <div class="policy-tags">
+              <div class="policy-tag">Housing</div>
+            </div>
+          </div>
+
+          <div class="policy-text-box-wrapper">
+            <div class="policy-text-box">
+              Policy description
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+
+            </div>
+            <div class="policy-tags">
+              <div class="policy-tag">Housing</div>
+              <div class="policy-tag">High migration</div>
+            </div>
+          </div>
+
+
+          <div class="policy-text-box-wrapper">
+            <div class="policy-text-box">
+              Policy description
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+
+              <br>
+            </div>
+            <div class="policy-tags">
+              <div class="policy-tag">Aging population</div>
+              <div class="policy-tag">Housing</div>
+            </div>
+          </div>
+
+          <div class="policy-text-box-wrapper">
+            <div class="policy-text-box">
+              Policy description
+            </div>
+            <div class="policy-tags">
+              <div class="policy-tag">Housing</div>
+            </div>
+          </div>
+
+          <div class="policy-text-box-wrapper">
+            <div class="policy-text-box">
+              Policy description
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+
+            </div>
+            <div class="policy-tags">
+              <div class="policy-tag">Housing</div>
+            </div>
+          </div>
+
+
+
+          <div class="policy-text-box-wrapper">
+            <div class="policy-tooltip-container">
+              <div class="policy-text-box">
+                This is some policy text.
+              </div>
+            </div>
+
+            <div class="policy-tags">
+              <div class="policy-tag">TAG</div>
+              <div class="policy-tag">TAG</div>
+            </div>
+          </div>
+
+
+        </div>
+
+        <div id="content-tab2" class="hidden">
+
+          <div class="development-tags">
+            <button>Developed​</button>
+            <button>Stagnant​</button>
+            <button>Urban​</button>
+          </div>
+
+          <p style="font-size: 12px;"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+
+          <br>
+
+          <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;"> Development scores </p>
+
+
+          <div class="score-cards">
+            <div class="card">
+              <h3>Economic</h3>
+              <p>7/10</p>
+            </div>
+            <div class="card">
+              <h3>Social</h3>
+              <p>8/10</p>
+            </div>
+            <div class="card">
+              <h3>Living environment</h3>
+              <p>0/10</p>
+            </div>
+            <div class="card total">
+              <h3>Overall</h3>
+              <p>5/10</p>
+            </div>
+          </div>
+
+          <br>
+
+
+          <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;"> Strenghs and weaknesses </p>
+
+          <p style="font-size: 12px; margin-bottom: 2px;"> Text one Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+
+          <p style="font-size: 12px;"> Text two Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+          <br>
+
+          <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;"> Development scores over time </p>
+
+          <iframe src="static/plots/regional-scores/test_plot.html" width="100%" height="320" frameborder="0"></iframe>
+
+          <br>
+
+          <div class="explore-comparable">
+            <button>
+              Explore comparable regions
+              <svg class="w-6 h-6" aria-hidden="true"
+                   xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+          <br>
+
+
+        </div>
+
+      </div>
+      <div id="content-tab3" class="hidden">
+        <div class="development-tags">
+          <button>Declining​</button>
+          <button>Declining​</button>
+        </div>
+
+        <p style="font-size: 12px;"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+
+        <br>
+
+
+        <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;"> Migration projection </p>
+
+
+        <div class="controls">
+          <div class="control-group">
+            <label for="age">Age</label>
+            <select id="age">
+              <option>18-25</option>
+              <option>26-35</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="gender">Gender</label>
+            <select id="gender">
+              <option>Male</option>
+              <option>Female</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="education">Education</label>
+            <select id="education">
+              <option>Primary</option>
+              <option>Secondary</option>
+              <option>Tertiary</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="type">Type</label>
+            <select id="type">
+              <option>Stocks</option>
+              <option>Flows</option>
+            </select>
+          </div>
+        </div>
+
+
+        <iframe src="static/plots/regional-projections/test_plot.html" width="100%" height="320" frameborder="0"></iframe>
+
+        <br>
+
+
+        <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;"> Population pyramid </p>
+
+
+        <iframe src="static/plots/regional-pyramids/test_plot.html" width="100%" height="320" frameborder="0"></iframe>
+
+
+        <div class="slider-container">
+          <label style="display: none;" for="yearSlider">Year: <span id="yearValue">2010</span></label>
+          <input type="range" id="yearSlider" class="slider" min="2010" max="2021" value="2021" step="1" list="tickmarks" oninput="updateYear()">
+          <div class="slider-labels">
+            <span>2010</span><span>2011</span><span>2012</span><span>2013</span><span>2014</span>
+            <span>2015</span><span>2016</span><span>2017</span><span>2018</span><span>2019</span>
+            <span>2020</span><span>2021</span>
+          </div>
+
+
+
+          <br>
+          <br>
+
+
+
+
+        <div class="explore-comparable">
+          <button>
+            Explore comparable regions
+            <svg class="w-6 h-6" aria-hidden="true"
+                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+        <br>
+
+
+
+      </div>
+
+
+
+  </body>
+
+
+  <script>
+   document.body.addEventListener('click', function(event) {
+     if (event.target.classList.contains('tab-button')) {
+       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove("active"));
+       event.target.classList.add("active");
+     }
+   });
+
+
+   /* update region name on page */
+   document.getElementById('regions').addEventListener('change', function () {
+     const country = document.getElementById('country').options[document.getElementById('country').selectedIndex].text;
+     const region = this.options[this.selectedIndex].text;
+     if (region !== "Region" && country !== "Country") {
+       document.getElementById('region-title').textContent = `${region}, ${country}`;
+     } else {
+       document.getElementById('region-title').textContent = "";
+     }
+   });
+
+
+
+  </script>
+
+
+</html>
