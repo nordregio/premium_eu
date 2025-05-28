@@ -12,6 +12,10 @@
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
     <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png">
     <style>
+     :root {
+       font-size: 16px; /* Base font size */
+     }
+
      body {
        font-family: 'Montserrat', sans-serif;
        font-weight: 400;
@@ -21,15 +25,11 @@
        display: flex;
        flex-direction: column;
        justify-content: center;
-
-
        overflow: hidden;
-
        background-image: url('static/img/PREMIUM_icons/PNG/PREMIUM_EU_Illustration_Brain-graphics_01_RED.png');
        background-size: 48% 60%;
        background-repeat: no-repeat;
        background-position: left bottom;
-
      }
 
      .header {
@@ -39,79 +39,91 @@
        background-color: white;
        position: fixed;
        width: 100%;
-       height: 80px;
+       height: 5rem;
        top: 0;
        left: 0;
        z-index: 1001;
-       padding: 20px 40px;
+       padding: 1.25rem 2.5rem;
      }
+
      .main-content {
-       padding: 60px 0px 40px 0px;
+       padding: 3.75rem 0 2.5rem 0;
        flex-grow: 1;
        display: flex;
        align-items: top;
        justify-content: center;
      }
+
      .container {
        display: flex;
        justify-content: space-between;
        width: 100%;
      }
+
      .homepage-left {
        width: 48%;
        background: white;
        flex-wrap: wrap;
-       padding: 40px;
-       font-size: 14px;
+       padding: 2.5rem;
+       font-size: 0.875rem;
      }
+
      .homepage-right {
-       padding: 40px;
+       padding: 2.5rem;
        width: 48%;
      }
+
      .homepage-actions {
        font-weight: 700;
      }
+
      .homepage-actions button {
        display: flex;
-       margin-top: 20px;
-       padding: 20px;
+       margin-top: 1.25rem;
+       padding: 1.25rem;
        cursor: pointer;
        width: 100%;
        color: #252a53;
-       font-size: 14px;
+       font-size: 0.875rem;
        background-color: white;
        transition: background-color 0.2s ease-in-out;
-       border: 5px solid #252a53;
+       border: 0.3125rem solid #252a53;
      }
+
      .homepage-actions button:hover {
        background-color: #252a53;
        color: white;
      }
+
      .footer {
        display: grid;
        grid-template-columns: repeat(4, 1fr);
-       gap: 20px;
-       padding: 20px;
+       gap: 1.25rem;
+       padding: 1.25rem;
        color: #252a53;
        text-align: left;
-       font-size: small;
+       font-size: 0.875rem;
      }
+
      .footer-column {
-       padding: 0px 10px 0px 10px;
+       padding: 0 0.625rem;
      }
+
      footer h1 {
-       font-size: 10px;
+       font-size: 0.625rem;
        font-weight: 700;
-       margin-bottom: 8px;
+       margin-bottom: 0.5rem;
      }
+
      footer h2 {
-       font-size: 8px;
+       font-size: 0.5rem;
        font-weight: 700;
-       margin-bottom: 4px;
+       margin-bottom: 0.25rem;
      }
+
      footer p {
-       margin-bottom: 6px;
-       font-size: 10px;
+       margin-bottom: 0.375rem;
+       font-size: 0.625rem;
      }
 
     </style>
@@ -119,77 +131,59 @@
   </head>
   <body>
     <div class="header">
-      <div><img src="static/img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png" class="h-12"></div>
-      <div style="font-family: 'Montserrat', sans-serif; font-size: 14px">
+      <div><img src="static/img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png" class="h-12" alt="PREMIUM EU logo"></div>
+      <div style="font-family: 'Montserrat', sans-serif; font-size: 0.875rem">
         <button type="button"
                 onclick="window.open('https://https://nordregio.github.io/premium_eu/', '_blank')"
-                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+                class="text-black font-medium rounded-lg px-1.25rem py-0.625rem me-2 mb-2">
           ABOUT
         </button>
         <button
           type="button"
           onclick="window.open('https://premium-eu.org/', '_blank')"
-          class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
-          PROJECT PAGE</button>
+          class="text-black font-medium rounded-lg px-1.25rem py-0.625rem me-2 mb-2">
+          PROJECT PAGE
+        </button>
       </div>
     </div>
-
 
     <div class="main-content">
       <div class="container">
         <div class="homepage-left">
-          <br>
-          <br>
-          <p style="font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: #ac5737">
+          <br><br>
+          <p style="font-family: 'Montserrat', sans-serif; font-size: 0.875rem; font-weight: 700; color: #ac5737">
             This is a prototype designed to demonstrate some elements of the layout and design of the future dashboard. It’s a static preview, so most elements aren’t interactive yet.
-
           </p>
-          <br>
-          <br>
+          <br><br>
 
-          <h2 style="font-family: 'Lora', sans-serif; font-size: 24px; font-weight: 700;">Welcome to the PREMIUM_EU Dashboard</h2>
+          <h2 style="font-family: 'Lora', sans-serif; font-size: 1.5rem; font-weight: 700;">Welcome to the PREMIUM_EU Dashboard</h2>
           <br>
-          <p style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 400;">
+          <p style="font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 400;">
             Curious about how mobility is reshaping your region or how to make it work in your favour? You’re in the right place.
-            <br>
-            <br>
+            <br><br>
 
             This dashboard helps policymakers understand demographic trends, regional development patterns, and policy solutions.
-            <br>
-            <br>
+            <br><br>
 
             Here, you’ll find tailored insights into who’s moving, why they move, and what it means for regional development.
-            <br>
-            <br>
+            <br><br>
 
             Explore your region’s mobility and development profile, compare with others, and discover real policy examples that tackle brain drain, attract newcomers, and boost resilience.
+            <br><br>
 
-            <br>
-            <br>
             Start by selecting your region or dive into the data and stories that matter to you.
-            <br>
-            <br>
-
+            <br><br>
           </p>
         </div>
 
-
         <div class="homepage-right">
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
-
-          <br>
+          <br><br><br><br><br><br><br>
           <div class="homepage-actions">
 
             <a href="/premium_eu/regional.html">
               <button>
                 Learn about your region and explore policy recommendations
-                <svg class="w-6 h-6" aria-hidden="true"
-                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
               </button>
@@ -197,40 +191,31 @@
 
             <a href="/premium_eu/development.html">
               <button>Investigate the landscape of regional development in Europe
-                <svg class="w-6 h-6 " aria-hidden="true"
-                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
               </button>
             </a>
-
 
             <a href="/premium_eu/migration.html">
               <button>Explore migration trends in Europe
-                <svg class="w-6 h-6 " aria-hidden="true"
-                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
               </button>
             </a>
-
-
           </div>
-
         </div>
-
       </div>
     </div>
 
-
     <footer class="footer">
       <div class="footer-column">
-        <img src="static/img/eu_logo.png" class="h-10">
+        <img src="static/img/eu_logo.png" class="h-10" alt="EU logo">
         <br>
-        <p style="width: 260px; color: white;">PREMIUM_EU was made possible thanks to funding from the European Union's Horizon Europe programme.</p>
+        <p style="width: 16.25rem; color: white;">PREMIUM_EU was made possible thanks to funding from the European Union's Horizon Europe programme.</p>
       </div>
-      <div class="footer-column">
-      </div>
+      <div class="footer-column"></div>
       <div class="footer-column">
         <h1> _Site map </h1>
         <p> About </p>
@@ -256,7 +241,6 @@
         </p>
       </div>
     </footer>
-
 
   </body>
 </html>
