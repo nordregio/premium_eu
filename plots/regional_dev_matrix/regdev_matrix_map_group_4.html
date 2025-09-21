@@ -1,0 +1,98 @@
+<!doctype html>
+<html data-theme="light">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>NUTS3</title>
+    <script src="https://unpkg.com/deck.gl@^9.0.0/dist.min.js"></script>
+    <link
+      href="https://unpkg.com/deck.gl@^9.0.0/dist/stylesheet.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.js"></script>
+    <link
+      href="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <style>
+     body {
+       width: 100%;
+       height: 100%;
+       margin: 0;
+     }
+     .deck-widget {
+       --button-size: 20px;
+     }
+     .deck-tooltip {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 12px;
+       color: white  !important;
+       background-color: #252a53 !important;
+     }
+     #map-wrapper {
+       width: 100%;
+       height: 100%;
+       position: unset !important;
+     }
+    </style>
+  </head>
+  <body>
+    <div id="map-wrapper">
+      <script>
+       (() => {
+         const defaultFillColor = [190, 190, 200, 255];
+         const selectedFillColor = [172, 87, 55, 255];
+
+         // Preselected NUTS_ID regions
+         const preselectedRegions = new Set(
+           ['SI041', 'PL911', 'NL113', 'NL230', 'NL310', 'NL337', 'NL332', 'NL329', 'NL327', 'HU110', 'LU000', 'CH057', 'CH056', 'CH032', 'FI1B1', 'SE110', 'DE71E', 'DE71D', 'DE71A', 'DE718', 'DE714', 'DE712', 'DE711', 'DE251', 'DE241', 'DE274', 'DE272', 'DE731', 'DE943', 'DK012', 'DK011', 'CZ010', 'BE251', 'BE242', 'DK013', 'DE21E', 'DE21D', 'DE218', 'DE212', 'DE148', 'DE223', 'DE221', 'DE142', 'DE141', 'DE136', 'FR104', 'FR103', 'FR101', 'FR105', 'FR108', 'ES300', 'FRK26', 'IE061']
+         );
+
+
+
+         const { DeckGL, MapView, PolygonLayer, CompassWidget, ZoomWidget } = deck;
+
+         const createPolygonLayer = () =>
+           new PolygonLayer({
+             id: "PolygonLayer",
+             data: "layers/polygon_layer.json",
+             pickable: true,
+             getPolygon: d => d.border,
+             filled: true,
+             getLineColor: [37, 42, 83, 255],
+             getFillColor: d =>
+               preselectedRegions.has(d.NUTS_ID) ? selectedFillColor : defaultFillColor,
+             lineWidthMinPixels: 0.7,
+             opacity: 0.6,
+           });
+
+         let polygonLayer = createPolygonLayer();
+
+         const deckgl = new DeckGL({
+           container: 'map-wrapper',
+           map: maplibregl,
+           mapStyle: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+           initialViewState: {
+             bearing: 0,
+             latitude: 57,
+             longitude: 14,
+             maxZoom: 20,
+             minZoom: 0,
+             pitch: 0,
+             zoom: 2,
+           },
+           views: [new MapView({ id: "map", controller: true })],
+           getTooltip: ({ object }) =>
+             object ? `${object.NUTS_ID}\n${object.NUTS_NAME}` : null,
+           getCursor: ({ isHovering }) => (isHovering ? 'default' : 'default'),
+           layers: [polygonLayer],
+           widgets: [
+             new CompassWidget({ id: "compass", viewId: "map" }),
+             new ZoomWidget({ id: "zoom", viewId: "map" }),
+           ],
+         });
+       })();
+      </script>
+    </div>
+  </body>
+</html>

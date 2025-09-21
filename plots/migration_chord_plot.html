@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+     body {
+       margin: 0;
+       font-family: 'Montserrat', sans-serif;
+       font-weight: 400;
+       background: white;
+       min-height: 100vh;
+       color: #252a53;
+     }
+
+     .main-content {
+       display: flex;
+       align-items: flex-start;
+       gap: 40px;
+       width: 100%;
+       justify-content: flex-start;
+       margin-left: 0;
+       padding: 20px;
+     }
+
+     .chart-container {
+       background: white;
+       padding: 20px;
+       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+       border: 1px solid #ddd;
+       border-radius: 6px;
+       transition: all 0.3s ease;
+     }
+
+     .chart-container:hover {
+       transform: translateY(-3px);
+       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+       border-color: #252a53;
+     }
+
+     .sidebar {
+       display: flex;
+       flex-direction: column;
+       gap: 20px;
+       min-width: 300px;
+       max-width: 350px;
+     }
+
+     .tooltip {
+       position: absolute;
+       background: rgba(37, 42, 83, 0.95);
+       color: white;
+       padding: 12px;
+       /* border-radius: 6px; */
+       font-size: 11px;
+       font-weight: 400;
+       pointer-events: none;
+       opacity: 0;
+       transition: opacity 0.3s;
+       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+       border: 1px solid rgba(255,255,255,0.1);
+       line-height: 1.4;
+     }
+
+     .chord {
+       fill-opacity: 0.7;
+       stroke-opacity: 0.8;
+       transition: all 0.3s ease;
+     }
+
+     .chord:hover {
+       fill-opacity: 0.9;
+       stroke-opacity: 1;
+     }
+
+     .group {
+       cursor: pointer;
+       transition: all 0.3s ease;
+     }
+
+     .group:hover {
+       filter: brightness(1.1);
+     }
+
+     .group text {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 10px;
+       font-weight: 500;
+       fill: #252a53;
+     }
+
+     .legend {
+       background: white;
+       padding: 20px;
+       border-radius: 6px;
+       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+       border: 1px solid #ddd;
+     }
+
+     .legend h3 {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 14px;
+       font-weight: 700;
+       margin-top: 0;
+       margin-bottom: 15px;
+       color: #252a53;
+     }
+
+     .legend-item {
+       display: flex;
+       align-items: center;
+       margin: 6px 0;
+       font-size: 11px;
+       font-weight: 400;
+       color: #252a53;
+       cursor: pointer;
+       padding: 3px;
+       border-radius: 4px;
+       transition: background-color 0.2s ease;
+     }
+
+     .legend-item:hover {
+       background-color: #f5f5f5;
+     }
+
+     .legend-color {
+       width: 10px;
+       height: 10px;
+       margin-right: 6px;
+       border-radius: 2px;
+       flex-shrink: 0;
+     }
+
+     .chart-title {
+       font-family: 'Lora', serif;
+       font-size: 18px;
+       font-weight: 700;
+       color: #252a53;
+       margin-bottom: 15px;
+       text-align: center;
+     }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="main-content">
+        <div class="chart-container">
+          <!-- <div class="chart-title">European Migration Flows</div> -->
+          <div id="chart"></div>
+        </div>
+
+        <div class="sidebar">
+          <div class="legend" id="legend">
+            <h3>Countries</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+     // 27 EU countries for now
+     const countries = [
+       'Germany', 'France', 'Italy', 'Spain', 'Netherlands',
+       'Poland', 'Belgium', 'Sweden', 'Austria', 'Greece',
+       'Portugal', 'Czech Republic', 'Hungary', 'Denmark', 'Finland',
+       'Romania', 'Bulgaria', 'Croatia', 'Slovakia', 'Slovenia',
+       'Lithuania', 'Latvia', 'Estonia', 'Ireland', 'Luxembourg',
+       'Malta', 'Cyprus'
+     ];
+
+     // Generate random migration data matrix
+     function generateRandomData() {
+       const matrix = [];
+       for (let i = 0; i < countries.length; i++) {
+         matrix[i] = [];
+         for (let j = 0; j < countries.length; j++) {
+           if (i === j) {
+             matrix[i][j] = 0; // No internal migration
+           } else {
+             // Generate realistic migration numbers (0-50,000)
+             matrix[i][j] = Math.floor(Math.random() * 50000);
+           }
+         }
+       }
+       return matrix;
+     }
+
+     const migrationData = generateRandomData();
+
+     // Updated color scale
+     const colorScale = d3.scaleOrdinal()
+                          .domain(countries)
+                          .range([
+                            '#252a53', '#4a5568', '#2d3748', '#1a202c', '#2b6cb0',
+                            '#3182ce', '#4299e1', '#63b3ed', '#90cdf4', '#bee3f8',
+                            '#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe',
+                            '#00f2fe', '#43e97b', '#38f9d7', '#ffecd2', '#fcb69f',
+                            '#a8edea', '#fed6e3', '#d299c2', '#fef9d7', '#ecc5fb',
+                            '#667eea', '#764ba2'
+                          ]);
+
+     // Set up dimensions
+     const width = 800;
+     const height = 800;
+     const margin = 120;
+     const innerRadius = Math.min(width, height) * 0.28;
+     const outerRadius = innerRadius + 18;
+
+     // Create SVG
+     const svg = d3.select('#chart')
+                   .append('svg')
+                   .attr('width', width)
+                   .attr('height', height);
+
+     const g = svg.append('g')
+                  .attr('transform', `translate(${width / 2}, ${height / 2})`);
+
+     // Create chord layout
+     const chord = d3.chord()
+                     .padAngle(0.02)
+                     .sortSubgroups(d3.descending);
+
+     const arc = d3.arc()
+                   .innerRadius(innerRadius)
+                   .outerRadius(outerRadius);
+
+     const ribbon = d3.ribbon()
+                      .radius(innerRadius);
+
+     const chords = chord(migrationData);
+
+     // Tooltip
+     const tooltip = d3.select('#tooltip');
+
+     // Draw groups (countries)
+     const groups = g.selectAll('.group')
+                     .data(chords.groups)
+                     .enter()
+                     .append('g')
+                     .attr('class', 'group');
+
+     groups.append('path')
+           .style('fill', d => colorScale(countries[d.index]))
+           .style('stroke', d => d3.rgb(colorScale(countries[d.index])).darker(0.3))
+           .style('stroke-width', 1)
+           .attr('d', arc)
+           .on('mouseover', function(event, d) {
+             const totalOut = d3.sum(migrationData[d.index]);
+             const totalIn = d3.sum(migrationData, row => row[d.index]);
+
+             tooltip.html(`
+                    <strong>${countries[d.index]}</strong><br/>
+                    Emigrants: ${totalOut.toLocaleString()}<br/>
+                    Immigrants: ${totalIn.toLocaleString()}<br/>
+                    Net migration: ${(totalIn - totalOut).toLocaleString()}
+             `)
+                    .style('opacity', 1)
+                    .style('left', (event.pageX + 10) + 'px')
+                    .style('top', (event.pageY - 10) + 'px');
+
+             // Highlight related chords
+             g.selectAll('.chord')
+              .style('opacity', chord =>
+                chord.source.index === d.index || chord.target.index === d.index ? 0.8 : 0.1
+              );
+
+             // Highlight legend item
+             d3.selectAll('.legend-item')
+               .style('background-color', (_, i) => i === d.index ? '#e8f4f8' : 'transparent');
+           })
+           .on('mouseout', function() {
+             tooltip.style('opacity', 0);
+             g.selectAll('.chord').style('opacity', 0.7);
+             d3.selectAll('.legend-item').style('background-color', 'transparent');
+           });
+
+     // Add country labels
+     groups.append('text')
+           .each(d => { d.angle = (d.startAngle + d.endAngle) / 2; })
+           .attr('dy', '.35em')
+           .attr('transform', d => `
+                rotate(${(d.angle * 180 / Math.PI - 90)})
+                translate(${outerRadius + 12})
+                ${d.angle > Math.PI ? 'rotate(180)' : ''}
+           `)
+           .style('text-anchor', d => d.angle > Math.PI ? 'end' : null)
+           .text(d => countries[d.index]);
+
+     // Draw chords (migration flows)
+     const chordPaths = g.selectAll('.chord')
+                         .data(chords)
+                         .enter()
+                         .append('path')
+                         .attr('class', 'chord')
+                         .style('fill', d => colorScale(countries[d.source.index]))
+                         .style('stroke', d => d3.rgb(colorScale(countries[d.source.index])).darker(0.2))
+                         .style('stroke-width', 0.5)
+                         .attr('d', ribbon)
+                         .on('mouseover', function(event, d) {
+                           const sourceCountry = countries[d.source.index];
+                           const targetCountry = countries[d.target.index];
+                           const flow = migrationData[d.source.index][d.target.index];
+                           const reverseFlow = migrationData[d.target.index][d.source.index];
+
+                           tooltip.html(`
+                    <strong>Migration Flow</strong><br/>
+                    ${sourceCountry} → ${targetCountry}: ${flow.toLocaleString()}<br/>
+                    ${targetCountry} → ${sourceCountry}: ${reverseFlow.toLocaleString()}<br/>
+                    <em>Net flow: ${(flow - reverseFlow).toLocaleString()}</em>
+                           `)
+                                  .style('opacity', 1)
+                                  .style('left', (event.pageX + 10) + 'px')
+                                  .style('top', (event.pageY - 10) + 'px');
+
+                           // Highlight this chord
+                           d3.select(this).style('fill-opacity', 0.9);
+                         })
+                         .on('mouseout', function() {
+                           tooltip.style('opacity', 0);
+                           d3.select(this).style('fill-opacity', 0.7);
+                         });
+
+     // Create legend with interactive functionality
+     const legend = d3.select('#legend');
+     const legendItems = legend.selectAll('.legend-item')
+                               .data(countries)
+                               .enter()
+                               .append('div')
+                               .attr('class', 'legend-item')
+                               .on('mouseover', function(event, d) {
+                                 const countryIndex = countries.indexOf(d);
+
+                                 // Highlight country arc and related chords
+                                 g.selectAll('.group')
+                                  .style('opacity', (groupData) => groupData.index === countryIndex ? 1 : 0.3);
+
+                                 g.selectAll('.chord')
+                                  .style('opacity', chord =>
+                                    chord.source.index === countryIndex || chord.target.index === countryIndex ? 0.8 : 0.1
+                                  );
+
+                                 d3.select(this).style('background-color', '#e8f4f8');
+                               })
+                               .on('mouseout', function() {
+                                 g.selectAll('.group').style('opacity', 1);
+                                 g.selectAll('.chord').style('opacity', 0.7);
+                                 d3.select(this).style('background-color', 'transparent');
+                               });
+
+     legendItems.append('div')
+                .attr('class', 'legend-color')
+                .style('background-color', d => colorScale(d));
+
+     legendItems.append('span')
+                .text(d => d);
+
+     // Add smooth entrance animation
+     chordPaths
+       .style('opacity', 0)
+       .transition()
+       .duration(1500)
+       .delay((d, i) => i * 30)
+       .style('opacity', 0.7);
+
+     groups.selectAll('path')
+           .style('opacity', 0)
+           .transition()
+           .duration(1000)
+           .delay((d, i) => i * 80)
+           .style('opacity', 1);
+
+     groups.selectAll('text')
+           .style('opacity', 0)
+           .transition()
+           .duration(1000)
+           .delay(1200)
+           .style('opacity', 1);
+    </script>
+  </body>
+</html>

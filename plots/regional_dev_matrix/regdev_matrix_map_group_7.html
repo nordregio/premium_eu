@@ -1,0 +1,96 @@
+<!doctype html>
+<html data-theme="light">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>NUTS3</title>
+    <script src="https://unpkg.com/deck.gl@^9.0.0/dist.min.js"></script>
+    <link
+      href="https://unpkg.com/deck.gl@^9.0.0/dist/stylesheet.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.js"></script>
+    <link
+      href="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <style>
+     body {
+       width: 100%;
+       height: 100%;
+       margin: 0;
+     }
+     .deck-widget {
+       --button-size: 20px;
+     }
+     .deck-tooltip {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 12px;
+       color: white  !important;
+       background-color: #252a53 !important;
+     }
+     #map-wrapper {
+       width: 100%;
+       height: 100%;
+       position: unset !important;
+     }
+    </style>
+  </head>
+  <body>
+    <div id="map-wrapper">
+      <script>
+       (() => {
+         const defaultFillColor = [190, 190, 200, 255];
+         const selectedFillColor = [172, 87, 55, 255];
+
+         // Preselected NUTS_ID regions
+         const preselectedRegions = new Set(
+           ['PL711', 'AT322', 'AT312', 'AT226', 'AT223', 'AT126', 'AT321', 'AT335', 'AT323', 'AT315', 'PL913', 'ITH20', 'ITH51', 'SI042', 'NL342', 'NL341', 'CH051', 'SE332', 'SE322', 'FI1C2', 'FI197', 'FI193', 'SE232', 'SE224', 'SE221', 'SE212', 'FI1D8', 'SI044', 'DE40C', 'DE27E', 'DE27B', 'DE40G', 'DE71C', 'DE716', 'DE715', 'DE600', 'DE501', 'DE255', 'DE24D', 'DE24B', 'DE24A', 'DE249', 'DE246', 'DE258', 'DE259', 'DE25A', 'DE276', 'DE26B', 'DE266', 'DE264', 'DE25C', 'DE25B', 'DE268', 'DE23A', 'DEA17', 'DEA12', 'DE94H', 'DE94F', 'DE94E', 'DE94B', 'DE94A', 'DE947', 'DE946', 'DE912', 'DE737', 'DE736', 'DE735', 'DE732', 'DE941', 'DE937', 'DE936', 'DE935', 'DE934', 'DE725', 'DE933', 'DE931', 'DE927', 'DE926', 'DE239', 'DE237', 'BE253', 'BE236', 'BE234', 'BE213', 'BE212', 'BE211', 'BE257', 'BE344', 'BE343', 'BE336', 'DK021', 'DK022', 'DE21G', 'DE219', 'DE211', 'DE21I', 'DE21J', 'DE236', 'DE235', 'DE234', 'DE229', 'DE224', 'DE228', 'DE11B', 'DE11A', 'DE119', 'DE118', 'DE114', 'DK050', 'DE135', 'DE12C', 'DE12B', 'DE127', 'ES708', 'ES707', 'ES704', 'FRD11', 'FRB06', 'FRB05', 'FRB02', 'FRB01', 'ES220', 'ES213', 'ES114', 'ES113', 'ES412', 'ES413', 'ES414', 'ES415', 'ES511', 'FRE11', 'ES418', 'ES417', 'ES416', 'FRK25', 'FRK21', 'FRK14', 'FRJ28', 'FRJ27', 'FRH01', 'FRG04', 'FRG02', 'FRF12', 'FRF11', 'FRH04', 'FRJ24', 'FRI34', 'FRI23', 'FRI15', 'DEC03', 'DEC01', 'DEB3K', 'DEB3J', 'DEB3G', 'DEB3D', 'DEE03', 'DEE02', 'DEB3B', 'DEA5A', 'DEA59', 'DEA54', 'DEA53', 'DEA46', 'DEA45', 'DEA44', 'DEA43', 'DEA42', 'DEB12', 'DEB15', 'DEB39', 'DEB22', 'DEB1C', 'DEB1A', 'DEB17', 'EL303', 'EL301', 'DEG06', 'DEF0A', 'DEF09', 'DEG0D', 'IE042', 'DEG0P']
+         );
+
+         const { DeckGL, MapView, PolygonLayer, CompassWidget, ZoomWidget } = deck;
+
+         const createPolygonLayer = () =>
+           new PolygonLayer({
+             id: "PolygonLayer",
+             data: "layers/polygon_layer.json",
+             pickable: true,
+             getPolygon: d => d.border,
+             filled: true,
+             getLineColor: [37, 42, 83, 255],
+             getFillColor: d =>
+               preselectedRegions.has(d.NUTS_ID) ? selectedFillColor : defaultFillColor,
+             lineWidthMinPixels: 0.7,
+             opacity: 0.6,
+           });
+
+         let polygonLayer = createPolygonLayer();
+
+         const deckgl = new DeckGL({
+           container: 'map-wrapper',
+           map: maplibregl,
+           mapStyle: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+           initialViewState: {
+             bearing: 0,
+             latitude: 57,
+             longitude: 14,
+             maxZoom: 20,
+             minZoom: 0,
+             pitch: 0,
+             zoom: 2,
+           },
+           views: [new MapView({ id: "map", controller: true })],
+           getTooltip: ({ object }) =>
+             object ? `${object.NUTS_ID}\n${object.NUTS_NAME}` : null,
+           getCursor: ({ isHovering }) => (isHovering ? 'default' : 'default'),
+           layers: [polygonLayer],
+           widgets: [
+             new CompassWidget({ id: "compass", viewId: "map" }),
+             new ZoomWidget({ id: "zoom", viewId: "map" }),
+           ],
+         });
+       })();
+      </script>
+    </div>
+  </body>
+</html>
