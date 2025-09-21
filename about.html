@@ -3,60 +3,427 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>homepage</title>
+    <title>About - PREMIUM_EU</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
-
-    <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" /> -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
     <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png">
     <style>
-     body {
-       font-family: 'Montserrat', sans-serif;
-       font-weight: 400;
-       color: #252a53;
-       margin: 0;
-       height: 100vh;
-       display: flex;
-       flex-direction: column;
-       justify-content: center;
+      body {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        color: #252a53;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
 
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        position: fixed;
+        width: 100%;
+        height: 80px;
+        top: 0;
+        left: 0;
+        z-index: 1001;
+        padding: 20px 40px;
+      }
 
-       overflow: hidden;
+      .main-content {
+        padding: 100px 0px 40px 0px;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+      }
 
-     }
-
-     .header {
-       display: flex;
-       justify-content: space-between;
-       align-items: center;
-       background-color: white;
-       position: fixed;
-       width: 100%;
-       height: 80px;
-       top: 0;
-       left: 0;
-       z-index: 1001;
-       padding: 20px 40px;
-     }
-     .main-content {
-       padding: 60px 0px 40px 0px;
-       flex-grow: 1;
-       display: flex;
-       align-items: top;
-       justify-content: center;
-     }
      .container {
        display: flex;
-       justify-content: space-between;
+       justify-content: center;
        width: 100%;
+       max-width: 1000px;
+       gap: 2rem;
      }
 
-    </style>
+     .about-content {
+       width: 100%;
+       /* background: white; */
+       flex-wrap: wrap;
+       padding: 3rem;
+       font-size: 0.75rem;
+       /* box-shadow: 0 2px 8px rgba(37, 42, 83, 0.08);
+          border: 1px solid rgba(37, 42, 83, 0.1); */
+     }
 
+     .footer {
+       display: grid;
+       grid-template-columns: repeat(4, 1fr);
+       gap: 1.25rem;
+       padding: 1.25rem;
+       color: #252a53;
+       text-align: left;
+       font-size: 0.625rem;
+     }
+
+     .footer-column {
+       padding: 0rem 0.625rem 0rem 0.625rem;
+     }
+
+     footer h1 {
+       font-size: 0.625rem;
+       font-weight: 700;
+       margin-bottom: 0.5rem;
+     }
+
+     footer h2 {
+       font-size: 0.5625rem;
+       font-weight: 700;
+       margin-bottom: 0.25rem;
+     }
+
+     footer p {
+       margin-bottom: 0.375rem;
+       font-size: 0.625rem;
+     }
+
+     .page-title {
+       position: relative;
+       margin-bottom: 2.5rem;
+       font-size: 1.6rem;
+       color: #252a53;
+       line-height: 1.3;
+     }
+
+     .page-title::after {
+       content: '';
+       position: absolute;
+       bottom: -0.8rem;
+       left: 0;
+       width: 4rem;
+       height: 3px;
+       background: #ac5737;
+       border-radius: 2px;
+     }
+
+      .content-section {
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        color: #252a53;
+      }
+
+      .content-section p {
+        margin: 0 0 1rem 0;
+        font-weight: 400;
+      }
+
+      .content-section h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #252a53;
+        margin: 2rem 0 1rem 0;
+        font-family: 'Lora', sans-serif;
+      }
+
+      .bullet-point {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .bullet-point::before {
+        content: '•';
+        color: #ac5737;
+        font-weight: bold;
+        font-size: 1.2rem;
+        line-height: 1;
+        margin-top: 0.1rem;
+        flex-shrink: 0;
+      }
+
+      .section-intro {
+        font-weight: 500;
+        color: #252a53;
+        margin-bottom: 1.5rem;
+      }
+     /*
+        .disclaimers-section {
+        margin-top: 2.5rem;
+        background: linear-gradient(135deg, #f8f9fb 0%, #f1f3f8 100%);
+        border-radius: 12px;
+        padding: 2rem;
+        border: 1px solid #e2e6f0;
+        }
+      */
+
+      .disclaimer-grid {
+        display: grid;
+        gap: 1.2rem;
+      }
+
+      .disclaimer-box {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e2e6f0;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 1px 3px rgba(37, 42, 83, 0.05);
+      }
+
+      .disclaimer-box:hover {
+        border-color: #ac5737;
+        box-shadow: 0 4px 20px rgba(172, 87, 55, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .disclaimer-header {
+        padding: 1.2rem 1.5rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fb 100%);
+        transition: all 0.3s ease;
+        border-bottom: 1px solid transparent;
+      }
+
+      .disclaimer-header:hover {
+        background: linear-gradient(135deg, #f8f9fb 0%, #f1f3f8 100%);
+        border-bottom-color: rgba(172, 87, 55, 0.1);
+      }
+
+      .disclaimer-header.active {
+        background: linear-gradient(135deg, #ac5737 0%, #d67c5a 100%);
+        border-bottom-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .disclaimer-header.active h4 {
+        color: white;
+      }
+
+      .disclaimer-header.active .disclaimer-icon {
+        color: white;
+      }
+
+      .disclaimer-header h4 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #252a53;
+        margin: 0;
+        font-family: 'Lora', sans-serif;
+        transition: color 0.3s ease;
+      }
+
+      .disclaimer-icon {
+        color: #ac5737;
+        font-size: 1.1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(172, 87, 55, 0.1);
+        flex-shrink: 0;
+      }
+
+      .disclaimer-icon.rotated {
+        transform: rotate(180deg);
+        background: rgba(172, 87, 55, 0.2);
+      }
+
+      .disclaimer-header.active .disclaimer-icon {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .disclaimer-content {
+        padding: 0 1.5rem;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: white;
+      }
+
+      .disclaimer-content.expanded {
+        max-height: 250px;
+        opacity: 1;
+        padding: 1.5rem;
+      }
+
+      .disclaimer-content p {
+        margin: 0;
+        font-size: 0.75rem;
+        line-height: 1.6;
+        color: #4a5568;
+        text-align: justify;
+      }
+
+      .faq-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        background: #ac5737;
+        color: white;
+        border-radius: 50%;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
+      }
+
+      @media (max-width: 1600px) {
+        .main-content {
+          padding: 4rem 1rem 1.5rem 1rem;
+        }
+
+        .about-content {
+          padding: 2rem;
+        }
+
+        .about-content {
+          font-size: 0.65rem;
+        }
+
+        .page-title {
+          font-size: 1.4rem;
+        }
+
+        .footer {
+          font-size: 0.5rem;
+        }
+
+        footer h1 {
+          font-size: 0.5rem;
+        }
+
+        footer h2 {
+          font-size: 0.45rem;
+        }
+
+        footer p {
+          font-size: 0.5rem;
+        }
+
+        body {
+          background-color: #f8f9fb;
+        }
+
+        .disclaimers-section {
+          padding: 1.5rem;
+        }
+      }
+
+      @media (min-width: 2400px) {
+        .about-content {
+          font-size: 1rem;
+        }
+
+        .page-title {
+          font-size: 1.8rem;
+        }
+
+        .footer {
+          font-size: 0.8rem;
+        }
+
+        footer h1 {
+          font-size: 0.8rem;
+        }
+
+        footer h2 {
+          font-size: 0.7rem;
+        }
+
+        footer p {
+          font-size: 0.8rem;
+        }
+
+        .disclaimers-section {
+          padding: 2.5rem;
+        }
+
+        .disclaimer-content p {
+          font-size: 0.9rem;
+        }
+      }
+
+      @media (max-width: 1200px) {
+        .container {
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        body {
+          background-color: #f8f9fb;
+        }
+
+        .footer {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.8rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header {
+          height: 3rem;
+          padding: 0.5rem 1rem;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .header img {
+          height: 2rem !important;
+        }
+
+        .main-content {
+          padding: 6rem 0.5rem 1rem 0.5rem;
+        }
+
+        .about-content {
+          padding: 1.5rem;
+        }
+
+        body {
+          background-color: #f8f9fb;
+        }
+
+        .footer {
+          grid-template-columns: 1fr;
+          font-size: 0.6rem;
+        }
+
+        .footer-column p {
+          width: auto !important;
+        }
+
+        .disclaimers-section {
+          padding: 1rem;
+        }
+
+        .disclaimer-header {
+          padding: 1rem;
+        }
+
+        .disclaimer-header h4 {
+          font-size: 0.85rem;
+        }
+      }
+    </style>
   </head>
+
   <body>
+
     <div class="header">
       <div>
         <a href="index.html">
@@ -77,32 +444,210 @@
       </div>
     </div>
 
-
     <div class="main-content">
       <div class="container">
-        <div class="homepage-left">
-          <br>
-          <br>
-          <p style="font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: #ac5737">
-            This page isn’t ready yet, but it’s on the way.
+        <div class="about-content">
+          <h2 class="page-title" style="font-family: 'Lora', sans-serif; font-weight: 700;">
+            About the PREMIUM_EU Dashboard
+          </h2>
 
+          <div class="content-section">
+            <h3>Background</h3>
+            <p style="font-family: 'Montserrat', sans-serif;">
+              The PREMIUM_EU project is a Horizon Europe-funded research initiative (2023–2026) that set out to understand how mobility shapes the future of Europe's vulnerable regions and how it can be used strategically to counteract depopulation and regional decline.
+            </p>
+            <p style="font-family: 'Montserrat', sans-serif;">
+              This Dashboard is the culmination of three years of research by a multidisciplinary consortium working across nine countries and ten institutes. It brings together demographic analysis, migration studies, and regional development research in an accessible, interactive format. Our aim is simple: to ensure that research is not only understandable but also usable and adaptable by policymakers, planners, and regional stakeholders.
+            </p>
+          </div>
 
+          <div class="content-section">
+            <h3>Methodology</h3>
+            <p style="font-family: 'Montserrat', sans-serif;">
+              The Dashboard was developed through a collaborative process involving all PREMIUM_EU project partners and a dedicated Dashboard Working Group. Our approach combined:
+            </p>
 
-          </p>
-          <br>
-          <br>
-          <br>
-          </p>
+            <div class="bullet-point">
+              <span style="font-family: 'Montserrat', sans-serif;">
+                Data integration from official statistics, Eurostat, and novel sources such as social media data
+              </span>
+            </div>
+
+            <div class="bullet-point">
+              <span style="font-family: 'Montserrat', sans-serif;">
+                Analytical modelling to project migration flows and demographic change at national, subnational, and regional levels
+              </span>
+            </div>
+
+            <div class="bullet-point">
+              <span style="font-family: 'Montserrat', sans-serif;">
+                Policy co-creation through Policy Labs in diverse European regions, where local and regional policymakers worked directly with researchers to identify practical policy approaches
+              </span>
+            </div>
+
+            <div class="bullet-point">
+              <span style="font-family: 'Montserrat', sans-serif;">
+                User testing with the Resilient Regions Expert Group to refine usability, clarity, and relevance for real-world decision-making
+              </span>
+            </div>
+
+            <p style="font-family: 'Montserrat', sans-serif;">
+              This co-creation approach ensured that the Dashboard reflects both robust scientific evidence and the practical needs of its end users.
+            </p>
+            <p style="font-family: 'Montserrat', sans-serif;">
+              For more detailed information about our research methods and data sources, visit our <a href="/methodology.html" style="color: #ac5737; text-decoration: underline;">dedicated methodology page</a>.
+            </p>
+
+          </div>
+
+          <div class="content-section">
+            <h3>Who We Are</h3>
+            <p style="font-family: 'Montserrat', sans-serif;">
+              The Dashboard is coordinated by our communications and development team from Nordregio, and is a huge joint effort: data scientists and analysts built the models, researchers translated findings into actionable insights, and policymakers helped shape how those insights are presented. Together, we aim to bridge the gap between research and practice turning knowledge into tools that can help regions thrive.
+            </p>
+            <p style="font-family: 'Montserrat', sans-serif;">
+              The PREMIUM_EU project is coordinated by the Netherlands Interdisciplinary Demographic Institute (NIDI) and brings together ten partner institutions from across Europe, including leading universities, research institutes, and policy organisations. Our team includes experts in migration, demography, economics, sociology, and regional development, as well as practitioners experienced in policy design and stakeholder engagement.
+            </p>
+          </div>
+
+          <div class="content-section">
+            <h3>Important Disclaimers</h3>
+
+            <div class="disclaimer-grid">
+              <div class="disclaimer-box">
+                <div class="disclaimer-header" onclick="toggleDisclaimer(this)">
+                  <div style="display: flex; align-items: center;">
+                    <span class="faq-number">1</span>
+                    <h4>Does the Dashboard give definitive policy answers?</h4>
+                  </div>
+                  <span class="disclaimer-icon">▼</span>
+                </div>
+                <div class="disclaimer-content">
+                  <p>No. The policy suggestions are illustrative, based on webscrapings of existing policies (not always directly migration or attraction based, but often a combination of the two), ideas and inspiration drawn from policylabs with regional decisionmakers from across Europe and initiatives/examples tested in local regions. The policy suggestions should therefore always be adapted to the specific political, economic, and cultural context of your region.</p>
+                </div>
+              </div>
+
+              <div class="disclaimer-box">
+                <div class="disclaimer-header" onclick="toggleDisclaimer(this)">
+                  <div style="display: flex; align-items: center;">
+                    <span class="faq-number">2</span>
+                    <h4>Where does the data come from?</h4>
+                  </div>
+                  <span class="disclaimer-icon">▼</span>
+                </div>
+                <div class="disclaimer-content">
+                  <p>The migration and regional development data come from a mix of national and international sources, each with its own definitions and collection methods. We have harmonised these datasets, supplemented them with Eurostat's statistics, and, in some cases, included novel sources such as social media data.</p>
+                </div>
+              </div>
+
+              <div class="disclaimer-box">
+                <div class="disclaimer-header" onclick="toggleDisclaimer(this)">
+                  <div style="display: flex; align-items: center;">
+                    <span class="faq-number">3</span>
+                    <h4>Are there any limitations to the data?</h4>
+                  </div>
+                  <span class="disclaimer-icon">▼</span>
+                </div>
+                <div class="disclaimer-content">
+                  <p>Yes. While harmonisation allows for cross-country comparison, some nuances and local details may not be fully captured. Migration data, in particular, depends on each country's definitions and reporting systems, which may differ significantly.</p>
+                </div>
+              </div>
+
+              <div class="disclaimer-box">
+                <div class="disclaimer-header" onclick="toggleDisclaimer(this)">
+                  <div style="display: flex; align-items: center;">
+                    <span class="faq-number">4</span>
+                    <h4>How current is the information?</h4>
+                  </div>
+                  <span class="disclaimer-icon">▼</span>
+                </div>
+                <div class="disclaimer-content">
+                  <p>All data reflects the most recent information available during the PREMIUM_EU project (2023–2026). The project funding ends in March 2026, which means updates will not continue beyond that date unless new funding is secured.</p>
+                </div>
+              </div>
+
+              <div class="disclaimer-box">
+                <div class="disclaimer-header" onclick="toggleDisclaimer(this)">
+                  <div style="display: flex; align-items: center;">
+                    <span class="faq-number">5</span>
+                    <h4>Can I rely on the Dashboard as my only source?</h4>
+                  </div>
+                  <span class="disclaimer-icon">▼</span>
+                </div>
+                <div class="disclaimer-content">
+                  <p>No. The Dashboard is a decision-support tool. It is best used alongside other local, national, and sector-specific information to design and implement effective policies.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <img src="img/team_pic.jpg" alt="PREMIUM_EU Team" style="width: 100%; height: auto; border-radius: 8px; margin-top: 1rem;">
+          </div>
         </div>
+      </div>
+    </div>
 
+    <footer class="footer">
+      <div class="footer-column">
+        <img src="img/eu_logo.png" class="h-10">
+        <br>
+        <p style="width: 260px;">PREMIUM_EU was made possible thanks to funding from the European Union's Horizon Europe programme.</p>
+      </div>
+      <div class="footer-column"></div>
+      <div class="footer-column">
+        <h1> _Site map </h1>
+        <p><a href="/index.html">Homepage</a></p>
+        <p><a href="/about.html">About</a></p>
+        <p><a href="/methodology.html">Methodology</a></p>
+        <p><a href="/regional.html">Regional profiles</a></p>
+        <p><a href="/development.html">Europe's Regions</a></p>
+        <p><a href="/migration.html">Migration Trends</a></p>
+      </div>
+      <div class="footer-column">
+        <h1> _Contacts </h1>
+        <h2> Lead project manager: </h2>
+        <p>
+          Leo van Wissen <br>
+          wissen@nidi.nl <br>
+          Netherlands Interdisciplinary Demographic Institute
+        </p>
+        <h2> Communications: </h2>
+        <p>
+          Anne Katrine Ebbesen <br>
+          anne-katrine.ebbesen@nordregio.org <br>
+          Nordregio
+        </p>
+      </div>
+    </footer>
 
-        <div class="homepage-right">
-          <br>
-          <br>
-          <br>
-          <br>
-        </div>
+    <script>
+     function toggleDisclaimer(header) {
+       const content = header.nextElementSibling;
+       const icon = header.querySelector('.disclaimer-icon');
 
+       // Close all other disclaimers
+       document.querySelectorAll('.disclaimer-header').forEach(otherHeader => {
+         if (otherHeader !== header) {
+           const otherContent = otherHeader.nextElementSibling;
+           const otherIcon = otherHeader.querySelector('.disclaimer-icon');
+           otherContent.classList.remove('expanded');
+           otherIcon.classList.remove('rotated');
+           otherHeader.classList.remove('active');
+         }
+       });
 
+       // Toggle the clicked disclaimer
+       if (content.classList.contains('expanded')) {
+         content.classList.remove('expanded');
+         icon.classList.remove('rotated');
+         header.classList.remove('active');
+       } else {
+         content.classList.add('expanded');
+         icon.classList.add('rotated');
+         header.classList.add('active');
+       }
+     }
+    </script>
   </body>
 </html>
