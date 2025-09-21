@@ -1,61 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>homepage</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>migration</title>
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
 
-    <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" /> -->
+    <!-- Tailwind and Flowbite -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-    <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png">
-    <style>
-     body {
-       font-family: 'Montserrat', sans-serif;
-       font-weight: 400;
-       color: #252a53;
-       margin: 0;
-       height: 100vh;
-       display: flex;
-       flex-direction: column;
-       justify-content: center;
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png" />
 
-       overflow: hidden;
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
 
-     }
-
-     .header {
-       display: flex;
-       justify-content: space-between;
-       align-items: center;
-       background-color: white;
-       position: fixed;
-       width: 100%;
-       height: 80px;
-       top: 0;
-       left: 0;
-       z-index: 1001;
-       padding: 20px 40px;
-     }
-     .main-content {
-       padding: 60px 0px 40px 0px;
-       flex-grow: 1;
-       display: flex;
-       align-items: top;
-       justify-content: center;
-     }
-     .container {
-       display: flex;
-       justify-content: space-between;
-       width: 100%;
-     }
-
-    </style>
-
+    <link rel="stylesheet" href="styles_migration.css">
   </head>
+
   <body>
     <div class="header">
       <div>
@@ -77,32 +43,612 @@
       </div>
     </div>
 
-
     <div class="main-content">
-      <div class="container">
-        <div class="homepage-left">
-          <br>
-          <br>
-          <p style="font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: #ac5737">
-            This page isn’t ready yet, but it’s on the way.
+      <div class="region-tabs">
+        <button class="tab-button" onclick="switchTab('content-tab1')">Projections</button>
+        <button class="tab-button" onclick="switchTab('content-tab2')">Perspectives</button>
+        <button class="tab-button" onclick="switchTab('content-tab3')">Integration</button>
+      </div>
+
+      <!-- Default tab content shown on load -->
+
+      <div id="tab-content" class="tab-content" style="font-size: 14px; line-height: 1.8;">
+        <p style="margin-bottom: 16px;">
+          This section of the dashboard brings together different perspectives on migration in Europe.
+        </p>
+
+        <ul style="margin-left: 20px; gap: 12px;">
+          <li style="margin-bottom: 12px;">
+            <strong>Projections:</strong> Explore past trends and future migration patterns shaping Europe.
+          </li>
+          <li style="margin-bottom: 12px;">
+            <strong>Perspectives:</strong> Hear voices and experiences collected through in-depth interviews across Europe.
+          </li>
+          <li style="margin-bottom: 12px;">
+            <strong>Integration:</strong> View an interactive map comparing integration across European regions.
+          </li>
+        </ul>
+      </div>
+
+      <!-- Tab 1: Projections -->
+      <div id="content-tab1" class="tab-content hidden">
 
 
+        <p style="font-size: 14px";>This page will showcase key migration patterns and future projections. Fresh data and insights will be added here soon!</p>
 
-          </p>
-          <br>
-          <br>
-          <br>
+
+        <br>
+        <!-- <p style="font-size: 14px";>add deck gl map with dropdowns, flows/stocks toggle, years slider</p> -->
+        <!--
+             <br>
+             <p style="font-size: 14px";>
+             Description for chord diagram
+             <br>
+             How to use
+             <br>
+             Hover over countries or flows to see detailed migration data.
+             The thickness of the connections represents migration volume between countries.
+             </p>
+        -->
+        <!--
+             <iframe src="static/plots/migration_chord_plot.html" width="100%" height="800px"></iframe> -->
+      </div>
+
+      <!-- Tab 2: Perspectives -->
+      <div id="content-tab2" class="tab-content hidden">
+        <div class="perspectives-intro">
+          <p>These perspectives represent <span class="highlight-text">voices and experiences of migrants</span> across Europe, collected through in-depth interviews.
+            <br>
+            Use the filters below to explore migration experiences across different themes and demographics
+            <br>
+            Start by <span class="highlight-text">selecting the topic</span> you are interested in.
           </p>
         </div>
 
+        <div class="perspectives-filters">
+          <!-- Main Topic Selection -->
+          <div class="filter-section">
+            <h3>Select topics</h3>
+            <div class="main-topic-buttons" id="main-topic-buttons">
+              <!-- Main topic buttons will be populated by JavaScript -->
+            </div>
+          </div>
 
-        <div class="homepage-right">
-          <br>
-          <br>
-          <br>
-          <br>
+          <!-- Topic Groups -->
+          <div class="filter-section">
+            <h3>Sub-topics</h3>
+            <div class="topic-connection-info" id="topic-connection-info">
+              Select a main topic to see related sub-topics
+            </div>
+            <div class="topic-groups" id="topic-groups">
+              <!-- Topic group buttons will be populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Dropdown Filters -->
+          <div class="filter-section">
+            <h3>Filter by characteristics</h3>
+            <div class="dropdown-filters">
+              <div class="dropdown-filter">
+                <label for="gender-filter">Gender</label>
+                <select id="gender-filter" name="gender">
+                  <option value="">All genders</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              <div class="dropdown-filter">
+                <label for="age-filter">Age group</label>
+                <select id="age-filter" name="age_group">
+                  <option value="">All ages</option>
+                  <option value="18-25">18-25</option>
+                  <option value="26-40">26-40</option>
+                  <option value="41-54">41-54</option>
+                  <option value="55-70">55-70</option>
+                </select>
+              </div>
+              <div class="dropdown-filter">
+                <label for="migration-type-filter">Migration type</label>
+                <select id="migration-type-filter" name="migration_type">
+                  <option value="">All types</option>
+                  <option value="seasonal">Seasonal</option>
+                  <option value="permanent">Permanent</option>
+                  <option value="temporary">Temporary</option>
+                  <option value="return">Return</option>
+                </select>
+              </div>
+              <div class="dropdown-filter">
+                <label for="birth-location-filter">Country of birth</label>
+                <select id="birth-location-filter" name="birth_location">
+                  <option value="">All countries</option>
+                  <!-- Will be populated by JavaScript -->
+                </select>
+              </div>
+              <div class="dropdown-filter">
+                <label for="interview-location-filter">Interview location</label>
+                <select id="interview-location-filter" name="interview_location">
+                  <option value="">All locations</option>
+                  <!-- Will be populated by JavaScript -->
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
 
+        <!-- Quote Count -->
+        <div id="perspectives-count" class="perspectives-count" style="display: none;"></div>
 
+        <!-- Quotes Display -->
+        <div id="perspectives-quotes-container" class="perspectives-quotes">
+          <div class="no-quotes-message">
+            Select topics and filters above to explore migration perspectives.
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Integration -->
+      <div id="content-tab3" class="tab-content hidden">
+        <p style="font-size: 14px";>Here’s the Integration Index map. Details and descriptions are on the way!</p>
+        <br>
+        <iframe src="map_migration_integration.html" width="100%" height="800px"></iframe>
+      </div>
+    </div>
+
+    <!-- Quote Modal -->
+    <div id="quote-modal" class="quote-modal">
+      <div class="quote-modal-content">
+        <span class="quote-modal-close">&times;</span>
+        <div class="quote-modal-title" id="quote-modal-title">Migration Perspective</div>
+        <div class="quote-modal-quote" id="quote-modal-quote"></div>
+        <div class="quote-modal-additional" id="quote-modal-additional"></div>
+        <div class="quote-modal-meta" id="quote-modal-meta"></div>
+      </div>
+    </div>
+
+    <script>
+     let PERSPECTIVES_DATA = [];
+
+     let selectedMainTopics = [];
+     let selectedTopicGroups = [];
+     let allMainTopics = [];
+     let allTopicGroups = [];
+     let allBirthLocations = [];
+     let allInterviewLocations = [];
+     let topicConnections = {}; // Maps main topics to their related additional topics
+
+     document.addEventListener('DOMContentLoaded', function() {
+       loadPerspectivesData();
+       bindEvents();
+     });
+
+     async function loadPerspectivesData() {
+       try {
+         const response = await fetch('data/migration_perspectives/perspectives.csv');
+         const csvText = await response.text();
+
+         const lines = csvText.trim().split('\n');
+         const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+
+         const data = [];
+         for (let i = 1; i < lines.length; i++) {
+           const line = lines[i];
+           if (!line.trim()) continue;
+
+           const values = parseCSVLine(line);
+
+           if (values.length >= 9) {
+             const perspective = {
+               quote: values[0].replace(/"/g, '').trim(),
+               topic_main: values[1].replace(/"/g, '').trim(),
+               topic_additional: parseArrayField(values[2]),
+               interview_location: values[3].replace(/"/g, '').trim(),
+               migration_type: values[4].replace(/"/g, '').trim(),
+               age_group: values[5].replace(/"/g, '').trim(),
+               birth_location: values[6].replace(/"/g, '').trim(),
+               gender: values[7].replace(/"/g, '').trim(),
+               additional_info: values[8].replace(/"/g, '').trim()
+             };
+             data.push(perspective);
+           }
+         }
+
+         PERSPECTIVES_DATA = data;
+         initializePerspectivesData();
+         console.log(`Loaded ${data.length} perspectives from CSV`);
+       } catch (error) {
+         console.error('Error loading perspectives data:', error);
+         PERSPECTIVES_DATA = [];
+       }
+     }
+
+     // Parse CSV line handling quoted fields
+     function parseCSVLine(line) {
+       const result = [];
+       let current = '';
+       let inQuotes = false;
+
+       for (let i = 0; i < line.length; i++) {
+         const char = line[i];
+
+         if (char === '"') {
+           inQuotes = !inQuotes;
+         } else if (char === ',' && !inQuotes) {
+           result.push(current);
+           current = '';
+         } else {
+           current += char;
+         }
+       }
+
+       result.push(current);
+       return result;
+     }
+
+     // Parse array fields from CSV
+     function parseArrayField(field) {
+       try {
+         const cleaned = field.replace(/^"/, '').replace(/"$/, '').trim();
+
+         return cleaned.split(',').map(item =>
+           item.trim()
+         ).filter(item => item.length > 0);
+       } catch (error) {
+         console.error('Error parsing array field:', field, error);
+         return [];
+       }
+     }
+
+     // Initialize perspectives data and UI
+     function initializePerspectivesData() {
+       const mainTopics = new Set();
+       const topicGroups = new Set();
+       const birthLocations = new Set();
+       const interviewLocations = new Set();
+
+       // Build topic connections
+       topicConnections = {};
+
+       PERSPECTIVES_DATA.forEach(perspective => {
+         if (perspective.topic_main) {
+           mainTopics.add(perspective.topic_main);
+
+           // Build connections between main topics and additional topics
+           if (!topicConnections[perspective.topic_main]) {
+             topicConnections[perspective.topic_main] = new Set();
+           }
+           perspective.topic_additional.forEach(additionalTopic => {
+             topicConnections[perspective.topic_main].add(additionalTopic);
+             topicGroups.add(additionalTopic);
+           });
+         }
+
+         if (perspective.birth_location) birthLocations.add(perspective.birth_location);
+         if (perspective.interview_location) interviewLocations.add(perspective.interview_location);
+       });
+
+       allMainTopics = Array.from(mainTopics).sort();
+       allTopicGroups = Array.from(topicGroups).sort();
+       allBirthLocations = Array.from(birthLocations).sort();
+       allInterviewLocations = Array.from(interviewLocations).sort();
+
+       Object.keys(topicConnections).forEach(mainTopic => {
+         topicConnections[mainTopic] = Array.from(topicConnections[mainTopic]).sort();
+       });
+
+       // Populate UI elements
+       populateMainTopicButtons();
+       populateTopicGroupButtons();
+       populateDropdownFilters();
+       updateTopicGroupVisibility();
+       displayPerspectives([]);
+     }
+
+     // Populate main topic buttons
+     function populateMainTopicButtons() {
+       const container = document.getElementById('main-topic-buttons');
+       container.innerHTML = '';
+
+       allMainTopics.forEach(topic => {
+         const button = document.createElement('button');
+         button.className = 'main-topic-button';
+         button.textContent = topic;
+         button.onclick = () => toggleMainTopic(topic, button);
+         container.appendChild(button);
+       });
+     }
+
+     // Populate topic group buttons
+     function populateTopicGroupButtons() {
+       const container = document.getElementById('topic-groups');
+       container.innerHTML = '';
+
+       allTopicGroups.forEach(topic => {
+         const button = document.createElement('button');
+         button.className = 'topic-group-button';
+         button.textContent = topic;
+         button.onclick = () => toggleTopicGroup(topic, button);
+         container.appendChild(button);
+       });
+     }
+
+     // Populate dropdown filters
+     function populateDropdownFilters() {
+       // Populate birth locations
+       const birthLocationSelect = document.getElementById('birth-location-filter');
+       allBirthLocations.forEach(location => {
+         const option = document.createElement('option');
+         option.value = location;
+         option.textContent = location;
+         birthLocationSelect.appendChild(option);
+       });
+
+       // Populate interview locations
+       const interviewLocationSelect = document.getElementById('interview-location-filter');
+       allInterviewLocations.forEach(location => {
+         const option = document.createElement('option');
+         option.value = location;
+         option.textContent = location;
+         interviewLocationSelect.appendChild(option);
+       });
+     }
+
+     // Toggle main topic selection
+     function toggleMainTopic(topic, buttonElement) {
+       const isSelected = selectedMainTopics.includes(topic);
+
+       if (isSelected) {
+         selectedMainTopics = selectedMainTopics.filter(t => t !== topic);
+         buttonElement.classList.remove('active');
+       } else {
+         selectedMainTopics.push(topic);
+         buttonElement.classList.add('active');
+       }
+
+       selectedTopicGroups = [];
+
+       updateTopicGroupVisibility();
+       filterAndDisplayPerspectives();
+     }
+
+     function updateTopicGroupVisibility() {
+       const connectionInfo = document.getElementById('topic-connection-info');
+       const topicGroupsContainer = document.getElementById('topic-groups');
+       const topicGroupButtons = topicGroupsContainer.querySelectorAll('.topic-group-button');
+
+       // Clear active states for topic groups
+       topicGroupButtons.forEach(button => {
+         button.classList.remove('active', 'related', 'dimmed');
+       });
+
+       if (selectedMainTopics.length === 0) {
+         // No main topics selected - show instruction
+         connectionInfo.textContent = 'Select a main topic to see related sub-topics';
+         topicGroupButtons.forEach(button => {
+           button.classList.add('dimmed');
+         });
+         return;
+       }
+
+       // Get all related additional topics for selected main topics
+       const relatedTopics = new Set();
+       selectedMainTopics.forEach(mainTopic => {
+         if (topicConnections[mainTopic]) {
+           topicConnections[mainTopic].forEach(additionalTopic => {
+             relatedTopics.add(additionalTopic);
+           });
+         }
+       });
+
+       // Update connection info
+       if (relatedTopics.size > 0) {
+         const mainTopicsText = selectedMainTopics.join(', ');
+         connectionInfo.textContent = `Additional topics related to ${mainTopicsText}:`;
+       } else {
+         connectionInfo.textContent = 'No additional topics found for selected main topics';
+       }
+
+       topicGroupButtons.forEach(button => {
+         const topicName = button.textContent;
+         if (relatedTopics.has(topicName)) {
+           button.classList.add('related');
+           button.classList.remove('dimmed');
+         } else {
+           button.classList.add('dimmed');
+         }
+       });
+     }
+
+     // Toggle topic group selection
+     function toggleTopicGroup(topic, buttonElement) {
+       // Don't allow selection of dimmed (unrelated) topics
+       if (buttonElement.classList.contains('dimmed')) {
+         return;
+       }
+
+       const isSelected = selectedTopicGroups.includes(topic);
+
+       if (isSelected) {
+         selectedTopicGroups = selectedTopicGroups.filter(t => t !== topic);
+         buttonElement.classList.remove('active');
+       } else {
+         selectedTopicGroups.push(topic);
+         buttonElement.classList.add('active');
+       }
+
+       filterAndDisplayPerspectives();
+     }
+
+     // Filter and display perspectives
+     function filterAndDisplayPerspectives() {
+       let filteredPerspectives = PERSPECTIVES_DATA;
+
+       // Filter by main topics
+       if (selectedMainTopics.length > 0) {
+         filteredPerspectives = filteredPerspectives.filter(perspective =>
+           selectedMainTopics.includes(perspective.topic_main)
+         );
+       }
+
+       // Filter by topic groups
+       if (selectedTopicGroups.length > 0) {
+         filteredPerspectives = filteredPerspectives.filter(perspective =>
+           selectedTopicGroups.some(selectedTopic =>
+             perspective.topic_additional.includes(selectedTopic)
+           )
+         );
+       }
+
+       const genderFilter = document.getElementById('gender-filter').value;
+       const ageFilter = document.getElementById('age-filter').value;
+       const migrationTypeFilter = document.getElementById('migration-type-filter').value;
+       const birthLocationFilter = document.getElementById('birth-location-filter').value;
+       const interviewLocationFilter = document.getElementById('interview-location-filter').value;
+
+       if (genderFilter) {
+         filteredPerspectives = filteredPerspectives.filter(p => p.gender === genderFilter);
+       }
+       if (ageFilter) {
+         filteredPerspectives = filteredPerspectives.filter(p => p.age_group === ageFilter);
+       }
+       if (migrationTypeFilter) {
+         filteredPerspectives = filteredPerspectives.filter(p => p.migration_type === migrationTypeFilter);
+       }
+       if (birthLocationFilter) {
+         filteredPerspectives = filteredPerspectives.filter(p => p.birth_location === birthLocationFilter);
+       }
+       if (interviewLocationFilter) {
+         filteredPerspectives = filteredPerspectives.filter(p => p.interview_location === interviewLocationFilter);
+       }
+
+       displayPerspectives(filteredPerspectives);
+     }
+
+     function displayPerspectives(perspectives) {
+       const container = document.getElementById('perspectives-quotes-container');
+       const countElement = document.getElementById('perspectives-count');
+
+       if (perspectives.length === 0) {
+         container.innerHTML = '<div class="no-quotes-message">No perspectives found for the selected criteria.</div>';
+         countElement.style.display = 'none';
+         return;
+       }
+
+       countElement.textContent = `${perspectives.length} perspective${perspectives.length === 1 ? '' : 's'} found`;
+       countElement.style.display = 'block';
+
+       container.innerHTML = '';
+       perspectives.forEach((perspective, index) => {
+         const card = createQuoteCard(perspective, index);
+         container.appendChild(card);
+       });
+     }
+
+     function createQuoteCard(perspective, index) {
+       const card = document.createElement('div');
+       card.className = 'quote-card';
+       card.onclick = () => openQuoteModal(perspective);
+
+       const tagsHtml = perspective.topic_additional.map(tag =>
+         `<span class="quote-card-tag">${tag}</span>`
+       ).join('');
+
+       const truncatedQuote = perspective.quote.length > 200
+                                                       ? perspective.quote.substring(0, 200) + '...'
+                                                       : perspective.quote;
+
+       card.innerHTML = `
+         <div class="quote-card-tags">${tagsHtml}</div>
+         <div class="quote-card-content">"${truncatedQuote}"</div>
+       `;
+
+       return card;
+     }
+
+     function openQuoteModal(perspective) {
+       const modal = document.getElementById('quote-modal');
+       const title = document.getElementById('quote-modal-title');
+       const quote = document.getElementById('quote-modal-quote');
+       const additional = document.getElementById('quote-modal-additional');
+       const meta = document.getElementById('quote-modal-meta');
+
+       title.textContent = 'Migration Perspective';
+       quote.textContent = `"${perspective.quote}"`;
+       additional.textContent = perspective.additional_info;
+
+       meta.innerHTML = `
+         <div class="quote-modal-meta-item">
+           <span class="quote-modal-meta-label">Main topic:</span>
+           ${perspective.topic_main}
+         </div>
+         <div class="quote-modal-meta-item">
+           <span class="quote-modal-meta-label">Additional topics:</span>
+           ${perspective.topic_additional.join(', ')}
+         </div>
+         <div class="quote-modal-meta-item">
+           <span class="quote-modal-meta-label">Gender:</span>
+           ${perspective.gender}
+         </div>
+         <div class="quote-modal-meta-item">
+           <span class="quote-modal-meta-label">Age group:</span>
+           ${perspective.age_group}
+         </div>
+         <div class="quote-modal-meta-item">
+           <span class="quote-modal-meta-label">Migration type:</span>
+           ${perspective.migration_type}
+         </div>
+         <div class="quote-modal-meta-item">
+           <span class="quote-modal-meta-label">Country of birth:</span>
+           ${perspective.birth_location}
+         </div>
+         <div class="quote-modal-meta-item">
+           <span class="quote-modal-meta-label">Interview location:</span>
+           ${perspective.interview_location}
+         </div>
+       `;
+
+       modal.style.display = 'block';
+     }
+
+     function closeQuoteModal() {
+       document.getElementById('quote-modal').style.display = 'none';
+     }
+
+     // Bind events
+     function bindEvents() {
+       document.getElementById('quote-modal').addEventListener('click', (e) => {
+         if (e.target.id === 'quote-modal') {
+           closeQuoteModal();
+         }
+       });
+
+       document.querySelector('.quote-modal-close').addEventListener('click', () => {
+         closeQuoteModal();
+       });
+
+       const dropdownFilters = ['gender-filter', 'age-filter', 'migration-type-filter', 'birth-location-filter', 'interview-location-filter'];
+       dropdownFilters.forEach(filterId => {
+         document.getElementById(filterId).addEventListener('change', filterAndDisplayPerspectives);
+       });
+     }
+
+     function switchTab(tabId) {
+       const defaultTab = document.getElementById('tab-content');
+       if (defaultTab) {
+         defaultTab.classList.add('hidden');
+       }
+
+       document.querySelectorAll('.tab-content:not(#tab-content)').forEach(tab => {
+         tab.classList.add('hidden');
+       });
+
+       const selectedTab = document.getElementById(tabId);
+       if (selectedTab) {
+         selectedTab.classList.remove('hidden');
+       }
+
+       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+       event.target.classList.add('active');
+     }
+    </script>
   </body>
 </html>
