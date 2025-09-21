@@ -63,7 +63,7 @@
 
      #map-wrapper {
        width: 100vw;
-       height: calc(100vh - 80px - 120px); /* subtracting header and footer height */
+       height: calc(100vh - 80px - 120px); /* subtracting header and footer */
        position: relative;
        flex-grow: 1;
      }
@@ -84,16 +84,16 @@
        color: #252a53;
        padding: 1.25rem 2.5rem 2.5rem 2.5rem;
        font-family: 'Montserrat', sans-serif;
-       font-size: clamp(0.5rem, 1.5vw, 0.75rem); /* Fluid font size */
+       font-size: clamp(0.5rem, 1.5vw, 0.75rem);
      }
 
      #overlay h2 {
-       font-size: clamp(0.875rem, 2.5vw, 1.25rem) !important; /* Fluid heading */
+       font-size: clamp(0.875rem, 2.5vw, 1.25rem) !important;
      }
 
      @media (max-width: 1024px) {
        html {
-         font-size: 14px; /* Smaller base for mobile */
+         font-size: 14px;
        }
        #overlay {
          width: 80%;
