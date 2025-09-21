@@ -6,93 +6,104 @@
     <title>homepage</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
-
-    <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" /> -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
     <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png">
     <style>
-     :root {
-       font-size: 16px; /* Base font size */
-     }
+      body {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        color: #252a53;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-image: url('img/PREMIUM_icons/PNG/PREMIUM_EU_Illustration_Brain-graphics_01_RED.png');
+        background-size: 48% 26%;
+        background-repeat: no-repeat;
+        background-position: left bottom;
+      }
 
-     body {
-       font-family: 'Montserrat', sans-serif;
-       font-weight: 400;
-       color: #252a53;
-       margin: 0;
-       height: 100vh;
-       display: flex;
-       flex-direction: column;
-       justify-content: center;
-       overflow: hidden;
-       background-image: url('static/img/PREMIUM_icons/PNG/PREMIUM_EU_Illustration_Brain-graphics_01_RED.png');
-       background-size: 48% 60%;
-       background-repeat: no-repeat;
-       background-position: left bottom;
-     }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        position: fixed;
+        width: 100%;
+        height: 80px;
+        top: 0;
+        left: 0;
+        z-index: 1001;
+        padding: 20px 40px;
+      }
 
-     .header {
-       display: flex;
-       justify-content: space-between;
-       align-items: center;
-       background-color: white;
-       position: fixed;
-       width: 100%;
-       height: 80px;
-       top: 0;
-       left: 0;
-       z-index: 1001;
-       padding: 20px 40px;
-     }
-
-     .main-content {
-       padding: 3.75rem 0 2.5rem 0;
-       flex-grow: 1;
-       display: flex;
-       align-items: top;
-       justify-content: center;
-     }
+      .main-content {
+        padding: 60px 0px 40px 0px;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+      }
 
      .container {
        display: flex;
        justify-content: space-between;
        width: 100%;
+       max-width: 1400px;
+       gap: 2rem;
      }
 
      .homepage-left {
        width: 48%;
        background: white;
        flex-wrap: wrap;
-       padding: 2.5rem;
-       font-size: 0.875rem;
+       padding: 3rem;
+       font-size: 0.9rem;
+       /* border-radius: 8px; */
+       box-shadow: 0 2px 8px rgba(37, 42, 83, 0.08);
+       border: 1px solid rgba(37, 42, 83, 0.1);
      }
 
-     .homepage-right {
-       padding: 2.5rem;
-       width: 48%;
-     }
+      .homepage-right {
+        padding: 3rem;
+        width: 48%;
+        font-size: 0.9rem;
+        background: white;
+        /* border-radius: 8px; */
+        box-shadow: 0 2px 8px rgba(37, 42, 83, 0.08);
+        border: 1px solid rgba(37, 42, 83, 0.1);
+      }
 
-     .homepage-actions {
-       font-weight: 700;
-     }
+      .homepage-actions {
+        font-weight: 500;
+      }
 
-     .homepage-actions button {
-       display: flex;
-       margin-top: 1.25rem;
-       padding: 1.25rem;
-       cursor: pointer;
-       width: 100%;
-       color: #252a53;
-       font-size: 0.875rem;
-       background-color: white;
-       transition: background-color 0.2s ease-in-out;
-       border: 0.3125rem solid #252a53;
-     }
+      .homepage-actions button {
+        display: flex;
+        margin-top: 1.2rem;
+        padding: 1.5rem;
+        cursor: pointer;
+        width: 100%;
+        color: #252a53;
+        font-size: 0.9rem;
+        background-color: #f8f9fb;
+        transition: all 0.3s ease;
+        border: 2px solid #e2e6f0;
+        align-items: center;
+        justify-content: space-between;
+        /* border-radius: 6px; */
+        font-weight: 500;
+      }
 
      .homepage-actions button:hover {
        background-color: #252a53;
        color: white;
+       border-color: #252a53;
+       transform: translateY(-2px);
+       box-shadow: 0 4px 12px rgba(37, 42, 83, 0.15);
      }
 
      .footer {
@@ -102,11 +113,11 @@
        padding: 1.25rem;
        color: #252a53;
        text-align: left;
-       font-size: 0.875rem;
+       font-size: 0.625rem;
      }
 
      .footer-column {
-       padding: 0 0.625rem;
+       padding: 0rem 0.625rem 0rem 0.625rem;
      }
 
      footer h1 {
@@ -116,7 +127,7 @@
      }
 
      footer h2 {
-       font-size: 0.5rem;
+       font-size: 0.5625rem;
        font-weight: 700;
        margin-bottom: 0.25rem;
      }
@@ -126,10 +137,196 @@
        font-size: 0.625rem;
      }
 
-    </style>
+     .welcome-title {
+       position: relative;
+       margin-bottom: 2.5rem;
+       font-size: 1.6rem;
+       color: #252a53;
+       line-height: 1.3;
+     }
 
+     .welcome-title::after {
+       content: '';
+       position: absolute;
+       bottom: -0.8rem;
+       left: 0;
+       width: 4rem;
+       height: 3px;
+       background: #ac5737;
+       border-radius: 2px;
+     }
+
+      .content-section {
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        color: #252a53;
+      }
+
+      .content-section p {
+        margin: 0;
+        font-weight: 400;
+      }
+
+      .bullet-point {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .bullet-point::before {
+        content: '•';
+        color: #ac5737;
+        font-weight: bold;
+        font-size: 1.2rem;
+        line-height: 1;
+        margin-top: 0.1rem;
+        flex-shrink: 0;
+      }
+
+      .section-intro {
+        font-weight: 500;
+        color: #252a53;
+        margin-bottom: 1.5rem;
+      }
+
+      .cta-text {
+        font-weight: 500;
+        color: #252a53;
+        /* font-style: italic; */
+      }
+
+      @media (max-width: 1600px) {
+        .main-content {
+          padding: 4rem 1rem 1.5rem 1rem;
+        }
+
+        .homepage-left, .homepage-right {
+          padding: 2rem;
+        }
+
+        .homepage-left, .homepage-right {
+          font-size: 0.8rem;
+        }
+
+        .welcome-title {
+          font-size: 1.4rem;
+        }
+
+        .homepage-actions button {
+          font-size: 0.8rem;
+        }
+
+        .footer {
+          font-size: 0.5rem;
+        }
+
+        footer h1 {
+          font-size: 0.5rem;
+        }
+
+        footer h2 {
+          font-size: 0.45rem;
+        }
+
+        footer p {
+          font-size: 0.5rem;
+        }
+
+        body {
+          background-size: 48% 26%;
+        }
+      }
+
+      @media (min-width: 2400px) {
+        .homepage-left, .homepage-right {
+          font-size: 1.1rem;
+        }
+
+        .welcome-title {
+          font-size: 1.8rem;
+        }
+
+        .homepage-actions button {
+          font-size: 1.1rem;
+        }
+
+        .footer {
+          font-size: 0.8rem;
+        }
+
+        footer h1 {
+          font-size: 0.8rem;
+        }
+
+        footer h2 {
+          font-size: 0.7rem;
+        }
+
+        footer p {
+          font-size: 0.8rem;
+        }
+      }
+
+      @media (max-width: 1200px) {
+        .container {
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .homepage-left, .homepage-right {
+          width: 100%;
+        }
+
+        body {
+          background-size: 48% 20%;
+          background-position: center bottom;
+        }
+
+        .footer {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.8rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header {
+          height: 3rem;
+          padding: 0.5rem 1rem;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .header img {
+          height: 2rem !important;
+        }
+
+        .main-content {
+          padding: 6rem 0.5rem 1rem 0.5rem;
+        }
+
+        .homepage-left, .homepage-right {
+          padding: 1.5rem;
+        }
+
+        body {
+          background-size: 48% 40%;
+        }
+
+        .footer {
+          grid-template-columns: 1fr;
+          font-size: 0.6rem;
+        }
+
+        .footer-column p {
+          width: auto !important;
+        }
+      }
+    </style>
   </head>
+
   <body>
+
     <div class="header">
       <div>
         <a href="index.html">
@@ -153,60 +350,84 @@
     <div class="main-content">
       <div class="container">
         <div class="homepage-left">
-          <br><br>
-          <p style="font-family: 'Montserrat', sans-serif; font-size: 0.875rem; font-weight: 700; color: #ac5737">
-            This is a prototype designed to demonstrate some elements of the layout and design of the future dashboard. It’s a static preview, so most elements aren’t interactive yet.
-          </p>
-          <br><br>
+          <h2 class="welcome-title" style="font-family: 'Lora', sans-serif; font-weight: 700;">
+            Welcome to the PREMIUM_EU Dashboard
+          </h2>
 
-          <h2 style="font-family: 'Lora', sans-serif; font-size: 1.5rem; font-weight: 700;">Welcome to the PREMIUM_EU Dashboard</h2>
-          <br>
-          <p style="font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 400;">
-            Curious about how mobility is reshaping your region or how to make it work in your favour? You’re in the right place.
-            <br><br>
+          <div class="content-section">
+            <p style="font-family: 'Montserrat', sans-serif;">
+              A thriving region is no accident – it's the result of smart strategies that attract and keep the people you need.
+            </p>
+          </div>
 
-            This dashboard helps policymakers understand demographic trends, regional development patterns, and policy solutions.
-            <br><br>
+          <div class="content-section section-intro">
+            <p style="font-family: 'Montserrat', sans-serif;">
+              This Dashboard shows how targeted migration policies can stop regional decline and spark new growth. By combining cutting-edge data with real policy examples, it helps you:
+            </p>
+          </div>
 
-            Here, you’ll find tailored insights into who’s moving, why they move, and what it means for regional development.
-            <br><br>
+          <div class="bullet-point">
+            <span style="font-family: 'Montserrat', sans-serif;">
+              Identify the migrants your region needs – and what draws them in
+            </span>
+          </div>
 
-            Explore your region’s mobility and development profile, compare with others, and discover real policy examples that tackle brain drain, attract newcomers, and boost resilience.
-            <br><br>
+          <div class="bullet-point">
+            <span style="font-family: 'Montserrat', sans-serif;">
+              See how mobility trends shape resilience, innovation, and local economies
+            </span>
+          </div>
 
-            Start by selecting your region or dive into the data and stories that matter to you.
-            <br><br>
-          </p>
+          <div class="bullet-point">
+            <span style="font-family: 'Montserrat', sans-serif;">
+              Learn from regions that turned brain drain into brain gain
+            </span>
+          </div>
         </div>
 
         <div class="homepage-right">
-          <br><br><br><br><br><br><br>
           <div class="homepage-actions">
+            <div style="margin-bottom: 2rem;">
+              <p class="section-intro" style="font-family: 'Montserrat', sans-serif;">
+                Three ways to explore:
+              </p>
+            </div>
 
-            <a href="/premium_eu/regional.html">
+            <a href="/regional.html">
               <button>
-                Learn about your region and explore policy recommendations
-                <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <span>Your Region – Profiles, trends & tailored policy ideas</span>
+                <svg class="w-6 h-6 flex-shrink-0" aria-hidden="true"
+                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
               </button>
             </a>
 
-            <a href="/premium_eu/development.html">
-              <button>Investigate the landscape of regional development in Europe
-                <svg class="w-6 h-6 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <a href="/development.html">
+              <button>
+                <span>Europe's Regions – Compare patterns & strategies</span>
+                <svg class="w-6 h-6 flex-shrink-0" aria-hidden="true"
+                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
               </button>
             </a>
 
-            <a href="/premium_eu/migration.html">
-              <button>Explore migration trends in Europe
-                <svg class="w-6 h-6 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <a href="/migration.html">
+              <button>
+                <span>Migration Trends – See who's moving and why</span>
+                <svg class="w-6 h-6 flex-shrink-0" aria-hidden="true"
+                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
               </button>
             </a>
+
+            <div style="margin-top: 2.5rem;">
+              <p class="cta-text" style="font-family: 'Montserrat', sans-serif;">
+                The right people can change your region's future. Let's find them.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -214,19 +435,19 @@
 
     <footer class="footer">
       <div class="footer-column">
-        <img src="static/img/eu_logo.png" class="h-10" alt="EU logo">
+        <img src="img/eu_logo.png" class="h-10">
         <br>
-        <p style="width: 16.25rem; color: white;">PREMIUM_EU was made possible thanks to funding from the European Union's Horizon Europe programme.</p>
+        <p style="width: 260px; color: white;">PREMIUM_EU was made possible thanks to funding from the European Union's Horizon Europe programme.</p>
       </div>
       <div class="footer-column"></div>
       <div class="footer-column">
         <h1> _Site map </h1>
-        <p> About </p>
-        <p> Page </p>
-        <p> Page </p>
-        <p> Page </p>
-        <p> Page </p>
-        <p> Page </p>
+        <p><a href="/index.html">Homepage</a></p>
+        <p><a href="/about.html">About</a></p>
+        <p><a href="/methodology.html">Methodology</a></p>
+        <p><a href="/regional.html">Regional profiles</a></p>
+        <p><a href="/development.html">Europe's Regions</a></p>
+        <p><a href="/migration.html">Migration Trends</a></p>
       </div>
       <div class="footer-column">
         <h1> _Contacts </h1>
@@ -244,6 +465,5 @@
         </p>
       </div>
     </footer>
-
   </body>
 </html>
