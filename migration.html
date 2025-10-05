@@ -14,119 +14,6 @@
     <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png" />
 
     <link rel="stylesheet" href="styles_migration.css">
-
-    <style>
-      .footer {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.25rem;
-        padding: 1.25rem;
-        color: #252a53;
-        text-align: left;
-        font-size: 0.625rem;
-        background-color: #252a53;
-        margin-top: auto;
-      }
-
-      .footer-column {
-        padding: 0rem 0.625rem 0rem 0.625rem;
-      }
-
-      footer h1 {
-        font-size: 0.625rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        color: white;
-      }
-
-      footer h2 {
-        font-size: 0.5625rem;
-        font-weight: 700;
-        margin-bottom: 0.25rem;
-        color: white;
-      }
-
-      footer p {
-        margin-bottom: 0.375rem;
-        font-size: 0.625rem;
-        color: white;
-      }
-
-      footer a {
-        color: white;
-        text-decoration: none;
-      }
-
-      footer a:hover {
-        text-decoration: underline;
-      }
-
-      /* Override existing body styles to ensure footer positioning */
-      body {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 400;
-        color: #252a53;
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-
-      /* Responsive footer styles */
-      @media (max-width: 1600px) {
-        .footer {
-          font-size: 0.5rem;
-        }
-
-        footer h1 {
-          font-size: 0.5rem;
-        }
-
-        footer h2 {
-          font-size: 0.45rem;
-        }
-
-        footer p {
-          font-size: 0.5rem;
-        }
-      }
-
-      @media (min-width: 2400px) {
-        .footer {
-          font-size: 0.8rem;
-        }
-
-        footer h1 {
-          font-size: 0.8rem;
-        }
-
-        footer h2 {
-          font-size: 0.7rem;
-        }
-
-        footer p {
-          font-size: 0.8rem;
-        }
-      }
-
-      @media (max-width: 1200px) {
-        .footer {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 0.8rem;
-        }
-      }
-
-      @media (max-width: 768px) {
-        .footer {
-          grid-template-columns: 1fr;
-          font-size: 0.6rem;
-        }
-
-        .footer-column p {
-          width: auto !important;
-        }
-      }
-    </style>
   </head>
 
   <body>
@@ -201,16 +88,28 @@
              <iframe src="static/plots/migration_chord_plot.html" width="100%" height="800px"></iframe> -->
       </div>
 
+
       <!-- Tab 2: Perspectives -->
       <div id="content-tab2" class="tab-content hidden">
         <div class="perspectives-intro">
-          <p>These perspectives represent <span class="highlight-text">voices and experiences of migrants</span> across Europe, collected through in-depth interviews.
-            <br>
-            Use the filters below to explore migration experiences across different themes and demographics
-            <br>
-            Start by <span class="highlight-text">selecting the topic</span> you are interested in.
-          </p>
+          <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
+            <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
+              On this page, you can explore first-hand insights from migrants to better understand the motivations behind moving and moving back.
+            </p>
+            <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
+              Filter by economic, social, or living environment factors to see quotes and perspectives describing what influences decisions about work, belonging, housing, and quality of life.
+            </p>
+            <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
+              These stories add context to the data shown elsewhere in the Dashboard, helping you see how real experiences shape mobility patterns and what makes regions more or less attractive to newcomers.
+            </p>
+            <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;"> Start by selecting the topic you are interested in. </p>
+            <p style="margin-bottom: 0; line-height: 1.6; font-size: 12px; color: #666; font-style: italic;">
+              Note: This section contains sample data for demonstration purposes.
+            </p>
+
+          </div>
         </div>
+
 
         <div class="perspectives-filters">
           <!-- Main Topic Selection -->
@@ -295,11 +194,24 @@
 
       <!-- Tab 3: Integration -->
       <div id="content-tab3" class="tab-content hidden">
-        <p style="font-size: 14px";>Here's the Integration Index map. Details and descriptions are on the way!</p>
-        <br>
+        <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
+          <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
+            This page gives you a map overview of integration across Europe, showing how well different regions support newcomers in settling, working, and participating in society.
+          </p>
+          <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
+            Explore regional scores to see where integration is strongest, where challenges remain, and how your region compares. The index is based on in-depth interviews and combines indicators on employment, education, social inclusion, and civic participation to provide a snapshot of how effectively regions turn arrival into belonging.
+          </p>
+          <p style="margin-bottom: 0; line-height: 1.6; font-size: 14px; color: #333;">
+            Use the map to identify leading examples and regions facing similar integration challenges. Insights that can guide more inclusive and resilient regional development.
+          </p>
+        </div>
         <iframe src="map_migration_integration.html" width="100%" height="800px"></iframe>
       </div>
     </div>
+
+
+
+
 
     <!-- Quote Modal -->
     <div id="quote-modal" class="quote-modal">
@@ -311,6 +223,7 @@
         <div class="quote-modal-meta" id="quote-modal-meta"></div>
       </div>
     </div>
+
 
     <footer class="footer">
       <div class="footer-column">
@@ -346,8 +259,10 @@
     </footer>
 
     <script>
+     // Perspectives data will be loaded from CSV
      let PERSPECTIVES_DATA = [];
 
+     // Application state
      let selectedMainTopics = [];
      let selectedTopicGroups = [];
      let allMainTopics = [];
@@ -356,16 +271,19 @@
      let allInterviewLocations = [];
      let topicConnections = {}; // Maps main topics to their related additional topics
 
+     // Initialize the application
      document.addEventListener('DOMContentLoaded', function() {
        loadPerspectivesData();
        bindEvents();
      });
 
+     // Load perspectives data from CSV
      async function loadPerspectivesData() {
        try {
          const response = await fetch('data/migration_perspectives/perspectives.csv');
          const csvText = await response.text();
 
+         // Parse CSV data
          const lines = csvText.trim().split('\n');
          const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
 
@@ -374,6 +292,7 @@
            const line = lines[i];
            if (!line.trim()) continue;
 
+           // Parse CSV line, handling quoted fields
            const values = parseCSVLine(line);
 
            if (values.length >= 9) {
@@ -429,6 +348,7 @@
        try {
          const cleaned = field.replace(/^"/, '').replace(/"$/, '').trim();
 
+         // Split by comma and clean each item
          return cleaned.split(',').map(item =>
            item.trim()
          ).filter(item => item.length > 0);
@@ -440,6 +360,7 @@
 
      // Initialize perspectives data and UI
      function initializePerspectivesData() {
+       // Extract unique values for filters
        const mainTopics = new Set();
        const topicGroups = new Set();
        const birthLocations = new Set();
@@ -466,11 +387,13 @@
          if (perspective.interview_location) interviewLocations.add(perspective.interview_location);
        });
 
+       // Convert sets to arrays and sort
        allMainTopics = Array.from(mainTopics).sort();
        allTopicGroups = Array.from(topicGroups).sort();
        allBirthLocations = Array.from(birthLocations).sort();
        allInterviewLocations = Array.from(interviewLocations).sort();
 
+       // Convert topic connection sets to arrays
        Object.keys(topicConnections).forEach(mainTopic => {
          topicConnections[mainTopic] = Array.from(topicConnections[mainTopic]).sort();
        });
@@ -544,12 +467,15 @@
          buttonElement.classList.add('active');
        }
 
+       // Clear selected topic groups when main topics change
        selectedTopicGroups = [];
 
+       // Update topic group visibility and connection info
        updateTopicGroupVisibility();
        filterAndDisplayPerspectives();
      }
 
+     // Update topic group visibility based on selected main topics
      function updateTopicGroupVisibility() {
        const connectionInfo = document.getElementById('topic-connection-info');
        const topicGroupsContainer = document.getElementById('topic-groups');
@@ -587,6 +513,7 @@
          connectionInfo.textContent = 'No additional topics found for selected main topics';
        }
 
+       // Update button states
        topicGroupButtons.forEach(button => {
          const topicName = button.textContent;
          if (relatedTopics.has(topicName)) {
@@ -638,6 +565,7 @@
          );
        }
 
+       // Filter by dropdown selections
        const genderFilter = document.getElementById('gender-filter').value;
        const ageFilter = document.getElementById('age-filter').value;
        const migrationTypeFilter = document.getElementById('migration-type-filter').value;
@@ -663,6 +591,7 @@
        displayPerspectives(filteredPerspectives);
      }
 
+     // Display perspectives
      function displayPerspectives(perspectives) {
        const container = document.getElementById('perspectives-quotes-container');
        const countElement = document.getElementById('perspectives-count');
@@ -673,9 +602,11 @@
          return;
        }
 
+       // Show perspective count
        countElement.textContent = `${perspectives.length} perspective${perspectives.length === 1 ? '' : 's'} found`;
        countElement.style.display = 'block';
 
+       // Create quote cards
        container.innerHTML = '';
        perspectives.forEach((perspective, index) => {
          const card = createQuoteCard(perspective, index);
@@ -683,15 +614,18 @@
        });
      }
 
+     // Create quote card
      function createQuoteCard(perspective, index) {
        const card = document.createElement('div');
        card.className = 'quote-card';
        card.onclick = () => openQuoteModal(perspective);
 
+       // Create tags from topic_additional
        const tagsHtml = perspective.topic_additional.map(tag =>
          `<span class="quote-card-tag">${tag}</span>`
        ).join('');
 
+       // Truncate quote for display
        const truncatedQuote = perspective.quote.length > 200
                                                        ? perspective.quote.substring(0, 200) + '...'
                                                        : perspective.quote;
@@ -704,6 +638,7 @@
        return card;
      }
 
+     // Open quote modal
      function openQuoteModal(perspective) {
        const modal = document.getElementById('quote-modal');
        const title = document.getElementById('quote-modal-title');
@@ -711,6 +646,7 @@
        const additional = document.getElementById('quote-modal-additional');
        const meta = document.getElementById('quote-modal-meta');
 
+       // Set modal content
        title.textContent = 'Migration Perspective';
        quote.textContent = `"${perspective.quote}"`;
        additional.textContent = perspective.additional_info;
@@ -749,12 +685,14 @@
        modal.style.display = 'block';
      }
 
+     // Close quote modal
      function closeQuoteModal() {
        document.getElementById('quote-modal').style.display = 'none';
      }
 
      // Bind events
      function bindEvents() {
+       // Modal events
        document.getElementById('quote-modal').addEventListener('click', (e) => {
          if (e.target.id === 'quote-modal') {
            closeQuoteModal();
@@ -765,27 +703,33 @@
          closeQuoteModal();
        });
 
+       // Dropdown filter events
        const dropdownFilters = ['gender-filter', 'age-filter', 'migration-type-filter', 'birth-location-filter', 'interview-location-filter'];
        dropdownFilters.forEach(filterId => {
          document.getElementById(filterId).addEventListener('change', filterAndDisplayPerspectives);
        });
      }
 
+     // Fixed switchTab function
      function switchTab(tabId) {
+       // Hide the default tab content
        const defaultTab = document.getElementById('tab-content');
        if (defaultTab) {
          defaultTab.classList.add('hidden');
        }
 
+       // Hide all other tab content
        document.querySelectorAll('.tab-content:not(#tab-content)').forEach(tab => {
          tab.classList.add('hidden');
        });
 
+       // Show the selected tab
        const selectedTab = document.getElementById(tabId);
        if (selectedTab) {
          selectedTab.classList.remove('hidden');
        }
 
+       // Update active button state
        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
        event.target.classList.add('active');
      }

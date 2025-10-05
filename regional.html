@@ -10,98 +10,94 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Map dependencies -->
     <script src="https://unpkg.com/deck.gl@^9.0.0/dist.min.js"></script>
     <link href="https://unpkg.com/deck.gl@^9.0.0/dist/stylesheet.css" rel="stylesheet" />
     <script src="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.css" rel="stylesheet" />
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png" />
 
     <style>
-      body {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 400;
-        color: #252a53;
-        margin: 0;
-        padding: 40px 40px 40px 40px;
-        display: flex;
-        flex-direction: column;
-        justify-content: top;
-        height: 100vh;
-      }
+     body {
+       font-family: 'Montserrat', sans-serif;
+       font-weight: 400;
+       color: #252a53;
+       margin: 0;
+       padding: 40px 40px 40px 40px;
+       display: flex;
+       flex-direction: column;
+       justify-content: top;
+       height: 100vh;
+     }
 
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: white;
-        position: fixed;
-        width: 100%;
-        height: 80px;
-        top: 0;
-        left: 0;
-        z-index: 1001;
-        padding: 20px 40px;
-      }
+     .header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       background-color: white;
+       position: fixed;
+       width: 100%;
+       height: 80px;
+       top: 0;
+       left: 0;
+       z-index: 1001;
+       padding: 20px 40px;
+     }
 
-      .main-content {
-        padding: 80px 0px 40px 0px;
-        flex-grow: 1;
-        display: flex;
-        align-items: top;
-        justify-content: center;
-      }
+     .main-content {
+       padding: 80px 0px 40px 0px;
+       flex-grow: 1;
+       display: flex;
+       align-items: top;
+       justify-content: center;
+     }
 
-      .hidden {
-        display: none !important;
-      }
+     .hidden {
+       display: none !important;
+     }
 
-      /* Strict professional left panel styling */
-      .region-left {
-        width: 40%;
-        background: white;
-        padding: 20px;
-        font-size: 12px;
-      }
+     .region-left {
+       width: 40%;
+       background: white;
+       padding: 20px;
+       font-size: 12px;
+     }
 
-      .region-right {
-        padding: 20px;
-        width: 60%;
-        font-size: 12px;
-      }
+     .region-right {
+       padding: 20px;
+       width: 60%;
+       font-size: 12px;
+     }
 
-      /* Strict dropdown styling */
-      .dropdown-container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 20px;
-        font-size: 12px;
-      }
+     .dropdown-container {
+       display: flex;
+       flex-direction: column;
+       gap: 10px;
+       margin-bottom: 20px;
+       font-size: 12px;
+     }
 
-      .dropdown-row {
-        display: flex;
-        gap: 10px;
-        align-items: flex-end;
-      }
+     .dropdown-row {
+       display: flex;
+       gap: 10px;
+       align-items: flex-end;
+     }
 
-      .map-dropdown {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        color: #252a53;
-        flex: 1;
-      }
+     .map-dropdown {
+       position: relative;
+       display: flex;
+       flex-direction: column;
+       color: #252a53;
+       flex: 1;
+     }
 
-      .map-dropdown label {
-        font-size: 10px;
-        font-weight: 700;
-        color: #252a53;
-        margin-bottom: 4px;
-        letter-spacing: 0.5px;
-      }
+     .map-dropdown label {
+       font-size: 10px;
+       font-weight: 700;
+       color: #252a53;
+       margin-bottom: 4px;
+       letter-spacing: 0.5px;
+     }
 
      .map-dropdown select {
        appearance: none;
@@ -121,473 +117,508 @@
        height: 32px;
      }
 
-      .map-dropdown select:hover {
-        background-color: #f5f5f5;
-      }
-
-      .map-dropdown select:focus {
-        outline: none;
-        background-color: #252a53;
-        color: white;
-      }
-
-      .map-dropdown select:focus {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-      }
-
-      .map-dropdown select.searching {
-        opacity: 0.6;
-        pointer-events: none;
-        background-color: #f5f5f5;
-        color: #666;
-      }
-
-      .map-dropdown select:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        background-color: #f5f5f5;
-        color: #666;
-      }
-
-      /* Map instruction text */
-      .map-instruction {
-        font-size: 12px;
-        color: #666;
-        margin: 10px 0;
-        text-align: center;
-      }
-
-      /* Region title styling */
-      #region-title {
-        font-size: 14px;
-        font-weight: 700;
-        color: #252a53;
-        margin: 15px 0 10px 0;
-        padding: 0;
-        background: none;
-        border: none;
-        min-height: auto;
-      }
-
-      #region-title:empty {
-        display: none;
-      }
-
-      /* Map container strict styling */
-      #map-container {
-        width: 100%;
-        height: 65vh;
-        position: relative;
-        border: 1px solid #ddd;
-        margin: 10px 0;
-      }
-
-      /* Loading state strict styling */
-      .loading-indicator {
-        display: none;
-        font-size: 10px;
-        color: #666;
-        margin-top: 2px;
-      }
-
-      .loading .loading-indicator {
-        display: block;
-      }
-
-      .map-dropdown select option {
-        padding: 4px;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 12px;
-      }
-
-      .region-tabs {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-
-      .region-tabs button:not(:last-child) {
-        margin-right: 2px;
-      }
-
-      .region-tabs button {
-        flex: 1;
-        cursor: pointer;
-        color: #252a53;
-        background-color: white;
-        font-weight: 700;
-        font-size: 14px;
-        padding: 0.5rem 1rem;
-        transition: background-color 0.2s ease-in-out;
-        border: 3px solid #252a53;
-        height: 44px;
-      }
-
-      .region-tabs button:hover, .region-tabs button.active {
-        background-color: #252a53;
-        color: white;
-      }
-
-      .tab-content {
-        display: none;
-      }
-
-      .tab-content.active {
-        display: block;
-      }
-
-      .regional_development_tags,
-      .regional_migration_tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        width: 100%;
-        margin-bottom: 10px;
-      }
-
-      .regional_development_tags button,
-      .regional_migration_tags button {
-        background: #eee;
-        border: 1px solid #252a53;
-        padding: 10px 16px;
-        cursor: default;
-        font-size: 12px;
-        text-align: center;
-        color: #252a53;
-        transition: transform 0.3s ease;
-      }
-
-      .score-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 10px;
-        max-width: 100%;
-      }
-
-      .card {
-        background: #eee;
-        padding: 4px;
-        text-align: center;
-        transition: transform 0.3s ease;
-      }
-
-      .card:hover {
-        transform: translateY(-5px);
-      }
-
-      .card h3 {
-        margin: 0;
-      }
-
-      .card p {
-        margin-top: 2px;
-        font-weight: bold;
-      }
-
-      .total {
-        background: #252a53;
-        color: white;
-        border: 1px solid #252a53;
-      }
-
-      .migration_projections_controls {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 20px;
-        width: 100%;
-      }
-
-      .migration_projections_control-group {
-        flex: 1 1 200px;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .migration-projection,
-      .migration-pyramid {
-        display: none;
-      }
-
-      .migration-projection.show,
-      .migration-pyramid.show {
-        display: block;
-      }
-
-      .plot-container {
-        position: relative;
-        overflow: hidden;
-      }
-
-      .plot-iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-      }
-
-      .slider-container {
-        display: flex;
-        flex-direction: column;
-        align-items: left;
-        margin-right: 50px;
-        width: 100%;
-      }
-
-      .slider {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 6px;
-        background: #ddd;
-        border-radius: 5px;
-        outline: none;
-      }
-
-      .slider-labels {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        margin-top: 5px;
-      }
-
-      .slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        background: #4a3b55;
-        border-radius: 50%;
-        cursor: pointer;
-        background-size: cover;
-      }
-
-      .explore-comparable button {
-        font-weight: 400;
-        display: flex;
-        padding: 6px;
-        cursor: pointer;
-        width: 100%;
-        color: #252a53;
-        font-size: 12px;
-        background-color: white;
-        transition: background-color 0.2s ease-in-out;
-        border: 1px solid #252a53;
-        align-items: center;
-      }
-
-      .explore-comparable button:hover {
-        background-color: #252a53;
-        color: white;
-        font-weight: 700;
-      }
-
-      .explore-comparable {
-        display: none;
-      }
-
-      .explore-comparable.show {
-        display: block;
-      }
-
-      .deck-widget {
-        --button-size: 36px;
-      }
-
-      .deck-tooltip {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 12px;
-        color: white !important;
-        background-color: #252a53 !important;
-      }
-
-      /* Policy specific styles */
-      .policy-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        width: 100%;
-        margin-bottom: 15px;
-      }
-
-      .policy-tag-button {
-        background: #eee;
-        border: 1px solid #252a53;
-        padding: 8px 12px;
-        cursor: pointer;
-        font-size: 12px;
-        text-align: center;
-        color: #252a53;
-        transition: all 0.3s ease;
-        border-radius: 4px;
-        font-weight: 400;
-      }
-
-      .policy-tag-button:hover {
-        transform: translateY(-2px);
-        background-color: #f5f5f5;
-      }
-
-      .policy-tag-button.active {
-        background: #252a53;
-        color: white;
-        font-weight: 600;
-      }
-
-      .policy-summaries {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 15px;
-      }
-
-      .policy-card {
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        padding: 15px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      }
-
-      .policy-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        border-color: #252a53;
-      }
-
-      .policy-card-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-bottom: 10px;
-      }
-
-      .policy-card-tag {
-        background: #252a53;
-        color: white;
-        padding: 3px 8px;
-        border-radius: 12px;
-        font-size: 10px;
-        font-weight: 500;
-      }
-
-      .policy-card-summary {
-        font-size: 13px;
-        line-height: 1.4;
-        color: #333;
-      }
-
-      .policy-modal {
-        display: none;
-        position: fixed;
-        z-index: 2000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-      }
-
-      .policy-modal-content {
-        background-color: white;
-        margin: 5% auto;
-        padding: 30px;
-        border-radius: 8px;
-        width: 80%;
-        max-width: 700px;
-        max-height: 80vh;
-        overflow-y: auto;
-        position: relative;
-      }
-
-      .policy-modal-close {
-        position: absolute;
-        right: 15px;
-        top: 15px;
-        font-size: 24px;
-        font-weight: bold;
-        cursor: pointer;
-        color: #aaa;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        transition: all 0.3s ease;
-      }
-
-      .policy-modal-close:hover {
-        color: #252a53;
-        background-color: #f5f5f5;
-      }
-
-      .policy-modal-title {
-        font-family: 'Lora', serif;
-        font-size: 20px;
-        font-weight: 700;
-        color: #252a53;
-        margin-bottom: 15px;
-        padding-right: 40px;
-      }
-
-      .policy-modal-description {
-        font-size: 14px;
-        line-height: 1.6;
-        color: #333;
-        margin-bottom: 20px;
-      }
-
-      .policy-modal-meta {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 6px;
-        margin-bottom: 20px;
-      }
-
-      .policy-modal-meta-item {
-        margin-bottom: 10px;
-        font-size: 13px;
-      }
-
-      .policy-modal-meta-label {
-        font-weight: 600;
-        color: #252a53;
-        display: inline-block;
-        min-width: 120px;
-      }
-
-      .policy-modal-link {
-        display: inline-block;
-        background: #252a53;
-        color: white;
-        padding: 10px 20px;
-        text-decoration: none;
-        border-radius: 4px;
-        font-size: 13px;
-        font-weight: 500;
-        transition: background-color 0.3s ease;
-      }
-
-      .policy-modal-link:hover {
-        background: #1a1e3a;
-      }
-
-      .no-policies-message {
-        /* text-align: center; */
-        /* padding: 40px 20px; */
-        /* color: #666; */
-        /* font-style: italic; */
-      }
-
-      .policy-count {
-        font-size: 12px;
-        color: #666;
-        margin-bottom: 10px;
-        font-weight: 500;
-      }
-
+     .map-dropdown select:hover {
+       background-color: #f5f5f5;
+     }
+
+     .map-dropdown select:focus {
+       outline: none;
+       background-color: #252a53;
+       color: white;
+     }
+
+     .map-dropdown select:focus {
+       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+     }
+
+     .map-dropdown select.searching {
+       opacity: 0.6;
+       pointer-events: none;
+       background-color: #f5f5f5;
+       color: #666;
+     }
+
+     .map-dropdown select:disabled {
+       opacity: 0.6;
+       cursor: not-allowed;
+       background-color: #f5f5f5;
+       color: #666;
+     }
+
+     .map-instruction {
+       font-size: 12px;
+       color: #666;
+       margin: 10px 0;
+       text-align: center;
+     }
+
+     #region-title {
+       font-size: 14px;
+       font-weight: 700;
+       color: #252a53;
+       margin: 15px 0 10px 0;
+       padding: 0;
+       background: none;
+       border: none;
+       min-height: auto;
+     }
+
+     #region-title:empty {
+       display: none;
+     }
+
+     #map-container {
+       width: 100%;
+       height: 65vh;
+       position: relative;
+       border: 1px solid #ddd;
+       margin: 10px 0;
+     }
+
+     .loading-indicator {
+       display: none;
+       font-size: 10px;
+       color: #666;
+       margin-top: 2px;
+     }
+
+     .loading .loading-indicator {
+       display: block;
+     }
+
+     .map-dropdown select option {
+       padding: 4px;
+       font-family: 'Montserrat', sans-serif;
+       font-size: 12px;
+     }
+
+     .region-tabs {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       margin-bottom: 20px;
+     }
+
+     .region-tabs button:not(:last-child) {
+       margin-right: 2px;
+     }
+
+     .region-tabs button {
+       flex: 1;
+       cursor: pointer;
+       color: #252a53;
+       background-color: white;
+       font-weight: 700;
+       font-size: 14px;
+       padding: 0.5rem 1rem;
+       transition: background-color 0.2s ease-in-out;
+       border: 3px solid #252a53;
+       height: 44px;
+     }
+
+     .region-tabs button:hover, .region-tabs button.active {
+       background-color: #252a53;
+       color: white;
+     }
+
+     .tab-content {
+       display: none;
+     }
+
+     .tab-content.active {
+       display: block;
+     }
+
+     .regional_development_tags,
+     .regional_migration_tags {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 10px;
+       width: 100%;
+       margin-bottom: 10px;
+     }
+
+     .regional_development_tags button,
+     .regional_migration_tags button {
+       background: #eee;
+       border: 1px solid #252a53;
+       padding: 10px 16px;
+       cursor: default;
+       font-size: 12px;
+       text-align: center;
+       color: #252a53;
+       transition: transform 0.3s ease;
+     }
+
+     .score-cards {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+       gap: 10px;
+       max-width: 100%;
+     }
+
+     .card {
+       background: #eee;
+       padding: 4px;
+       text-align: center;
+       transition: transform 0.3s ease;
+     }
+
+     .card:hover {
+       transform: translateY(-5px);
+     }
+
+     .card h3 {
+       margin: 0;
+     }
+
+     .card p {
+       margin-top: 2px;
+       font-weight: bold;
+     }
+
+     .total {
+       background: #252a53;
+       color: white;
+       border: 1px solid #252a53;
+     }
+
+     .migration_projections_controls {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 10px;
+       margin-bottom: 20px;
+       width: 100%;
+     }
+
+     .migration_projections_control-group {
+       flex: 1 1 200px;
+       display: flex;
+       flex-direction: column;
+     }
+
+     .migration-projection,
+     .migration-pyramid {
+       display: none;
+     }
+
+     .migration-projection.show,
+     .migration-pyramid.show {
+       display: block;
+     }
+
+     .plot-container {
+       position: relative;
+       overflow: hidden;
+     }
+
+     .plot-iframe {
+       width: 100%;
+       height: 100%;
+       border: none;
+     }
+
+     .slider-container {
+       display: flex;
+       flex-direction: column;
+       align-items: left;
+       margin-right: 50px;
+       width: 100%;
+     }
+
+     .slider {
+       -webkit-appearance: none;
+       width: 100%;
+       height: 6px;
+       background: #ddd;
+       border-radius: 5px;
+       outline: none;
+     }
+
+     .slider-labels {
+       display: flex;
+       justify-content: space-between;
+       width: 100%;
+       margin-top: 5px;
+     }
+
+     .slider::-webkit-slider-thumb {
+       -webkit-appearance: none;
+       appearance: none;
+       width: 16px;
+       height: 16px;
+       background: #4a3b55;
+       border-radius: 50%;
+       cursor: pointer;
+       background-size: cover;
+     }
+
+     .explore-comparable button {
+       font-weight: 400;
+       display: flex;
+       padding: 6px;
+       cursor: pointer;
+       width: 100%;
+       color: #252a53;
+       font-size: 12px;
+       background-color: white;
+       transition: background-color 0.2s ease-in-out;
+       border: 1px solid #252a53;
+       align-items: center;
+     }
+
+     .explore-comparable button:hover {
+       background-color: #252a53;
+       color: white;
+       font-weight: 700;
+     }
+
+     .explore-comparable {
+       display: none;
+     }
+
+     .explore-comparable.show {
+       display: block;
+     }
+
+     .deck-widget {
+       --button-size: 36px;
+     }
+
+     .deck-tooltip {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 12px;
+       color: white !important;
+       background-color: #252a53 !important;
+     }
+
+     .policy-filter-section {
+       margin-bottom: 20px;
+     }
+
+     .policy-filter-label {
+       font-size: 11px;
+       font-weight: 700;
+       color: #666;
+       margin-bottom: 8px;
+       text-transform: uppercase;
+       letter-spacing: 0.5px;
+     }
+
+     .policy-tags {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 8px;
+       width: 100%;
+       margin-bottom: 15px;
+     }
+
+     .policy-tag-button {
+       background: #eee;
+       border: 1px solid #252a53;
+       padding: 8px 12px;
+       cursor: pointer;
+       font-size: 12px;
+       text-align: center;
+       color: #252a53;
+       transition: all 0.3s ease;
+       border-radius: 4px;
+       font-weight: 400;
+     }
+
+     .policy-tag-button:hover {
+       transform: translateY(-2px);
+       background-color: #f5f5f5;
+     }
+
+     .policy-tag-button.active {
+       background: #252a53;
+       color: white;
+       font-weight: 600;
+     }
+
+     .policy-scope-button {
+       background: #e8f4f8;
+       border: 1px solid #4a90a4;
+       color: #2c5f6f;
+     }
+
+     .policy-scope-button:hover {
+       background-color: #d0e9f0;
+     }
+
+     .policy-scope-button.active {
+       background: #4a90a4;
+       color: white;
+     }
+
+     .policy-origin-button {
+       background: #f6e3dd;         /* light tone near #ac5737 */
+       border: 1px solid #ac5737;   /* main accent color */
+       color: #6e2f1e;              /* darker text color variant */
+     }
+
+     .policy-origin-button:hover {
+       background-color: #edc9bc;   /* slightly darker warm tone */
+     }
+
+     .policy-origin-button.active {
+       background: #ac5737;         /* main color */
+       color: white;                /* good contrast */
+     }
+
+     .policy-summaries {
+       display: flex;
+       flex-direction: column;
+       gap: 12px;
+       margin-top: 15px;
+     }
+
+     .policy-card {
+       background: white;
+       border: 1px solid #ddd;
+       border-radius: 6px;
+       padding: 15px;
+       cursor: pointer;
+       transition: all 0.3s ease;
+       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+     }
+
+     .policy-card:hover {
+       transform: translateY(-3px);
+       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+       border-color: #252a53;
+     }
+
+     .policy-card-tags {
+       display: flex;
+       flex-wrap: wrap;
+       gap: 6px;
+       margin-bottom: 10px;
+     }
+
+     .policy-card-tag {
+       background: #252a53;
+       color: white;
+       padding: 3px 8px;
+       border-radius: 12px;
+       font-size: 10px;
+       font-weight: 500;
+     }
+
+     .policy-card-summary {
+       font-size: 13px;
+       line-height: 1.4;
+       color: #333;
+     }
+
+     .policy-modal {
+       display: none;
+       position: fixed;
+       z-index: 2000;
+       left: 0;
+       top: 0;
+       width: 100%;
+       height: 100%;
+       background-color: rgba(0,0,0,0.5);
+     }
+
+     .policy-modal-content {
+       background-color: white;
+       margin: 5% auto;
+       padding: 30px;
+       border-radius: 8px;
+       width: 80%;
+       max-width: 700px;
+       max-height: 80vh;
+       overflow-y: auto;
+       position: relative;
+     }
+
+     .policy-modal-close {
+       position: absolute;
+       right: 15px;
+       top: 15px;
+       font-size: 24px;
+       font-weight: bold;
+       cursor: pointer;
+       color: #aaa;
+       width: 30px;
+       height: 30px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       border-radius: 50%;
+       transition: all 0.3s ease;
+     }
+
+     .policy-modal-close:hover {
+       color: #252a53;
+       background-color: #f5f5f5;
+     }
+
+     .policy-modal-title {
+       font-family: 'Lora', serif;
+       font-size: 20px;
+       font-weight: 700;
+       color: #252a53;
+       margin-bottom: 15px;
+       padding-right: 40px;
+     }
+
+     .policy-modal-description {
+       font-size: 14px;
+       line-height: 1.6;
+       color: #333;
+       margin-bottom: 20px;
+     }
+
+     .policy-modal-meta {
+       background: #f8f9fa;
+       padding: 15px;
+       border-radius: 6px;
+       margin-bottom: 20px;
+     }
+
+     .policy-modal-meta-item {
+       margin-bottom: 10px;
+       font-size: 12px;
+       display: block;
+     }
+
+     .policy-modal-meta-label {
+       font-weight: 600;
+       color: #252a53;
+       display: inline-block;
+       min-width: 120px;
+       margin-right: 8px;
+     }
+
+     .policy-modal-link {
+       display: inline-block;
+       background: #252a53;
+       color: white;
+       padding: 10px 20px;
+       text-decoration: none;
+       border-radius: 4px;
+       font-size: 13px;
+       font-weight: 500;
+       transition: background-color 0.3s ease;
+     }
+
+     .policy-modal-link:hover {
+       background: #1a1e3a;
+     }
+
+     .no-policies-message {
+     }
+
+     .policy-count {
+       font-size: 12px;
+       color: #666;
+       margin-bottom: 10px;
+       font-weight: 500;
+     }
 
      .footer {
        display: grid;
@@ -620,114 +651,110 @@
        font-size: 0.625rem;
      }
 
+     @media (max-width: 1600px) {
+       .footer {
+         font-size: 0.5rem;
+       }
 
-      @media (max-width: 1600px) {
-        .footer {
-          font-size: 0.5rem;
-        }
+       footer h1 {
+         font-size: 0.5rem;
+       }
 
-        footer h1 {
-          font-size: 0.5rem;
-        }
+       footer h2 {
+         font-size: 0.45rem;
+       }
 
-        footer h2 {
-          font-size: 0.45rem;
-        }
+       footer p {
+         font-size: 0.5rem;
+       }
 
-        footer p {
-          font-size: 0.5rem;
-        }
+       body {
+         background-size: 48% 26%;
+       }
+     }
 
-        body {
-          background-size: 48% 26%;
-        }
-      }
+     @media (min-width: 2400px) {
+       .footer {
+         font-size: 0.8rem;
+       }
 
-      @media (min-width: 2400px) {
+       footer h1 {
+         font-size: 0.8rem;
+       }
 
-        .footer {
-          font-size: 0.8rem;
-        }
+       footer h2 {
+         font-size: 0.7rem;
+       }
 
-        footer h1 {
-          font-size: 0.8rem;
-        }
+       footer p {
+         font-size: 0.8rem;
+       }
+     }
 
-        footer h2 {
-          font-size: 0.7rem;
-        }
+     @media (max-width: 1200px) {
+       .footer {
+         grid-template-columns: repeat(2, 1fr);
+         gap: 0.8rem;
+       }
+     }
 
-        footer p {
-          font-size: 0.8rem;
-        }
-      }
+     @media (max-width: 768px) {
+       .footer {
+         grid-template-columns: 1fr;
+         font-size: 0.6rem;
+       }
 
-      @media (max-width: 1200px) {
+       .footer-column p {
+         width: auto !important;
+       }
+     }
 
-        .footer {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 0.8rem;
-        }
-      }
+     @media (max-width: 1200px) {
+       .dropdown-container {
+         gap: 0.75rem;
+       }
 
-      @media (max-width: 768px) {
+       .dropdown-row {
+         flex-direction: column;
+         align-items: stretch;
+         gap: 0.75rem;
+       }
 
+       .map-dropdown {
+         flex: none;
+       }
 
-        .footer {
-          grid-template-columns: 1fr;
-          font-size: 0.6rem;
-        }
+       #map-container {
+         height: 50vh;
+       }
+     }
 
-        .footer-column p {
-          width: auto !important;
-        }
-      }
+     @media (max-width: 768px) {
+       .region-left {
+         padding: 1.5rem;
+       }
 
+       .dropdown-container {
+         gap: 0.5rem;
+       }
 
-        @media (max-width: 1200px) {
-          .dropdown-container {
-            gap: 0.75rem;
-          }
+       .map-dropdown select {
+         padding: 0.5rem 2rem 0.5rem 0.75rem;
+         font-size: 13px;
+       }
 
-          .dropdown-row {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 0.75rem;
-          }
+       #region-title {
+         font-size: 16px;
+         padding: 0.5rem 0.75rem;
+       }
 
-          .map-dropdown {
-            flex: none;
-          }
-
-          #map-container {
-            height: 50vh;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .region-left {
-            padding: 1.5rem;
-          }
-
-          .dropdown-container {
-            gap: 0.5rem;
-          }
-
-          .map-dropdown select {
-            padding: 0.5rem 2rem 0.5rem 0.75rem;
-            font-size: 13px;
-          }
-
-          #region-title {
-            font-size: 16px;
-            padding: 0.5rem 0.75rem;
-          }
-
-          #map-container {
-            height: 40vh;
-          }
-        }
+       #map-container {
+         height: 40vh;
+       }
+     }
     </style>
+
+
   </head>
   <body>
     <!-- Header Section -->
@@ -819,45 +846,145 @@
         <div id="map-container"></div>
       </div>
 
-      <!-- Right Panel -->
       <div class="region-right">
-        <!-- Tab Navigation -->
         <div class="region-tabs">
-          <button class="tab-button active" data-tab="tab1">Policy solutions</button>
+          <button class="tab-button" data-tab="tab1">Policy solutions</button>
           <button class="tab-button" data-tab="tab2">Regional development</button>
           <button class="tab-button" data-tab="tab3">Migration</button>
         </div>
 
-        <!-- Tab 1: Policy Solutions -->
-        <div id="content-tab1" class="tab-content active">
-          <h1 style="font-family: 'Lora', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #252a53; display: none;">
-            Select policy areas
-          </h1>
+        <div id="start-over-container" style="display: none; margin-bottom: 20px; text-align: right;">
+          <button id="start-over-btn" style="background: none; border: none; color: #666; font-size: 12px; cursor: pointer; text-decoration: underline; padding: 0px 0px; transition: color 0.2s ease;">
+            ← Start over
+          </button>
+        </div>
 
-          <!-- Policy Tags Filter -->
-          <div id="policy-tags-container" class="policy-tags" style="display: none;">
-            <!-- Tags will be populated dynamically -->
-          </div>
+        <div id="default-instructions" class="tab-content active">
+          <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
+            <h2 style="font-family: 'Lora', serif; font-size: 16px; font-weight: 700; margin-bottom: 14px; margin-top: 0; color: #252a53;">
+              Explore European Regional Data
+            </h2>
 
-          <!-- Policy Count -->
-          <div id="policy-count" class="policy-count" style="display: none;"></div>
+            <p style="font-size: 12px; line-height: 1.6; color: #333; margin-bottom: 20px;">
+              This page helps you see where your region stands, understand the forces shaping it, and find policy ideas you can adapt to strengthen its future.
+            </p>
 
-          <!-- Policy Summaries -->
-          <div id="policy-summaries-container" class="policy-summaries">
-            <div>
+            <div style="margin-bottom: 14px;">
+              <h3 style="font-size: 13px; font-weight: 700; color: #252a53; margin-bottom: 6px; margin-top: 0;">
+                Step 1: Select a Region
+              </h3>
+              <p style="font-size: 12px; line-height: 1.6; color: #333; margin: 0;">
+                Choose a country and region from the dropdowns on the left, or click directly on any region in the interactive map.
+              </p>
             </div>
-            This page focuses on regional data across Europe.
-            <br>
-            Explore policies tailored to your region, discover trends in regional development, and dive into migration statistics.
-            <br>
-            Start by selecting the region you’re interested in.
+
+            <div style="margin-bottom: 14px;">
+              <h3 style="font-size: 13px; font-weight: 700; color: #252a53; margin-bottom: 6px; margin-top: 0;">
+                Step 2: Explore Data
+              </h3>
+              <p style="font-size: 12px; line-height: 1.6; color: #333; margin: 0;">
+                Once a region is selected, use the tabs above to explore policy solutions, development scores, and migration trends.
+              </p>
+            </div>
+
+            <div>
+              <h3 style="font-size: 13px; font-weight: 700; color: #252a53; margin-bottom: 8px; margin-top: 0;">
+                What You'll Discover
+              </h3>
+              <ul style="font-size: 12px; line-height: 1.7; color: #333; padding-left: 20px; margin: 0;">
+                <li style="margin-bottom: 6px;">
+                  <strong>Policy solutions:</strong> Tailored to your region’s specific development profile and needs. Learn from examples that have worked in other regions and filter by type of policy.
+                </li>
+                <li style="margin-bottom: 6px;">
+                  <strong>Regional development:</strong> See economic, social, and living environment indicators to identify strengths and weaknesses.
+                </li>
+                <li style="margin-bottom: 6px;">
+                  <strong>Migration:</strong> Learn about the age, gender, and education of those moving to your region and how these trends will evolve.
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        <!-- Tab 2: Regional Development -->
+
+
+        <div id="content-tab1" class="tab-content">
+          <div id="policy-intro" style="display: none;">
+            <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
+              <p style="margin-bottom: 14px; line-height: 1.6; font-size: 12px; color: #333;">
+                Here you'll find policy ideas from across Europe to help your region tackle decline and attract newcomers. Every example is linked to regions with similar challenges, so you can compare approaches, get inspired, and even reach out to peers.
+              </p>
+
+              <p style="margin-bottom: 10px; line-height: 1.6; font-size: 12px; color: #333;">
+                You can filter policies by <strong>relevant policy areas</strong> and explore three types of solutions:
+              </p>
+
+              <ol style="margin-left: 20px; margin-bottom: 14px; line-height: 1.7; font-size: 12px; color: #333;">
+                <li style="margin-bottom: 6px;">
+                  <strong style="color: #252a53;">AI-scraped and summarised</strong> from public sources
+                </li>
+                <li style="margin-bottom: 6px;">
+                  <strong style="color: #252a53;">Verified by the PREMIUM_EU research team</strong>
+                </li>
+                <li style="margin-bottom: 6px;">
+                  <strong style="color: #252a53;">Shared by policymakers</strong> - you can add your own
+                </li>
+              </ol>
+
+              <p style="margin-bottom: 14px; line-height: 1.6; font-size: 12px; color: #333;">
+                This page is your evidence-based library of solutions and a place to exchange ideas with other regions.
+              </p>
+
+              <div style="background: white; border: 1px solid #ddd; padding: 12px; border-radius: 4px; margin-top: 14px;">
+                <p style="font-size: 11px; color: #666; line-height: 1.5; margin: 0;">
+                  <strong style="color: #252a53;">Disclaimer:</strong> We provide policy recommendations based on what has worked in other regions. They are examples to inspire adaptation, not one-size-fits-all solutions.
+                </p>
+              </div>
+            </div>
+          </div>
+
+
+
+
+          <div id="policy-areas-section" class="policy-filter-section" style="display: none;">
+            <div class="policy-filter-label">Policy Areas</div>
+            <div id="policy-tags-container" class="policy-tags">
+            </div>
+          </div>
+
+          <div id="policy-origin-section" class="policy-filter-section" style="display: none;">
+            <div class="policy-filter-label">Origin</div>
+            <div id="policy-origin-container" class="policy-tags">
+            </div>
+          </div>
+
+          <div id="policy-scope-section" class="policy-filter-section" style="display: none;">
+            <div class="policy-filter-label">Scope</div>
+            <div id="policy-scope-container" class="policy-tags">
+            </div>
+          </div>
+
+          <div id="policy-count" class="policy-count" style="display: none;"></div>
+
+          <div id="policy-summaries-container" class="policy-summaries">
+          </div>
+        </div>
+
         <div id="content-tab2" class="tab-content">
+
+          <div id="development-intro" style="display: none;">
+            <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
+              <p style="margin-bottom: 14px; line-height: 1.6; font-size: 12px; color: #333;">
+                This page shows your region's development status based on key economic, social, and living environment indicators. You can explore overall scores, identify strengths and weaknesses, and track how your region's performance has changed over time.
+              </p>
+
+              <p style="margin-bottom: 0; line-height: 1.6; font-size: 12px; color: #333;">
+                Understanding these patterns is essential for policymakers: it provides the context behind demographic change, helping you design policies that strengthen resilience, address weaknesses, and build on your region's unique assets.
+              </p>
+            </div>
+          </div>
+
           <div id="regional_development_tags" class="regional_development_tags">
-            <p>Select a region</p>
           </div>
 
           <div id="regional_development_scores" class="regional_development_scores">
@@ -881,27 +1008,55 @@
           </div>
         </div>
 
-        <!-- Tab 3: Migration -->
         <div id="content-tab3" class="tab-content">
+
+
+          <div id="migration-intro" style="display: none;">
+            <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
+              <p style="margin-bottom: 0; line-height: 1.6; font-size: 12px; color: #333;">
+                Migration patterns shape who lives, works, and invests in a region. Here you can see which migration characteristics define your region, based on recent flows, demographics, and the profiles of people moving in and out.
+              </p>
+            </div>
+          </div>
+
           <div id="regional_migration_tags" class="regional_migration_tags">
-            <p>Select a region</p>
           </div>
 
           <div id="migration_type_description">
           </div>
 
-          <!-- Migration projection wrapper -->
           <div class="migration-projection" id="migration-projection">
-            <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Migration projection</p>
+            <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Migration projection (sample data)</p>
 
             <div class="migration_projections_controls">
               <div class="migration_projections_control-group">
                 <label for="age">Age</label>
                 <select id="age" name="age">
                   <option value="total">Total</option>
+
                   <option value="0-19">0-19</option>
                   <option value="20-64">20-64</option>
                   <option value="65+">65+</option>
+
+                  <!-- <option value="0">0</option>
+                       <option value="5">5</option>
+                       <option value="10">10</option>
+                       <option value="15">15</option>
+                       <option value="20">20</option>
+                       <option value="25">25</option>
+                       <option value="30">30</option>
+                       <option value="35">35</option>
+                       <option value="40">40</option>
+                       <option value="45">45</option>
+                       <option value="50">50</option>
+                       <option value="55">55</option>
+                       <option value="60">60</option>
+                       <option value="65">65</option>
+                       <option value="70">70</option>
+                       <option value="75">75</option>
+                       <option value="80">80</option>
+                       <option value="85">85</option>
+                  -->
                 </select>
               </div>
               <div class="migration_projections_control-group">
@@ -916,9 +1071,17 @@
                 <label for="education">Education</label>
                 <select id="education" name="education">
                   <option value="total">Total</option>
+
                   <option value="primary">Primary</option>
                   <option value="secondary">Secondary</option>
                   <option value="tertiary">Tertiary</option>
+
+                  <!-- <option value="primary">Low</option>
+                       <option value="secondary">Middle</option>
+                       <option value="tertiary">High</option>
+                  -->
+
+
                 </select>
               </div>
             </div>
@@ -929,10 +1092,9 @@
             </div>
           </div>
 
-          <!-- Migration pyramid wrapper -->
           <div class="migration-pyramid" id="migration-pyramid">
             <br>
-            <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Population pyramid</p>
+            <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Population pyramid (sample data)</p>
 
             <div id="pyramid-container">
               <div id="pyramid-content">
@@ -960,7 +1122,6 @@
       </div>
     </div>
 
-    <!-- Policy Modal -->
     <div id="policy-modal" class="policy-modal">
       <div class="policy-modal-content">
         <span class="policy-modal-close">&times;</span>
@@ -970,7 +1131,6 @@
         <a id="policy-modal-link" class="policy-modal-link" target="_blank">More info</a>
       </div>
     </div>
-
 
     <footer class="footer">
       <div class="footer-column">
@@ -1005,1016 +1165,1210 @@
       </div>
     </footer>
 
-    <script>
-     // Static data - will be loaded from JSON files
-     let REGION_DATA = {};
-     let DEVELOPMENT_TAG_DATA = {};
-     let MIGRATION_TAG_DATA = {};
-     let REGION_SCORES = {};
-     let STRENGTHS_WEAKNESSES_DATA = {};
-     let TYPE_DESCRIPTION_DATA = {};
-     let POLICY_DATA = [];
+  </body>
 
-     // Main Application Object
-     const RegionalApp = {
-       // Map variables
-       map: {
-         selectedPolygonId: null,
-         polygonLayer: null,
-         deckgl: null,
-         defaultFillColor: [160, 159, 188, 255],
-         selectedFillColor: [172, 87, 55, 255]
-       },
+  <script>
 
-       // Policy variables
-       policy: {
-         data: [],
-         selectedTags: [],
-         currentRegion: null,
-         allTags: [],
-         isLoaded: false
-       },
+   let REGION_DATA = {};
+   let DEVELOPMENT_TAG_DATA = {};
+   let MIGRATION_TAG_DATA = {};
+   let REGION_SCORES = {};
+   let STRENGTHS_WEAKNESSES_DATA = {};
+   let TYPE_DESCRIPTION_DATA = {};
+   let POLICY_DATA = [];
 
-       // Configuration
-       config: {
-         mapDataUrl: "layers/polygon_layer.json",
-         mapStyle: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-         initialViewState: {
-           bearing: 0,
-           latitude: 55,
-           longitude: 10,
-           maxZoom: 20,
-           minZoom: 3,
-           pitch: 0,
-           zoom: 3,
-         }
-       },
+   const RegionalApp = {
+     map: {
+       selectedPolygonId: null,
+       polygonLayer: null,
+       deckgl: null,
+       defaultFillColor: [160, 159, 188, 255],
+       selectedFillColor: [172, 87, 55, 255]
+     },
 
-       // Region Groups Data (for comparable regions)
-       regionGroups: {
-         1: ['PL432', 'PL524', 'PL523', 'PL516', 'PL431', 'PL411', 'PL427', 'PL426', 'PL424', 'PL417', 'PL416', 'PL414', 'PL428', 'PL616', 'PL636', 'PL623', 'PL622', 'PL621', 'PL638', 'PL228', 'AT341', 'RO116', 'RO315', 'RO221', 'RO216', 'RO215', 'RO214', 'RO213', 'RO212', 'RO211', 'RO415', 'RO414', 'RO413', 'RO411', 'PT11B', 'ITG19', 'ITG18', 'ITG17', 'ITG13', 'ITG12', 'ITG11', 'ITF65', 'ITF48', 'ITF46', 'ITF45', 'ITF35', 'ITF33', 'ITF31', 'ITF13', 'HU323', 'LV006', 'LT024', 'LT027', 'SK041', 'BG342', 'BG325', 'BG321', 'BG315', 'BG314', 'BG313', 'BG312', 'CZ041', 'BG311', 'BE342', 'ES425', 'EL645', 'FRY10', 'FRY20', 'FRY30', 'HR026', 'DEB13', 'EL512', 'EL422', 'EL522', 'EL524', 'EL541'],
-         2: ['PL514', 'PL415', 'PL633', 'AT224', 'RO321', 'PL912', 'PT150', 'ITH10', 'ITI14', 'ITH59', 'ITH55', 'ITC31', 'ITC4C', 'ITI43', 'SI043', 'DE717', 'DE713', 'DE502', 'DE279', 'DE262', 'BE232', 'ES640', 'ES630', 'ES618', 'ES617', 'ES614', 'FRC24', 'ES612', 'ES521', 'ES424', 'FRL06', 'FRL05', 'FRL04', 'FRK24', 'FRK23', 'HR050', 'FRI12', 'FRJ13', 'DEC02', 'DEB18', 'EL413', 'EL412', 'EL411'],
-         3: ['AT221', 'AT130', 'AT342', 'AT331', 'ITH44', 'ITC33', 'MT002', 'CH052', 'SE331', 'SE121', 'DE254', 'DE244', 'DE261', 'BE241', 'BE235', 'BE233', 'BE231', 'BE100', 'BE254', 'BE255', 'BE258', 'DE149', 'DE147', 'DE143', 'DE13A', 'DE137', 'DE134', 'DE132', 'DE129', 'DE133', 'FR102', 'ES709', 'ES706', 'ES705', 'FR106', 'FRB04', 'FR107', 'ES533', 'FRL03', 'FRH03', 'FRH02', 'FRG01', 'FRJ23', 'DEB3A', 'DEF03', 'DEB25', 'IE053'],
-         4: ['SI041', 'PL911', 'NL113', 'NL230', 'NL310', 'NL337', 'NL332', 'NL329', 'NL327', 'HU110', 'LU000', 'CH057', 'CH056', 'CH032', 'FI1B1', 'SE110', 'DE71E', 'DE71D', 'DE71A', 'DE718', 'DE714', 'DE712', 'DE711', 'DE251', 'DE241', 'DE274', 'DE272', 'DE731', 'DE943', 'DK012', 'DK011', 'CZ010', 'BE251', 'BE242', 'DK013', 'DE21E', 'DE21D', 'DE218', 'DE212', 'DE148', 'DE223', 'DE221', 'DE142', 'DE141', 'DE136', 'FR104', 'FR103', 'FR101', 'FR105', 'FR108', 'ES300', 'FRK26', 'IE061'],
-         5: ['PL518', 'PL515', 'PL418', 'PL613', 'PL617', 'PL637', 'PL634', 'PL619', 'PL618', 'PL22C', 'PL22B', 'PL227', 'PL225', 'PL224', 'PL219', 'PL218', 'PL217', 'PL214', 'RO314', 'RO312', 'RO226', 'RO225', 'RO224', 'RO223', 'RO222', 'RO317', 'SI036', 'SI031', 'RO422', 'RO412', 'PT119', 'PT112', 'PT111', 'PL926', 'PL925', 'PL922', 'PT16B', 'RO115', 'RO114', 'RO112', 'RO111', 'PT187', 'PT185', 'PT181', 'PT16I', 'PT16F', 'PT184', 'ITH31', 'ITG2G', 'ITG2D', 'ITG16', 'ITG15', 'ITG14', 'ITH35', 'ITI12', 'ITH36', 'ITF64', 'ITF63', 'ITF62', 'ITF61', 'ITF52', 'ITF51', 'ITF47', 'ITF43', 'ITF32', 'ITF22', 'ITF14', 'ITF12', 'ITF34', 'HU332', 'HU331', 'HU321', 'LV009', 'LV007', 'LV005', 'LV003', 'ITI35', 'ITI34', 'ITI33', 'ITI31', 'LT021', 'HU313', 'HU233', 'HU232', 'HU231', 'HU223', 'HU222', 'HU221', 'HU322', 'LT029', 'LT026', 'LT025', 'HU212', 'NO0A3', 'NO0A1', 'SK042', 'SK032', 'SK031', 'SK022', 'SK021', 'SE313', 'DE94G', 'DE939', 'BG344', 'BG343', 'BG334', 'BG333', 'BG332', 'BG331', 'BG324', 'BG323', 'BG322', 'BG422', 'CZ042', 'BG425', 'BG424', 'BG423', 'DE22C', 'EL653', 'FRM02', 'FRM01', 'HR063', 'HR061', 'HR037', 'HR036', 'HR035', 'HR034', 'HR033', 'HR032', 'HR031', 'HR028', 'HR027', 'HR025', 'HR024', 'HR023', 'HR022', 'HR021', 'FRY40', 'FRJ12', 'EL644', 'EL643', 'DEE0E', 'DEE0C', 'DEE08', 'EL515', 'EL514', 'EL513', 'EL511', 'EL432', 'EL431', 'EL521', 'EL523', 'EL641', 'EL633', 'EL632', 'EL631', 'EL624', 'EL623', 'EL622', 'EL621', 'EL613', 'EL612', 'EL533', 'EL532', 'EL531', 'EL526', 'EL525', 'EL611', 'EE00A', 'EE009', 'EE008', 'EE004'],
-         6: ['PL517', 'PL814', 'AT121', 'PL812', 'PL811', 'PL715', 'PL22A', 'AT225', 'AT212', 'AT125', 'AT123', 'PL815', 'AT313', 'AT314', 'PL229', 'PL213', 'AT334', 'AT333', 'RO322', 'AT113', 'SI038', 'SI037', 'SI034', 'SI033', 'SI032', 'PT11A', 'PL921', 'PL842', 'PL841', 'PT11D', 'PT11E', 'PT300', 'PT200', 'PT186', 'PL822', 'PT16H', 'PT16G', 'AT112', 'ITG2F', 'ITI16', 'ITI15', 'ITI13', 'ITI11', 'ITH58', 'ITH57', 'ITH56', 'ITH54', 'ITH53', 'ITH52', 'ITC48', 'ITC47', 'ITC46', 'ITC44', 'ITC43', 'ITC42', 'ITC41', 'ITC34', 'ITC32', 'ITC20', 'ITC18', 'ITC14', 'ITC4D', 'ITI17', 'ITF21', 'ITI1A', 'AT111', 'ITI44', 'ITI32', 'ITI22', 'LT022', 'LT023', 'HU120', 'ITC12', 'NO0A2', 'SE321', 'FI1D1', 'FI1C3', 'FI1C1', 'FI196', 'FI195', 'FI194', 'FI1D2', 'FI1D3', 'FI1D5', 'FI1D7', 'SE312', 'SE311', 'SE213', 'FI200', 'FI1D9', 'ITC11', 'DE27D', 'DE27C', 'DE722', 'DE71B', 'DE719', 'DE278', 'DE277', 'DE256', 'DE252', 'DE24C', 'DE248', 'DE247', 'DE245', 'DE257', 'DE275', 'DE26A', 'DE723', 'DE269', 'DE267', 'DE94D', 'DE94C', 'DE949', 'DE948', 'DE942', 'DE914', 'DE913', 'DE734', 'DE733', 'DE93B', 'DE922', 'DE932', 'DE238', 'CZ072', 'CZ064', 'CZ052', 'CZ051', 'CZ032', 'CZ031', 'BE353', 'BE352', 'BE252', 'BE351', 'BE335', 'BE334', 'BE328', 'DE214', 'DE22B', 'DE22A', 'DE227', 'DE226', 'DE146', 'DE124', 'DE145', 'ES620', 'ES616', 'ES615', 'ES613', 'FRD22', 'FRD21', 'FRB03', 'ES611', 'ES230', 'ES532', 'ES531', 'ES523', 'ES512', 'ES432', 'ES423', 'ES422', 'ES421', 'ES431', 'FRL01', 'FRF24', 'FRF23', 'FRF22', 'FRF21', 'FRJ15', 'FRI32', 'FRI31', 'FRI14', 'FRJ11', 'DEC06', 'DEC05', 'DEC04', 'DEB3I', 'DEB3E', 'DEE0D', 'DEE0B', 'DEE0A', 'DEE09', 'DEE07', 'DEE06', 'DEE05', 'DEE04', 'DEE01', 'DEB14', 'DEB34', 'DEB1D', 'DEB1B', 'DEF05', 'DEF06', 'EL433', 'EL421', 'EL304', 'EL543', 'DEF0E', 'EE001'],
-         7: ['PL711', 'AT322', 'AT312', 'AT226', 'AT223', 'AT126', 'AT321', 'AT335', 'AT323', 'AT315', 'PL913', 'ITH20', 'ITH51', 'SI042', 'NL342', 'NL341', 'CH051', 'SE332', 'SE322', 'FI1C2', 'FI197', 'FI193', 'SE232', 'SE224', 'SE221', 'SE212', 'FI1D8', 'SI044', 'DE40C', 'DE27E', 'DE27B', 'DE40G', 'DE71C', 'DE716', 'DE715', 'DE600', 'DE501', 'DE255', 'DE24D', 'DE24B', 'DE24A', 'DE249', 'DE246', 'DE258', 'DE259', 'DE25A', 'DE276', 'DE26B', 'DE266', 'DE264', 'DE25C', 'DE25B', 'DE268', 'DE23A', 'DEA17', 'DEA12', 'DE94H', 'DE94F', 'DE94E', 'DE94B', 'DE94A', 'DE947', 'DE946', 'DE912', 'DE737', 'DE736', 'DE735', 'DE732', 'DE941', 'DE937', 'DE936', 'DE935', 'DE934', 'DE725', 'DE933', 'DE931', 'DE927', 'DE926', 'DE239', 'DE237', 'BE253', 'BE236', 'BE234', 'BE213', 'BE212', 'BE211', 'BE257', 'BE344', 'BE343', 'BE336', 'DK021', 'DK022', 'DE21G', 'DE219', 'DE211', 'DE21I', 'DE21J', 'DE236', 'DE235', 'DE234', 'DE229', 'DE224', 'DE228', 'DE11B', 'DE11A', 'DE119', 'DE118', 'DE114', 'DK050', 'DE135', 'DE12C', 'DE12B', 'DE127', 'ES708', 'ES707', 'ES704', 'FRD11', 'FRB06', 'FRB05', 'FRB02', 'FRB01', 'ES220', 'ES213', 'ES114', 'ES113', 'ES412', 'ES413', 'ES414', 'ES415', 'ES511', 'FRE11', 'ES418', 'ES417', 'ES416', 'FRK25', 'FRK21', 'FRK14', 'FRJ28', 'FRJ27', 'FRH01', 'FRG04', 'FRG02', 'FRF12', 'FRF11', 'FRH04', 'FRJ24', 'FRI34', 'FRI23', 'FRI15', 'DEC03', 'DEC01', 'DEB3K', 'DEB3J', 'DEB3G', 'DEB3D', 'DEE03', 'DEE02', 'DEB3B', 'DEA5A', 'DEA59', 'DEA54', 'DEA53', 'DEA46', 'DEA45', 'DEA44', 'DEA43', 'DEA42', 'DEB12', 'DEB15', 'DEB39', 'DEB22', 'DEB1C', 'DEB1A', 'DEB17', 'EL303', 'EL301', 'DEG06', 'DEF0A', 'DEF09', 'DEG0D', 'IE042', 'DEG0P'],
-         8: ['AT211', 'AT127', 'AT332', 'PT170', 'NL213', 'NL212', 'NL211', 'NL131', 'NL124', 'NL112', 'NL111', 'NL226', 'NL321', 'NL414', 'NL413', 'NL412', 'NL411', 'NL33C', 'NL328', 'NL325', 'NL324', 'NL323', 'NL33A', 'LT011', 'SK010', 'CH012', 'CH011', 'CH013', 'CH021', 'CH023', 'CH065', 'CH064', 'CH063', 'CH062', 'CH061', 'CH055', 'CH054', 'CH053', 'CH040', 'CH033', 'CH031', 'CH024', 'CH022', 'NO092', 'NO091', 'NO082', 'NO081', 'NO074', 'NO071', 'NO060', 'NO020', 'SE124', 'DEA41', 'DE40D', 'DE405', 'DE404', 'DE403', 'DE402', 'DE401', 'DE300', 'DE27A', 'DE721', 'DE253', 'DE243', 'DE242', 'DE273', 'DE271', 'DE26C', 'DE265', 'DE263', 'DE724', 'DEA16', 'DEA14', 'DEA13', 'DEA11', 'DE945', 'DEA33', 'DEA32', 'DEA2D', 'DEA2B', 'DEA2A', 'DEA24', 'DEA23', 'DEA22', 'DEA1A', 'DE944', 'DE916', 'DE911', 'DE80L', 'DE804', 'DE803', 'DE93A', 'DE938', 'DE929', 'DE928', 'DE91C', 'BE256', 'BE341', 'BE310', 'DK014', 'DE21H', 'DE21F', 'DE21C', 'DE21B', 'DE21A', 'DE217', 'DE216', 'DE215', 'DE213', 'DE21K', 'DE21L', 'DE233', 'DE232', 'DE231', 'DE225', 'DE222', 'DE21N', 'DE21M', 'DE144', 'DE121', 'DE11D', 'DE11C', 'DE117', 'DE116', 'DE115', 'DE113', 'DE112', 'DE111', 'DK042', 'DE122', 'DE123', 'DE125', 'DE139', 'DE138', 'DE131', 'DE12A', 'DE128', 'DE126', 'ES212', 'FRK28', 'FRK27', 'FRJ26', 'FRJ21', 'DED41', 'DED21', 'DEB3H', 'DEB3F', 'DEF02', 'DEF01', 'DED51', 'DEB3C', 'DEB11', 'DEA52', 'DEA47', 'DEB38', 'DEB37', 'DEB36', 'DEB35', 'DEB33', 'DEB32', 'DEB23', 'DEB21', 'DEB24', 'DEF04', 'IE062', 'DEG09', 'DEG07', 'DEG05', 'DEG04', 'DEG03', 'DEG02', 'DEG01', 'DEF0F', 'DEF0D', 'DEF0C', 'DEF08', 'DEF07', 'DEG0F', 'DEG0H'],
-         9: ['PL21A', 'RO313', 'RO311', 'RO126', 'RO125', 'RO316', 'RO124', 'SI035', 'RO424', 'RO423', 'RO421', 'RO123', 'RO122', 'RO121', 'PT11C', 'PL924', 'PL824', 'RO113', 'PT16D', 'ITH32', 'ITG2H', 'ITG2E', 'ITH34', 'ITH37', 'ITH43', 'ITC4B', 'ITF44', 'HU333', 'LV008', 'HU312', 'HU311', 'HU213', 'HU211', 'LT028', 'SK023', 'HR064', 'BG413', 'BG412', 'BG341', 'BG414', 'BG415', 'CZ080', 'CZ053', 'BG421', 'BE32C', 'HR065', 'EL652', 'EL651', 'FRY50', 'HR062', 'EL642', 'EL306', 'EL527'],
-         10: ['PL722', 'PL721', 'PL714', 'PL713', 'PL712', 'AT311', 'AT213', 'AT122', 'PL821', 'PL823', 'PL923', 'PL843', 'PT16J', 'PT16E', 'ITC13', 'ITH33', 'ITH42', 'ITH41', 'ITC49', 'ITC17', 'ITC16', 'ITC15', 'ITC4A', 'ITF11', 'ITI18', 'ITI45', 'ITI42', 'ITI41', 'ITI21', 'DE80O', 'BG411', 'CZ071', 'CZ063', 'CZ020', 'BE345', 'BE332', 'BE32D', 'BE32B', 'BE32A', 'BE329', 'BE331', 'FRC23', 'FRC22', 'FRC14', 'ES522', 'ES514', 'FRE22', 'FRK13', 'FRG05', 'FRF32', 'FRE23', 'FRE21', 'FRI33', 'DEA58', 'EL434', 'EL307', 'EL305', 'EL302', 'EL542'],
-         11: ['AT124', 'ITI19', 'FI1C5', 'FI1C4', 'SE231', 'SE214', 'SE125', 'SE123', 'SE122', 'SE211', 'DE40B', 'DE407', 'DE40F', 'DEA34', 'DE80N', 'DE80M', 'DE80K', 'DE917', 'DE918', 'DE923', 'BE223', 'BE323', 'DK041', 'DK032', 'DEA38', 'FRD13', 'FRD12', 'FRC13', 'FRC12', 'ES411', 'ES243', 'ES241', 'ES130', 'ES120', 'ES513', 'ES419', 'FRE12', 'FRK22', 'FRK12', 'FRK11', 'FRG03', 'FRF34', 'FRF33', 'FRI11', 'FRI13', 'FRJ25', 'FRJ14', 'FRI22', 'FRI21', 'DED2F', 'DED2E', 'DED42', 'DED43', 'DED45', 'DED44', 'DEA5B', 'DEA57', 'DEA56', 'DEB31', 'DEG0B', 'DEG0A', 'DEG0E', 'IE052', 'IE051', 'IE041', 'DEG0M', 'DEG0L', 'DEG0K', 'DEG0J', 'DEG0I', 'DEG0G'],
-         12: ['AT222', 'NL423', 'NL225', 'NL224', 'NL221', 'NL133', 'NL132', 'NL126', 'NL125', 'MT001', 'NL422', 'NL421', 'NL33B', 'NL333', 'CH066', 'CH025', 'CH070', 'DE40E', 'DE40A', 'DE409', 'DE408', 'DE406', 'DE40I', 'DE40H', 'DEA15', 'DEA18', 'DEA19', 'DEA1B', 'DEA31', 'DEA2C', 'DEA29', 'DEA28', 'DEA27', 'DEA26', 'DEA1F', 'DEA1E', 'DEA1D', 'DEA1C', 'DE80J', 'DE91A', 'DE91B', 'DE925', 'DEA35', 'DK031', 'DEA36', 'ES703', 'FRC21', 'FRC11', 'ES242', 'ES211', 'ES112', 'ES111', 'FRL02', 'FRF31', 'FRJ22', 'DED2D', 'DED2C', 'DED53', 'DED52', 'DEA5C', 'DEA55', 'DEA51', 'DEA37', 'DEF0B', 'DEG0C', 'IE063', 'DEG0N']
-       },
+     policy: {
+       data: [],
+       selectedTags: [],
+       selectedScopes: [],
+       selectedOrigins: [],
+       currentRegion: null,
+       allTags: [],
+       allScopes: [],
+       allOrigins: [],
+       isLoaded: false
+     },
 
-       // Initialize the application
-       async init() {
-         await this.loadStaticData();
-         this.initializeMap();
-         this.bindEvents();
-         this.initializePolicyData();
-         this.restoreSessionState();
-       },
+     config: {
+       mapDataUrl: "layers/polygon_layer.json",
+       mapStyle: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+       initialViewState: {
+         bearing: 0,
+         latitude: 55,
+         longitude: 10,
+         maxZoom: 20,
+         minZoom: 3,
+         pitch: 0,
+         zoom: 3,
+       }
+     },
 
-       // Load all static data from JSON files
-       async loadStaticData() {
-         try {
-           // Load region data
-           const regionResponse = await fetch('data/regions.json');
-           REGION_DATA = await regionResponse.json();
+     state: {
+       isProgrammaticSelection: false
+     },
 
-           // Load development tags
-           const devTagsResponse = await fetch('data/development_tags.json');
-           DEVELOPMENT_TAG_DATA = await devTagsResponse.json();
+     regionGroups: {
+       1: ['PL432', 'PL524', 'PL523', 'PL516', 'PL431', 'PL411', 'PL427', 'PL426', 'PL424', 'PL417', 'PL416', 'PL414', 'PL428', 'PL616', 'PL636', 'PL623', 'PL622', 'PL621', 'PL638', 'PL228', 'AT341', 'RO116', 'RO315', 'RO221', 'RO216', 'RO215', 'RO214', 'RO213', 'RO212', 'RO211', 'RO415', 'RO414', 'RO413', 'RO411', 'PT11B', 'ITG19', 'ITG18', 'ITG17', 'ITG13', 'ITG12', 'ITG11', 'ITF65', 'ITF48', 'ITF46', 'ITF45', 'ITF35', 'ITF33', 'ITF31', 'ITF13', 'HU323', 'LV006', 'LT024', 'LT027', 'SK041', 'BG342', 'BG325', 'BG321', 'BG315', 'BG314', 'BG313', 'BG312', 'CZ041', 'BG311', 'BE342', 'ES425', 'EL645', 'FRY10', 'FRY20', 'FRY30', 'HR026', 'DEB13', 'EL512', 'EL422', 'EL522', 'EL524', 'EL541'],
+       2: ['PL514', 'PL415', 'PL633', 'AT224', 'RO321', 'PL912', 'PT150', 'ITH10', 'ITI14', 'ITH59', 'ITH55', 'ITC31', 'ITC4C', 'ITI43', 'SI043', 'DE717', 'DE713', 'DE502', 'DE279', 'DE262', 'BE232', 'ES640', 'ES630', 'ES618', 'ES617', 'ES614', 'FRC24', 'ES612', 'ES521', 'ES424', 'FRL06', 'FRL05', 'FRL04', 'FRK24', 'FRK23', 'HR050', 'FRI12', 'FRJ13', 'DEC02', 'DEB18', 'EL413', 'EL412', 'EL411'],
+       3: ['AT221', 'AT130', 'AT342', 'AT331', 'ITH44', 'ITC33', 'MT002', 'CH052', 'SE331', 'SE121', 'DE254', 'DE244', 'DE261', 'BE241', 'BE235', 'BE233', 'BE231', 'BE100', 'BE254', 'BE255', 'BE258', 'DE149', 'DE147', 'DE143', 'DE13A', 'DE137', 'DE134', 'DE132', 'DE129', 'DE133', 'FR102', 'ES709', 'ES706', 'ES705', 'FR106', 'FRB04', 'FR107', 'ES533', 'FRL03', 'FRH03', 'FRH02', 'FRG01', 'FRJ23', 'DEB3A', 'DEF03', 'DEB25', 'IE053'],
+       4: ['SI041', 'PL911', 'NL113', 'NL230', 'NL310', 'NL337', 'NL332', 'NL329', 'NL327', 'HU110', 'LU000', 'CH057', 'CH056', 'CH032', 'FI1B1', 'SE110', 'DE71E', 'DE71D', 'DE71A', 'DE718', 'DE714', 'DE712', 'DE711', 'DE251', 'DE241', 'DE274', 'DE272', 'DE731', 'DE943', 'DK012', 'DK011', 'CZ010', 'BE251', 'BE242', 'DK013', 'DE21E', 'DE21D', 'DE218', 'DE212', 'DE148', 'DE223', 'DE221', 'DE142', 'DE141', 'DE136', 'FR104', 'FR103', 'FR101', 'FR105', 'FR108', 'ES300', 'FRK26', 'IE061'],
+       5: ['PL518', 'PL515', 'PL418', 'PL613', 'PL617', 'PL637', 'PL634', 'PL619', 'PL618', 'PL22C', 'PL22B', 'PL227', 'PL225', 'PL224', 'PL219', 'PL218', 'PL217', 'PL214', 'RO314', 'RO312', 'RO226', 'RO225', 'RO224', 'RO223', 'RO222', 'RO317', 'SI036', 'SI031', 'RO422', 'RO412', 'PT119', 'PT112', 'PT111', 'PL926', 'PL925', 'PL922', 'PT16B', 'RO115', 'RO114', 'RO112', 'RO111', 'PT187', 'PT185', 'PT181', 'PT16I', 'PT16F', 'PT184', 'ITH31', 'ITG2G', 'ITG2D', 'ITG16', 'ITG15', 'ITG14', 'ITH35', 'ITI12', 'ITH36', 'ITF64', 'ITF63', 'ITF62', 'ITF61', 'ITF52', 'ITF51', 'ITF47', 'ITF43', 'ITF32', 'ITF22', 'ITF14', 'ITF12', 'ITF34', 'HU332', 'HU331', 'HU321', 'LV009', 'LV007', 'LV005', 'LV003', 'ITI35', 'ITI34', 'ITI33', 'ITI31', 'LT021', 'HU313', 'HU233', 'HU232', 'HU231', 'HU223', 'HU222', 'HU221', 'HU322', 'LT029', 'LT026', 'LT025', 'HU212', 'NO0A3', 'NO0A1', 'SK042', 'SK032', 'SK031', 'SK022', 'SK021', 'SE313', 'DE94G', 'DE939', 'BG344', 'BG343', 'BG334', 'BG333', 'BG332', 'BG331', 'BG324', 'BG323', 'BG322', 'BG422', 'CZ042', 'BG425', 'BG424', 'BG423', 'DE22C', 'EL653', 'FRM02', 'FRM01', 'HR063', 'HR061', 'HR037', 'HR036', 'HR035', 'HR034', 'HR033', 'HR032', 'HR031', 'HR028', 'HR027', 'HR025', 'HR024', 'HR023', 'HR022', 'HR021', 'FRY40', 'FRJ12', 'EL644', 'EL643', 'DEE0E', 'DEE0C', 'DEE08', 'EL515', 'EL514', 'EL513', 'EL511', 'EL432', 'EL431', 'EL521', 'EL523', 'EL641', 'EL633', 'EL632', 'EL631', 'EL624', 'EL623', 'EL622', 'EL621', 'EL613', 'EL612', 'EL533', 'EL532', 'EL531', 'EL526', 'EL525', 'EL611', 'EE00A', 'EE009', 'EE008', 'EE004'],
+       6: ['PL517', 'PL814', 'AT121', 'PL812', 'PL811', 'PL715', 'PL22A', 'AT225', 'AT212', 'AT125', 'AT123', 'PL815', 'AT313', 'AT314', 'PL229', 'PL213', 'AT334', 'AT333', 'RO322', 'AT113', 'SI038', 'SI037', 'SI034', 'SI033', 'SI032', 'PT11A', 'PL921', 'PL842', 'PL841', 'PT11D', 'PT11E', 'PT300', 'PT200', 'PT186', 'PL822', 'PT16H', 'PT16G', 'AT112', 'ITG2F', 'ITI16', 'ITI15', 'ITI13', 'ITI11', 'ITH58', 'ITH57', 'ITH56', 'ITH54', 'ITH53', 'ITH52', 'ITC48', 'ITC47', 'ITC46', 'ITC44', 'ITC43', 'ITC42', 'ITC41', 'ITC34', 'ITC32', 'ITC20', 'ITC18', 'ITC14', 'ITC4D', 'ITI17', 'ITF21', 'ITI1A', 'AT111', 'ITI44', 'ITI32', 'ITI22', 'LT022', 'LT023', 'HU120', 'ITC12', 'NO0A2', 'SE321', 'FI1D1', 'FI1C3', 'FI1C1', 'FI196', 'FI195', 'FI194', 'FI1D2', 'FI1D3', 'FI1D5', 'FI1D7', 'SE312', 'SE311', 'SE213', 'FI200', 'FI1D9', 'ITC11', 'DE27D', 'DE27C', 'DE722', 'DE71B', 'DE719', 'DE278', 'DE277', 'DE256', 'DE252', 'DE24C', 'DE248', 'DE247', 'DE245', 'DE257', 'DE275', 'DE26A', 'DE723', 'DE269', 'DE267', 'DE94D', 'DE94C', 'DE949', 'DE948', 'DE942', 'DE914', 'DE913', 'DE734', 'DE733', 'DE93B', 'DE922', 'DE932', 'DE238', 'CZ072', 'CZ064', 'CZ052', 'CZ051', 'CZ032', 'CZ031', 'BE353', 'BE352', 'BE252', 'BE351', 'BE335', 'BE334', 'BE328', 'DE214', 'DE22B', 'DE22A', 'DE227', 'DE226', 'DE146', 'DE124', 'DE145', 'ES620', 'ES616', 'ES615', 'ES613', 'FRD22', 'FRD21', 'FRB03', 'ES611', 'ES230', 'ES532', 'ES531', 'ES523', 'ES512', 'ES432', 'ES423', 'ES422', 'ES421', 'ES431', 'FRL01', 'FRF24', 'FRF23', 'FRF22', 'FRF21', 'FRJ15', 'FRI32', 'FRI31', 'FRI14', 'FRJ11', 'DEC06', 'DEC05', 'DEC04', 'DEB3I', 'DEB3E', 'DEE0D', 'DEE0B', 'DEE0A', 'DEE09', 'DEE07', 'DEE06', 'DEE05', 'DEE04', 'DEE01', 'DEB14', 'DEB34', 'DEB1D', 'DEB1B', 'DEF05', 'DEF06', 'EL433', 'EL421', 'EL304', 'EL543', 'DEF0E', 'EE001'],
+       7: ['PL711', 'AT322', 'AT312', 'AT226', 'AT223', 'AT126', 'AT321', 'AT335', 'AT323', 'AT315', 'PL913', 'ITH20', 'ITH51', 'SI042', 'NL342', 'NL341', 'CH051', 'SE332', 'SE322', 'FI1C2', 'FI197', 'FI193', 'SE232', 'SE224', 'SE221', 'SE212', 'FI1D8', 'SI044', 'DE40C', 'DE27E', 'DE27B', 'DE40G', 'DE71C', 'DE716', 'DE715', 'DE600', 'DE501', 'DE255', 'DE24D', 'DE24B', 'DE24A', 'DE249', 'DE246', 'DE258', 'DE259', 'DE25A', 'DE276', 'DE26B', 'DE266', 'DE264', 'DE25C', 'DE25B', 'DE268', 'DE23A', 'DEA17', 'DEA12', 'DE94H', 'DE94F', 'DE94E', 'DE94B', 'DE94A', 'DE947', 'DE946', 'DE912', 'DE737', 'DE736', 'DE735', 'DE732', 'DE941', 'DE937', 'DE936', 'DE935', 'DE934', 'DE725', 'DE933', 'DE931', 'DE927', 'DE926', 'DE239', 'DE237', 'BE253', 'BE236', 'BE234', 'BE213', 'BE212', 'BE211', 'BE257', 'BE344', 'BE343', 'BE336', 'DK021', 'DK022', 'DE21G', 'DE219', 'DE211', 'DE21I', 'DE21J', 'DE236', 'DE235', 'DE234', 'DE229', 'DE224', 'DE228', 'DE11B', 'DE11A', 'DE119', 'DE118', 'DE114', 'DK050', 'DE135', 'DE12C', 'DE12B', 'DE127', 'ES708', 'ES707', 'ES704', 'FRD11', 'FRB06', 'FRB05', 'FRB02', 'FRB01', 'ES220', 'ES213', 'ES114', 'ES113', 'ES412', 'ES413', 'ES414', 'ES415', 'ES511', 'FRE11', 'ES418', 'ES417', 'ES416', 'FRK25', 'FRK21', 'FRK14', 'FRJ28', 'FRJ27', 'FRH01', 'FRG04', 'FRG02', 'FRF12', 'FRF11', 'FRH04', 'FRJ24', 'FRI34', 'FRI23', 'FRI15', 'DEC03', 'DEC01', 'DEB3K', 'DEB3J', 'DEB3G', 'DEB3D', 'DEE03', 'DEE02', 'DEB3B', 'DEA5A', 'DEA59', 'DEA54', 'DEA53', 'DEA46', 'DEA45', 'DEA44', 'DEA43', 'DEA42', 'DEB12', 'DEB15', 'DEB39', 'DEB22', 'DEB1C', 'DEB1A', 'DEB17', 'EL303', 'EL301', 'DEG06', 'DEF0A', 'DEF09', 'DEG0D', 'IE042', 'DEG0P'],
+       8: ['AT211', 'AT127', 'AT332', 'PT170', 'NL213', 'NL212', 'NL211', 'NL131', 'NL124', 'NL112', 'NL111', 'NL226', 'NL321', 'NL414', 'NL413', 'NL412', 'NL411', 'NL33C', 'NL328', 'NL325', 'NL324', 'NL323', 'NL33A', 'LT011', 'SK010', 'CH012', 'CH011', 'CH013', 'CH021', 'CH023', 'CH065', 'CH064', 'CH063', 'CH062', 'CH061', 'CH055', 'CH054', 'CH053', 'CH040', 'CH033', 'CH031', 'CH024', 'CH022', 'NO092', 'NO091', 'NO082', 'NO081', 'NO074', 'NO071', 'NO060', 'NO020', 'SE124', 'DEA41', 'DE40D', 'DE405', 'DE404', 'DE403', 'DE402', 'DE401', 'DE300', 'DE27A', 'DE721', 'DE253', 'DE243', 'DE242', 'DE273', 'DE271', 'DE26C', 'DE265', 'DE263', 'DE724', 'DEA16', 'DEA14', 'DEA13', 'DEA11', 'DE945', 'DEA33', 'DEA32', 'DEA2D', 'DEA2B', 'DEA2A', 'DEA24', 'DEA23', 'DEA22', 'DEA1A', 'DE944', 'DE916', 'DE911', 'DE80L', 'DE804', 'DE803', 'DE93A', 'DE938', 'DE929', 'DE928', 'DE91C', 'BE256', 'BE341', 'BE310', 'DK014', 'DE21H', 'DE21F', 'DE21C', 'DE21B', 'DE21A', 'DE217', 'DE216', 'DE215', 'DE213', 'DE21K', 'DE21L', 'DE233', 'DE232', 'DE231', 'DE225', 'DE222', 'DE21N', 'DE21M', 'DE144', 'DE121', 'DE11D', 'DE11C', 'DE117', 'DE116', 'DE115', 'DE113', 'DE112', 'DE111', 'DK042', 'DE122', 'DE123', 'DE125', 'DE139', 'DE138', 'DE131', 'DE12A', 'DE128', 'DE126', 'ES212', 'FRK28', 'FRK27', 'FRJ26', 'FRJ21', 'DED41', 'DED21', 'DEB3H', 'DEB3F', 'DEF02', 'DEF01', 'DED51', 'DEB3C', 'DEB11', 'DEA52', 'DEA47', 'DEB38', 'DEB37', 'DEB36', 'DEB35', 'DEB33', 'DEB32', 'DEB23', 'DEB21', 'DEB24', 'DEF04', 'IE062', 'DEG09', 'DEG07', 'DEG05', 'DEG04', 'DEG03', 'DEG02', 'DEG01', 'DEF0F', 'DEF0D', 'DEF0C', 'DEF08', 'DEF07', 'DEG0F', 'DEG0H'],
+       9: ['PL21A', 'RO313', 'RO311', 'RO126', 'RO125', 'RO316', 'RO124', 'SI035', 'RO424', 'RO423', 'RO421', 'RO123', 'RO122', 'RO121', 'PT11C', 'PL924', 'PL824', 'RO113', 'PT16D', 'ITH32', 'ITG2H', 'ITG2E', 'ITH34', 'ITH37', 'ITH43', 'ITC4B', 'ITF44', 'HU333', 'LV008', 'HU312', 'HU311', 'HU213', 'HU211', 'LT028', 'SK023', 'HR064', 'BG413', 'BG412', 'BG341', 'BG414', 'BG415', 'CZ080', 'CZ053', 'BG421', 'BE32C', 'HR065', 'EL652', 'EL651', 'FRY50', 'HR062', 'EL642', 'EL306', 'EL527'],
+       10: ['PL722', 'PL721', 'PL714', 'PL713', 'PL712', 'AT311', 'AT213', 'AT122', 'PL821', 'PL823', 'PL923', 'PL843', 'PT16J', 'PT16E', 'ITC13', 'ITH33', 'ITH42', 'ITH41', 'ITC49', 'ITC17', 'ITC16', 'ITC15', 'ITC4A', 'ITF11', 'ITI18', 'ITI45', 'ITI42', 'ITI41', 'ITI21', 'DE80O', 'BG411', 'CZ071', 'CZ063', 'CZ020', 'BE345', 'BE332', 'BE32D', 'BE32B', 'BE32A', 'BE329', 'BE331', 'FRC23', 'FRC22', 'FRC14', 'ES522', 'ES514', 'FRE22', 'FRK13', 'FRG05', 'FRF32', 'FRE23', 'FRE21', 'FRI33', 'DEA58', 'EL434', 'EL307', 'EL305', 'EL302', 'EL542'],
+       11: ['AT124', 'ITI19', 'FI1C5', 'FI1C4', 'SE231', 'SE214', 'SE125', 'SE123', 'SE122', 'SE211', 'DE40B', 'DE407', 'DE40F', 'DEA34', 'DE80N', 'DE80M', 'DE80K', 'DE917', 'DE918', 'DE923', 'BE223', 'BE323', 'DK041', 'DK032', 'DEA38', 'FRD13', 'FRD12', 'FRC13', 'FRC12', 'ES411', 'ES243', 'ES241', 'ES130', 'ES120', 'ES513', 'ES419', 'FRE12', 'FRK22', 'FRK12', 'FRK11', 'FRG03', 'FRF34', 'FRF33', 'FRI11', 'FRI13', 'FRJ25', 'FRJ14', 'FRI22', 'FRI21', 'DED2F', 'DED2E', 'DED42', 'DED43', 'DED45', 'DED44', 'DEA5B', 'DEA57', 'DEA56', 'DEB31', 'DEG0B', 'DEG0A', 'DEG0E', 'IE052', 'IE051', 'IE041', 'DEG0M', 'DEG0L', 'DEG0K', 'DEG0J', 'DEG0I', 'DEG0G'],
+       12: ['AT222', 'NL423', 'NL225', 'NL224', 'NL221', 'NL133', 'NL132', 'NL126', 'NL125', 'MT001', 'NL422', 'NL421', 'NL33B', 'NL333', 'CH066', 'CH025', 'CH070', 'DE40E', 'DE40A', 'DE409', 'DE408', 'DE406', 'DE40I', 'DE40H', 'DEA15', 'DEA18', 'DEA19', 'DEA1B', 'DEA31', 'DEA2C', 'DEA29', 'DEA28', 'DEA27', 'DEA26', 'DEA1F', 'DEA1E', 'DEA1D', 'DEA1C', 'DE80J', 'DE91A', 'DE91B', 'DE925', 'DEA35', 'DK031', 'DEA36', 'ES703', 'FRC21', 'FRC11', 'ES242', 'ES211', 'ES112', 'ES111', 'FRL02', 'FRF31', 'FRJ22', 'DED2D', 'DED2C', 'DED53', 'DED52', 'DEA5C', 'DEA55', 'DEA51', 'DEA37', 'DEF0B', 'DEG0C', 'IE063', 'DEG0N']
+     },
 
-           // Load migration tags
-           const migTagsResponse = await fetch('data/migration_tags.json');
-           MIGRATION_TAG_DATA = await migTagsResponse.json();
+     async init() {
+       await this.loadStaticData();
+       this.initializeMap();
+       this.bindEvents();
+       this.initializePolicyData();
+       this.restoreSessionState();
+     },
 
-           // Load region scores
-           const scoresResponse = await fetch('data/region_scores.json');
-           REGION_SCORES = await scoresResponse.json();
+     async loadStaticData() {
+       try {
+         const regionResponse = await fetch('data/regions.json');
+         REGION_DATA = await regionResponse.json();
 
-           // Load strengths/weaknesses
-           const strengthsResponse = await fetch('data/strengths_weaknesses.json');
-           STRENGTHS_WEAKNESSES_DATA = await strengthsResponse.json();
+         const devTagsResponse = await fetch('data/development_tags.json');
+         DEVELOPMENT_TAG_DATA = await devTagsResponse.json();
 
-           // Load type descriptions
-           const typeDescResponse = await fetch('data/type_descriptions.json');
-           TYPE_DESCRIPTION_DATA = await typeDescResponse.json();
+         const migTagsResponse = await fetch('data/migration_tags.json');
+         MIGRATION_TAG_DATA = await migTagsResponse.json();
 
-           // Load policy data
-           await this.loadPolicyData();
+         const scoresResponse = await fetch('data/region_scores.json');
+         REGION_SCORES = await scoresResponse.json();
 
-           console.log('All static data loaded successfully');
-         } catch (error) {
-           console.error('Error loading static data:', error);
-         }
-       },
+         const strengthsResponse = await fetch('data/strengths_weaknesses.json');
+         STRENGTHS_WEAKNESSES_DATA = await strengthsResponse.json();
 
-       // Load policy data from CSV
-       async loadPolicyData() {
-         try {
-           const response = await fetch('data/regional_policies/policies.csv');
-           const csvText = await response.text();
+         const typeDescResponse = await fetch('data/migration_type_descriptions.json');
+         TYPE_DESCRIPTION_DATA = await typeDescResponse.json();
 
-           // Parse CSV data
-           const lines = csvText.trim().split('\n');
-           const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+         await this.loadPolicyData();
 
-           const data = [];
-           for (let i = 1; i < lines.length; i++) {
-             const line = lines[i];
-             if (!line.trim()) continue;
+         console.log('All static data loaded successfully');
+       } catch (error) {
+         console.error('Error loading static data:', error);
+       }
+     },
 
-             // Parse CSV line, handling quoted fields
-             const values = this.parseCSVLine(line);
+     async loadPolicyData() {
+       try {
+         const response = await fetch('data/regional_policies/policies.csv');
+         const csvText = await response.text();
 
-             if (values.length >= 6) {
-               const policy = {
-                 nuts_codes: this.parseArrayField(values[0]),
-                 policy_tags: this.parseArrayField(values[1]),
-                 policy_summary: values[2].replace(/"/g, '').trim(),
-                 policy_description: values[3].replace(/"/g, '').trim(),
-                 region_origin: this.parseArrayField(values[4]),
-                 links: values[5].replace(/"/g, '').trim()
-               };
-               data.push(policy);
-             }
-           }
+         const lines = csvText.trim().split('\n');
+         const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
 
-           this.policy.data = data;
-           this.policy.isLoaded = true;
-           POLICY_DATA = data; // Update global variable for compatibility
+         const data = [];
+         for (let i = 1; i < lines.length; i++) {
+           const line = lines[i];
+           if (!line.trim()) continue;
 
-           console.log(`Loaded ${data.length} policies from CSV`);
-         } catch (error) {
-           console.error('Error loading policy data:', error);
-           // Fallback to empty data
-           this.policy.data = [];
-           this.policy.isLoaded = true;
-         }
-       },
+           const values = this.parseCSVLine(line);
 
-       // Parse CSV line handling quoted fields
-       parseCSVLine(line) {
-         const result = [];
-         let current = '';
-         let inQuotes = false;
-
-         for (let i = 0; i < line.length; i++) {
-           const char = line[i];
-
-           if (char === '"') {
-             inQuotes = !inQuotes;
-           } else if (char === ',' && !inQuotes) {
-             result.push(current);
-             current = '';
-           } else {
-             current += char;
+           if (values.length >= 8) {
+             const policy = {
+               nuts_codes: this.parseArrayField(values[0]),
+               policy_tags: this.parseArrayField(values[1]),
+               policy_summary: values[2].replace(/"/g, '').trim(),
+               policy_description: values[3].replace(/"/g, '').trim(),
+               region_origin: this.parseArrayField(values[4]),
+               links: values[5].replace(/"/g, '').trim(),
+               scope: values[6] ? values[6].replace(/"/g, '').trim() : '',
+               origin: values[7] ? values[7].replace(/"/g, '').trim() : ''
+             };
+             data.push(policy);
            }
          }
 
-         result.push(current); // Add the last field
-         return result;
-       },
+         this.policy.data = data;
+         this.policy.isLoaded = true;
+         POLICY_DATA = data;
 
-       // Parse array fields from CSV (e.g., "['item1', 'item2']")
-       parseArrayField(field) {
-         try {
-           // Remove outer quotes and clean the field
-           const cleaned = field.replace(/^"/, '').replace(/"$/, '').trim();
+         console.log(`Loaded ${data.length} policies from CSV`);
+       } catch (error) {
+         console.error('Error loading policy data:', error);
+         this.policy.data = [];
+         this.policy.isLoaded = true;
+       }
+     },
 
-           // Handle array format ['item1', 'item2']
-           if (cleaned.startsWith('[') && cleaned.endsWith(']')) {
-             const arrayContent = cleaned.slice(1, -1);
-             if (!arrayContent.trim()) return [];
+     parseCSVLine(line) {
+       const result = [];
+       let current = '';
+       let inQuotes = false;
 
-             // Split by comma and clean each item
-             return arrayContent.split(',').map(item =>
-               item.replace(/'/g, '').replace(/"/g, '').trim()
-             ).filter(item => item.length > 0);
-           }
+       for (let i = 0; i < line.length; i++) {
+         const char = line[i];
 
-           // If not in array format, treat as single item
-           return [cleaned];
-         } catch (error) {
-           console.error('Error parsing array field:', field, error);
-           return [];
-         }
-       },
-
-       // Policy Methods
-       initializePolicyData() {
-         // Extract all unique tags from policy data
-         const allTags = new Set();
-         this.policy.data.forEach(policy => {
-           policy.policy_tags.forEach(tag => allTags.add(tag));
-         });
-         this.policy.allTags = Array.from(allTags).sort();
-       },
-
-       loadPoliciesForRegion(regionCode) {
-         if (!regionCode) {
-           this.clearPolicyDisplay();
-           return;
-         }
-
-         // Check if data is loaded
-         if (!this.policy.isLoaded) {
-           console.log('Policy data not yet loaded');
-           return;
-         }
-
-         this.policy.currentRegion = regionCode;
-
-         // Clear previously selected tags when loading new region
-         this.policy.selectedTags = [];
-
-         // Find policies applicable to this region
-         const applicablePolicies = this.policy.data.filter(policy =>
-           policy.nuts_codes && policy.nuts_codes.includes(regionCode)
-         );
-
-         // Get unique tags for this region's policies
-         const regionTags = new Set();
-         applicablePolicies.forEach(policy => {
-           if (policy.policy_tags) {
-             policy.policy_tags.forEach(tag => regionTags.add(tag));
-           }
-         });
-
-         this.displayPolicyTags(Array.from(regionTags).sort());
-         this.displayPolicies(applicablePolicies);
-       },
-
-       displayPolicyTags(tags) {
-         const container = document.getElementById('policy-tags-container');
-         const title = document.querySelector('#content-tab1 h1');
-
-         if (tags.length === 0) {
-           container.style.display = 'none';
-           title.style.display = 'none';
-           return;
-         }
-
-         title.textContent = 'Select policy areas';
-         title.style.display = 'block';
-         container.style.display = 'flex';
-         container.innerHTML = '';
-
-         tags.forEach(tag => {
-           const button = document.createElement('button');
-           button.className = 'policy-tag-button';
-           button.textContent = tag;
-           button.onclick = () => this.togglePolicyTag(tag, button);
-           container.appendChild(button);
-         });
-       },
-
-       togglePolicyTag(tag, buttonElement) {
-         const isSelected = this.policy.selectedTags.includes(tag);
-
-         if (isSelected) {
-           this.policy.selectedTags = this.policy.selectedTags.filter(t => t !== tag);
-           buttonElement.classList.remove('active');
+         if (char === '"') {
+           inQuotes = ! inQuotes;
+         } else if (char === ',' && !inQuotes) {
+           result.push(current);
+           current = '';
          } else {
-           this.policy.selectedTags.push(tag);
-           buttonElement.classList.add('active');
+           current += char;
+         }
+       }
+
+       result.push(current);
+       return result;
+     },
+
+
+
+     parseArrayField(field) {
+       try {
+         const cleaned = field.replace(/^"/, '').replace(/"$/, '').trim();
+
+         if (cleaned.startsWith('[') && cleaned.endsWith(']')) {
+           const arrayContent = cleaned.slice(1, -1);
+           if (!arrayContent.trim()) return [];
+
+           return arrayContent.split(',').map(item =>
+             item.replace(/'/g, '').replace(/"/g, '').trim()
+           ).filter(item => item.length > 0);
          }
 
-         this.filterAndDisplayPolicies();
-       },
+         return [cleaned];
+       } catch (error) {
+         console.error('Error parsing array field:', field, error);
+         return [];
+       }
+     },
 
-       filterAndDisplayPolicies() {
-         if (!this.policy.currentRegion || !this.policy.isLoaded) {
-           return;
+     initializePolicyData() {
+       const allTags = new Set();
+       const allScopes = new Set();
+       const allOrigins = new Set();
+
+       this.policy.data.forEach(policy => {
+         policy.policy_tags.forEach(tag => allTags.add(tag));
+         if (policy.scope) allScopes.add(policy.scope);
+         if (policy.origin) allOrigins.add(policy.origin);
+       });
+
+       this.policy.allTags = Array.from(allTags).sort();
+       this.policy.allScopes = Array.from(allScopes).sort();
+       this.policy.allOrigins = Array.from(allOrigins).sort();
+     },
+
+     loadPoliciesForRegion(regionCode) {
+       if (!regionCode) {
+         this.clearPolicyDisplay();
+         return;
+       }
+
+       if (!this.policy.isLoaded) {
+         console.log('Policy data not yet loaded');
+         return;
+       }
+
+       this.policy.currentRegion = regionCode;
+
+       this.policy.selectedTags = [];
+       this.policy.selectedScopes = [];
+       this.policy.selectedOrigins = [];
+
+       const applicablePolicies = this.policy.data.filter(policy =>
+         policy.nuts_codes && policy.nuts_codes.includes(regionCode)
+       );
+
+       // Always show intro when a region is selected
+       const intro = document.getElementById('policy-intro');
+       if (intro) intro.style.display = 'block';
+
+       const regionTags = new Set();
+       const regionScopes = new Set();
+       const regionOrigins = new Set();
+
+       applicablePolicies.forEach(policy => {
+         if (policy.policy_tags) {
+           policy.policy_tags.forEach(tag => regionTags.add(tag));
          }
+         if (policy.scope) regionScopes.add(policy.scope);
+         if (policy.origin) regionOrigins.add(policy.origin);
+       });
 
-         let applicablePolicies = this.policy.data.filter(policy =>
-           policy.nuts_codes && policy.nuts_codes.includes(this.policy.currentRegion)
-         );
+       this.displayPolicyTags(Array.from(regionTags).sort());
+       this.displayScopeTags(Array.from(regionScopes).sort());
+       this.displayOriginTags(Array.from(regionOrigins).sort());
+       this.displayPolicies(applicablePolicies);
+     },
 
-         if (this.policy.selectedTags.length > 0) {
-           applicablePolicies = applicablePolicies.filter(policy => {
-             return policy.policy_tags && this.policy.selectedTags.some(selectedTag =>
-               policy.policy_tags.includes(selectedTag)
-             );
-           });
-         }
+     displayPolicyTags(tags) {
+       const container = document.getElementById('policy-tags-container');
+       const section = document.getElementById('policy-areas-section');
 
-         this.displayPolicies(applicablePolicies);
-       },
+       if (tags.length === 0) {
+         section.style.display = 'none';
+         return;
+       }
 
-       displayPolicies(policies) {
-         const container = document.getElementById('policy-summaries-container');
-         const countElement = document.getElementById('policy-count');
+       section.style.display = 'block';
+       container.innerHTML = '';
 
-         if (policies.length === 0) {
-           container.innerHTML = '<div class="no-policies-message">No policies found for the selected criteria.</div>';
-           countElement.style.display = 'none';
-           return;
-         }
+       tags.forEach(tag => {
+         const button = document.createElement('button');
+         button.className = 'policy-tag-button';
+         button.textContent = tag;
+         button.onclick = () => this.togglePolicyTag(tag, button);
+         container.appendChild(button);
+       });
+     },
 
-         countElement.textContent = `${policies.length} polic${policies.length === 1 ? 'y' : 'ies'} found`;
-         countElement.style.display = 'block';
 
-         container.innerHTML = '';
-         policies.forEach((policy, index) => {
-           const card = this.createPolicyCard(policy, index);
-           container.appendChild(card);
+     displayScopeTags(scopes) {
+       const container = document.getElementById('policy-scope-container');
+       const section = document.getElementById('policy-scope-section');
+
+       if (scopes.length === 0) {
+         section.style.display = 'none';
+         return;
+       }
+
+       section.style.display = 'block';
+       container.innerHTML = '';
+
+       scopes.forEach(scope => {
+         const button = document.createElement('button');
+         button.className = 'policy-tag-button policy-scope-button';
+         button.textContent = scope;
+         button.onclick = () => this.toggleScopeTag(scope, button);
+         container.appendChild(button);
+       });
+     },
+
+     displayOriginTags(origins) {
+       const container = document.getElementById('policy-origin-container');
+       const section = document.getElementById('policy-origin-section');
+
+       if (origins.length === 0) {
+         section.style.display = 'none';
+         return;
+       }
+
+       section.style.display = 'block';
+       container.innerHTML = '';
+
+       origins.forEach(origin => {
+         const button = document.createElement('button');
+         button.className = 'policy-tag-button policy-origin-button';
+         button.textContent = origin;
+         button.onclick = () => this.toggleOriginTag(origin, button);
+         container.appendChild(button);
+       });
+     },
+
+     togglePolicyTag(tag, buttonElement) {
+       const isSelected = this.policy.selectedTags.includes(tag);
+
+       if (isSelected) {
+         this.policy.selectedTags = this.policy.selectedTags.filter(t => t !== tag);
+         buttonElement.classList.remove('active');
+       } else {
+         this.policy.selectedTags.push(tag);
+         buttonElement.classList.add('active');
+       }
+
+       this.filterAndDisplayPolicies();
+     },
+
+     toggleScopeTag(scope, buttonElement) {
+       const isSelected = this.policy.selectedScopes.includes(scope);
+
+       if (isSelected) {
+         this.policy.selectedScopes = this.policy.selectedScopes.filter(s => s !== scope);
+         buttonElement.classList.remove('active');
+       } else {
+         this.policy.selectedScopes.push(scope);
+         buttonElement.classList.add('active');
+       }
+
+       this.filterAndDisplayPolicies();
+     },
+
+
+     toggleOriginTag(origin, buttonElement) {
+       const isSelected = this.policy.selectedOrigins.includes(origin);
+
+       if (isSelected) {
+         this.policy.selectedOrigins = this.policy.selectedOrigins.filter(o => o !== origin);
+         buttonElement.classList.remove('active');
+       } else {
+         this.policy.selectedOrigins.push(origin);
+         buttonElement.classList.add('active');
+       }
+
+       this.filterAndDisplayPolicies();
+     },
+
+
+     filterAndDisplayPolicies() {
+       if (!this.policy.currentRegion || !this.policy.isLoaded) {
+         return;
+       }
+
+       let applicablePolicies = this.policy.data.filter(policy =>
+         policy.nuts_codes && policy.nuts_codes.includes(this.policy.currentRegion)
+       );
+
+       if (this.policy.selectedTags.length > 0) {
+         applicablePolicies = applicablePolicies.filter(policy => {
+           return policy.policy_tags && this.policy.selectedTags.some(selectedTag =>
+             policy.policy_tags.includes(selectedTag)
+           );
          });
-       },
+       }
 
-       createPolicyCard(policy, index) {
-         const card = document.createElement('div');
-         card.className = 'policy-card';
-         card.onclick = () => this.openPolicyModal(policy);
-
-         const tagsHtml = policy.policy_tags.map(tag =>
-           `<span class="policy-card-tag">${tag}</span>`
-         ).join('');
-
-         card.innerHTML = `
-           <div class="policy-card-tags">${tagsHtml}</div>
-           <div class="policy-card-summary">${policy.policy_summary}</div>
-         `;
-
-         return card;
-       },
-
-       openPolicyModal(policy) {
-         const modal = document.getElementById('policy-modal');
-         const title = document.getElementById('policy-modal-title');
-         const description = document.getElementById('policy-modal-description');
-         const meta = document.getElementById('policy-modal-meta');
-         const link = document.getElementById('policy-modal-link');
-
-         title.textContent = 'Policy details';
-         description.textContent = policy.policy_description;
-
-         meta.innerHTML = `
-           <div class="policy-modal-meta-item">
-             <span class="policy-modal-meta-label">Policy tags:</span>
-             ${policy.policy_tags.join(', ')}
-           </div>
-           <div class="policy-modal-meta-item">
-             <span class="policy-modal-meta-label">Policy origin region:</span>
-             ${policy.region_origin.join(', ')}
-           </div>
-         `;
-
-         link.href = policy.links;
-         modal.style.display = 'block';
-       },
-
-       closePolicyModal() {
-         document.getElementById('policy-modal').style.display = 'none';
-       },
-
-       clearPolicyDisplay() {
-         this.policy.currentRegion = null;
-         this.policy.selectedTags = [];
-
-         document.querySelectorAll('.policy-tag-button').forEach(button => {
-           button.classList.remove('active');
+       if (this.policy.selectedScopes.length > 0) {
+         applicablePolicies = applicablePolicies.filter(policy => {
+           return policy.scope && this.policy.selectedScopes.includes(policy.scope);
          });
+       }
 
-         document.getElementById('policy-tags-container').style.display = 'none';
-         document.getElementById('policy-count').style.display = 'none';
-         document.getElementById('policy-summaries-container').innerHTML = `
-           <div class="no-policies-message">
-             This page focuses on regional data across Europe.
-             <br>
-             Explore policies tailored to your region, discover trends in regional development, and dive into migration statistics.
-             <br>
-             Start by selecting the region you’re interested in.
-           </div>
-         `;
-         const title = document.querySelector('#content-tab1 h1');
-         title.style.display = 'none';
-       },
-
-       // Map Methods
-       initializeMap() {
-         const { DeckGL, MapView, PolygonLayer, CompassWidget, ZoomWidget } = deck;
-
-         this.map.polygonLayer = this.createPolygonLayer();
-
-         this.map.deckgl = new DeckGL({
-           container: 'map-container',
-           map: maplibregl,
-           mapStyle: this.config.mapStyle,
-           initialViewState: this.config.initialViewState,
-           views: [new MapView({ id: "map", controller: true })],
-           getTooltip: ({ object }) =>
-             object ? `${object.NUTS_ID}\n${object.NUTS_NAME}` : null,
-           getCursor: ({ isHovering }) => (isHovering ? 'crosshair' : 'default'),
-           layers: [this.map.polygonLayer],
-           onClick: this.handlePolygonClick.bind(this),
-           widgets: [
-             new CompassWidget({ id: "compass", viewId: "map" }),
-             new ZoomWidget({ id: "zoom", viewId: "map" }),
-           ],
+       if (this.policy.selectedOrigins.length > 0) {
+         applicablePolicies = applicablePolicies.filter(policy => {
+           return policy.origin && this.policy.selectedOrigins.includes(policy.origin);
          });
-       },
+       }
 
-       createPolygonLayer() {
-         return new deck.PolygonLayer({
-           id: "PolygonLayer",
-           data: this.config.mapDataUrl,
-           pickable: true,
-           getPolygon: d => d.border,
-           filled: true,
-           getLineColor: [37, 42, 83, 255],
-           getFillColor: d =>
-             d.NUTS_ID === this.map.selectedPolygonId ?
-             this.map.selectedFillColor : this.map.defaultFillColor,
-           updateTriggers: {
-             getFillColor: this.map.selectedPolygonId
-           },
-           lineWidthMinPixels: 0.7,
-           opacity: 0.2,
-         });
-       },
+       this.displayPolicies(applicablePolicies);
+     },
 
-       handlePolygonClick({ object }) {
-         if (object) {
-           this.map.selectedPolygonId = object.NUTS_ID;
-           this.updateMapSelection();
-           this.findAndSelectRegion(object.NUTS_ID, object.NUTS_NAME);
-         }
-       },
+     displayPolicies(policies) {
+       const container = document.getElementById('policy-summaries-container');
+       const countElement = document.getElementById('policy-count');
 
-       updateMapSelection() {
-         this.map.polygonLayer = this.createPolygonLayer();
-         if (this.map.deckgl) {
-           this.map.deckgl.setProps({ layers: [this.map.polygonLayer] });
-         }
-       },
+       if (policies.length === 0) {
+         container.innerHTML = '<div class="no-policies-message">No policies found for the selected region.</div>';
+         countElement.style.display = 'none';
+         return;
+       }
 
-       selectRegionOnMap(regionId) {
-         this.map.selectedPolygonId = regionId;
+       countElement.textContent = `${policies.length} polic${policies.length === 1 ? 'y' : 'ies'} found`;
+       countElement.style.display = 'block';
+
+       container.innerHTML = '';
+       policies.forEach((policy, index) => {
+         const card = this.createPolicyCard(policy, index);
+         container.appendChild(card);
+       });
+     },
+
+     createPolicyCard(policy, index) {
+       const card = document.createElement('div');
+       card.className = 'policy-card';
+       card.onclick = () => this.openPolicyModal(policy);
+
+       // Policy area tags (existing)
+       const policyTagsHtml = policy.policy_tags.map(tag =>
+         `<span class="policy-card-tag">${tag}</span>`
+       ).join('');
+
+       // Scope tag
+       const scopeTagHtml = policy.scope ?
+                            `<span class="policy-card-tag" style="background: #4a90a4;">${policy.scope}</span>` : '';
+
+       // Origin tag
+       const originTagHtml = policy.origin ?
+                             `<span class="policy-card-tag" style="background: #ac5737;">${policy.origin}</span>` : '';
+
+       card.innerHTML = `
+         <div class="policy-card-tags">
+           ${policyTagsHtml}
+           ${scopeTagHtml}
+           ${originTagHtml}
+         </div>
+         <div class="policy-card-summary">${policy.policy_summary}</div>
+       `;
+
+       return card;
+     },
+
+
+     openPolicyModal(policy) {
+       const modal = document.getElementById('policy-modal');
+       const title = document.getElementById('policy-modal-title');
+       const description = document.getElementById('policy-modal-description');
+       const meta = document.getElementById('policy-modal-meta');
+       const link = document.getElementById('policy-modal-link');
+
+       title.textContent = 'Policy details';
+       description.textContent = policy.policy_description;
+
+       meta.innerHTML = `
+         <div class="policy-modal-meta-item">
+           <span class="policy-modal-meta-label">Policy tags:</span>
+           ${policy.policy_tags.join(', ')}
+         </div>
+         <div class="policy-modal-meta-item">
+           <span class="policy-modal-meta-label">Policy origin region:</span>
+           ${policy.region_origin.join(', ')}
+         </div>
+         <div class="policy-modal-meta-item">
+           <span class="policy-modal-meta-label">Scope:</span>
+           ${policy.scope}
+         </div>
+         <div class="policy-modal-meta-item">
+           <span class="policy-modal-meta-label">Origin:</span>
+           ${policy.origin}
+         </div>
+       `;
+
+       link.href = policy.links;
+       modal.style.display = 'block';
+     },
+
+
+     closePolicyModal() {
+       document.getElementById('policy-modal').style.display = 'none';
+     },
+
+     clearPolicyDisplay() {
+       this.policy.currentRegion = null;
+       this.policy.selectedTags = [];
+       this.policy.selectedScopes = [];
+       this.policy.selectedOrigins = [];
+
+       document.querySelectorAll('.policy-tag-button').forEach(button => {
+         button.classList.remove('active');
+       });
+
+       const intro = document.getElementById('policy-intro');
+       if (intro) intro.style.display = 'none';
+
+       document.getElementById('policy-areas-section').style.display = 'none';
+       document.getElementById('policy-scope-section').style.display = 'none';
+       document.getElementById('policy-origin-section').style.display = 'none';
+       document.getElementById('policy-count').style.display = 'none';
+       document.getElementById('policy-summaries-container').innerHTML = '';
+     },
+
+     // Map Methods
+     initializeMap() {
+       const { DeckGL, MapView, PolygonLayer, CompassWidget, ZoomWidget } = deck;
+
+       this.map.polygonLayer = this.createPolygonLayer();
+
+       this.map.deckgl = new DeckGL({
+         container: 'map-container',
+         map: maplibregl,
+         mapStyle: this.config.mapStyle,
+         initialViewState: this.config.initialViewState,
+         views: [new MapView({ id: "map", controller: true })],
+         getTooltip: ({ object }) =>
+           object ? `${object.NUTS_ID}\n${object.NUTS_NAME}` : null,
+         getCursor: ({ isHovering }) => (isHovering ? 'crosshair' : 'default'),
+         layers: [this.map.polygonLayer],
+         onClick: this.handlePolygonClick.bind(this),
+         widgets: [
+           new CompassWidget({ id: "compass", viewId: "map" }),
+           new ZoomWidget({ id: "zoom", viewId: "map" }),
+         ],
+       });
+     },
+
+     createPolygonLayer() {
+       return new deck.PolygonLayer({
+         id: "PolygonLayer",
+         data: this.config.mapDataUrl,
+         pickable: true,
+         getPolygon: d => d.border,
+         filled: true,
+         getLineColor: [37, 42, 83, 255],
+         getFillColor: d =>
+           d.NUTS_ID === this.map.selectedPolygonId ?
+           this.map.selectedFillColor : this.map.defaultFillColor,
+         updateTriggers: {
+           getFillColor: this.map.selectedPolygonId
+         },
+         lineWidthMinPixels: 0.7,
+         opacity: 0.2,
+       });
+     },
+
+     handlePolygonClick({ object }) {
+       if (object) {
+         this.map.selectedPolygonId = object.NUTS_ID;
          this.updateMapSelection();
-       },
+         this.findAndSelectRegion(object.NUTS_ID, object.NUTS_NAME);
+       }
+     },
 
-       clearMapSelection() {
-         this.map.selectedPolygonId = null;
-         this.updateMapSelection();
-       },
+     updateMapSelection() {
+       this.map.polygonLayer = this.createPolygonLayer();
+       if (this.map.deckgl) {
+         this.map.deckgl.setProps({ layers: [this.map.polygonLayer] });
+       }
+     },
 
-       // UI Methods
-       bindEvents() {
-         document.addEventListener('click', this.handleTabClick.bind(this));
-         document.getElementById('country').addEventListener('change', this.handleCountryChange.bind(this));
-         document.getElementById('regions').addEventListener('change', this.handleRegionChange.bind(this));
+     selectRegionOnMap(regionId) {
+       this.map.selectedPolygonId = regionId;
+       this.updateMapSelection();
+     },
 
-         // Migration controls
-         document.getElementById('age').addEventListener('change', this.handleMigrationControlChange.bind(this));
-         document.getElementById('gender').addEventListener('change', this.handleMigrationControlChange.bind(this));
-         document.getElementById('education').addEventListener('change', this.handleMigrationControlChange.bind(this));
-         document.getElementById('yearSlider').addEventListener('input', this.updateYear.bind(this));
-         document.getElementById('yearSlider').addEventListener('change', this.handleYearSliderChange.bind(this));
+     clearMapSelection() {
+       this.map.selectedPolygonId = null;
+       this.updateMapSelection();
+     },
 
-         // Policy modal events
-         document.getElementById('policy-modal').addEventListener('click', (e) => {
-           if (e.target.id === 'policy-modal') {
-             this.closePolicyModal();
-           }
-         });
+     bindEvents() {
+       document.addEventListener('click', this.handleTabClick.bind(this));
+       document.getElementById('country').addEventListener('change', this.handleCountryChange.bind(this));
+       document.getElementById('regions').addEventListener('change', this.handleRegionChange.bind(this));
 
-         document.querySelector('.policy-modal-close').addEventListener('click', () => {
+       document.getElementById('start-over-btn').addEventListener('click', this.handleStartOver.bind(this));
+
+       document.getElementById('age').addEventListener('change', this.handleMigrationControlChange.bind(this));
+       document.getElementById('gender').addEventListener('change', this.handleMigrationControlChange.bind(this));
+       document.getElementById('education').addEventListener('change', this.handleMigrationControlChange.bind(this));
+       document.getElementById('yearSlider').addEventListener('input', this.updateYear.bind(this));
+       document.getElementById('yearSlider').addEventListener('change', this.handleYearSliderChange.bind(this));
+
+       document.getElementById('policy-modal').addEventListener('click', (e) => {
+         if (e.target.id === 'policy-modal') {
            this.closePolicyModal();
-         });
-       },
-
-       handleTabClick(event) {
-         if (!event.target.classList.contains('tab-button')) return;
-
-         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-         event.target.classList.add('active');
-         const tabId = event.target.getAttribute('data-tab');
-         const contentElement = document.getElementById(`content-${tabId}`);
-         if (contentElement) {
-           contentElement.classList.add('active');
          }
+       });
 
-         if (tabId === 'tab1') {
-           const regionSelect = document.getElementById('regions');
-           if (regionSelect && regionSelect.value && this.policy.isLoaded) {
-             this.loadPoliciesForRegion(regionSelect.value);
+       document.querySelector('.policy-modal-close').addEventListener('click', () => {
+         this.closePolicyModal();
+       });
+     },
+
+     handleStartOver() {
+       document.getElementById('country').value = '';
+       document.getElementById('regions').innerHTML = '<option value="">Select Region</option>';
+       this.clearRegionSelection();
+     },
+
+     handleTabClick(event) {
+       if (!event.target.classList.contains('tab-button')) return;
+
+       const regionSelect = document.getElementById('regions');
+       if (!regionSelect || !regionSelect.value) {
+         this.showRegionRequiredMessage();
+         return;
+       }
+
+       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+       event.target.classList.add('active');
+       const tabId = event.target.getAttribute('data-tab');
+       const contentElement = document.getElementById(`content-${tabId}`);
+       if (contentElement) {
+         contentElement.classList.add('active');
+       }
+
+       document.getElementById('default-instructions').classList.remove('active');
+
+       if (tabId === 'tab1') {
+         if (regionSelect && regionSelect.value && this.policy.isLoaded) {
+           this.loadPoliciesForRegion(regionSelect.value);
+         }
+       }
+
+       if (tabId === 'tab2') {
+         setTimeout(() => {
+           const iframe = document.querySelector('#regional_development_scores_plot_wrapper iframe');
+           if (iframe) {
+             iframe.src = iframe.src; // Force reload
            }
-         }
+         }, 50);
+       }
 
-         if (tabId === 'tab3') {
-           this.handleMigrationTabActivation();
-         }
-       },
+       if (tabId === 'tab3') {
+         this.handleMigrationTabActivation();
+       }
+     },
 
-       handleCountryChange() {
-         const countrySelect = document.getElementById('country');
-         const regionSelect = document.getElementById('regions');
-         const selectedCountry = countrySelect.value;
+     showRegionRequiredMessage() {
+       const instructionsDiv = document.getElementById('default-instructions');
+       const originalContent = instructionsDiv.innerHTML;
 
-         this.showLoading(regionSelect);
+       instructionsDiv.innerHTML = `
+         <div style="text-align: center; padding: 40px 20px;">
+           <h2 style="font-family: 'Lora', serif; font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #252a53;">
+             Please Select a Region First
+           </h2>
+           <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+             Choose a country and region from the dropdowns on the left to access the data tabs.
+           </p>
+           <div style="padding: 10px; background: #f8f9fa; border-left: 3px solid #252a53; margin: 20px auto; max-width: 300px;">
+             <p style="font-size: 12px; margin: 0; color: #252a53;">
+               Tip: You can also click directly on any region in the map
+             </p>
+           </div>
+         </div>
+       `;
 
-         if (selectedCountry && REGION_DATA[selectedCountry]) {
-           const regions = REGION_DATA[selectedCountry];
-           let options = '<option value="">Select Region</option>';
+       setTimeout(() => {
+         instructionsDiv.innerHTML = originalContent;
+       }, 3000);
+     },
 
-           regions.forEach(([code, name]) => {
-             options += `<option value="${code}">${name}</option>`;
-           });
+     handleCountryChange() {
+       const countrySelect = document.getElementById('country');
+       const regionSelect = document.getElementById('regions');
+       const selectedCountry = countrySelect.value;
 
-           regionSelect.innerHTML = options;
-         } else {
-           regionSelect.innerHTML = '<option value="">Select Region</option>';
-         }
+       this.showLoading(regionSelect);
 
-         this.hideLoading(regionSelect);
+       if (selectedCountry && REGION_DATA[selectedCountry]) {
+         const regions = REGION_DATA[selectedCountry];
+         let options = '<option value="">Select Region</option>';
+
+         regions.forEach(([code, name]) => {
+           options += `<option value="${code}">${name}</option>`;
+         });
+
+         regionSelect.innerHTML = options;
+       } else {
+         regionSelect.innerHTML = '<option value="">Select Region</option>';
+       }
+
+       this.hideLoading(regionSelect);
+
+       if (!this.state.isProgrammaticSelection) {
          this.clearRegionSelection();
-       },
+       }
+     },
 
-       handleRegionChange() {
-         const countrySelect = document.getElementById('country');
-         const regionSelect = document.getElementById('regions');
-         const country = countrySelect.options[countrySelect.selectedIndex].text;
-         const region = regionSelect.options[regionSelect.selectedIndex].text;
+     handleRegionChange() {
+       const countrySelect = document.getElementById('country');
+       const regionSelect = document.getElementById('regions');
+       const country = countrySelect.options[countrySelect.selectedIndex].text;
+       const region = regionSelect.options[regionSelect.selectedIndex].text;
 
-         if (region !== "Select Region" && country !== "Select Country") {
-           document.getElementById('region-title').textContent = `${region}, ${country}`;
-           this.selectRegionOnMap(regionSelect.value);
+       if (region !== "Select Region" && country !== "Select Country") {
+         document.getElementById('default-instructions').classList.remove('active');
+         document.getElementById('start-over-container').style.display = 'block';
 
-           if (this.policy.isLoaded) {
+         const activeTab = document.querySelector('.tab-button.active');
+
+         if (!activeTab) {
+           document.querySelector('.tab-button[data-tab="tab1"]').classList.add('active');
+           document.getElementById('content-tab1').classList.add('active');
+         }
+
+         document.getElementById('region-title').textContent = `${region}, ${country}`;
+         this.selectRegionOnMap(regionSelect.value);
+
+         const currentActiveTab = document.querySelector('.tab-button.active');
+         if (currentActiveTab) {
+           const activeTabId = currentActiveTab.getAttribute('data-tab');
+
+           if (activeTabId === 'tab1' && this.policy.isLoaded) {
              this.loadPoliciesForRegion(regionSelect.value);
+           } else if (activeTabId === 'tab2') {
+             this.loadRegionalDevelopmentData(regionSelect.value);
+           } else if (activeTabId === 'tab3') {
+             this.loadMigrationData(regionSelect.value);
+             this.showMigrationSections();
            }
-
-           this.loadRegionalDevelopmentData(regionSelect.value);
-           this.loadMigrationData(regionSelect.value);
-           this.showMigrationSections();
-           this.showExploreButton();
-
-           this.saveSessionState(countrySelect.value, regionSelect.value);
-         } else {
-           this.clearRegionSelection();
-         }
-       },
-
-       handleMigrationControlChange() {
-         const regionSelect = document.getElementById('regions');
-         if (regionSelect.value) {
-           this.loadMigrationProjection(regionSelect.value);
-         }
-       },
-
-       handleMigrationTabActivation() {
-         const regionSelect = document.getElementById('regions');
-         if (regionSelect && regionSelect.value) {
-           this.loadMigrationProjection(regionSelect.value);
-           this.loadMigrationPyramid(regionSelect.value);
-         }
-       },
-
-       handleYearSliderChange() {
-         const regionSelect = document.getElementById('regions');
-         if (regionSelect.value) {
-           this.loadMigrationPyramid(regionSelect.value);
-         }
-       },
-
-       // Data Loading Methods
-       loadRegionalDevelopmentData(regionCode) {
-         this.loadDevelopmentTags(regionCode);
-         this.loadDevelopmentScores(regionCode);
-         this.loadStrengthsWeaknesses(regionCode);
-         this.loadDevelopmentPlot(regionCode);
-       },
-
-       loadDevelopmentTags(regionCode) {
-         const container = document.getElementById('regional_development_tags');
-         const tags = DEVELOPMENT_TAG_DATA[regionCode];
-
-         if (!tags) {
-           container.innerHTML = '<p>No data available.</p>';
-           return;
          }
 
-         let html = '<div class="regional_development_tags">';
-         ['urban_type', 'devel_status_type', 'delta_devel_score', 'demo_type_words'].forEach(key => {
-           const tagValue = tags[key];
-           if (tagValue) {
-             html += `<button>${tagValue}</button>`;
-           }
-         });
-         html += '</div>';
-
-         container.innerHTML = html;
-       },
-
-       loadDevelopmentScores(regionCode) {
-         const container = document.getElementById('regional_development_scores');
-         const data = REGION_SCORES[regionCode];
-
-         if (!data) {
-           container.innerHTML = '<p>No data available.</p>';
-           return;
+         if (this.policy.isLoaded) {
+           this.loadPoliciesForRegion(regionSelect.value);
          }
+         this.loadRegionalDevelopmentData(regionSelect.value);
+         this.loadMigrationData(regionSelect.value);
+         this.showMigrationSections();
+         this.showExploreButton();
 
-         const formatScore = (val) => `${Math.round(val * 10)}/10`;
+         this.saveSessionState(countrySelect.value, regionSelect.value);
+       } else {
+         this.clearRegionSelection();
+       }
+     },
 
-         const html = `
-           <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Development scores</p>
-           <div class="score-cards">
-             <div class="card">
-               <h3>Economic</h3>
-               <p>${formatScore(data.econ_index)}</p>
-             </div>
-             <div class="card">
-               <h3>Social</h3>
-               <p>${formatScore(data.social_index)}</p>
-             </div>
-             <div class="card">
-               <h3>Living environment</h3>
-               <p>${formatScore(data.liv_env_index)}</p>
-             </div>
-             <div class="card total">
-               <h3>Overall</h3>
-               <p>${formatScore(data.devel_score)}</p>
-             </div>
+     handleMigrationControlChange() {
+       const regionSelect = document.getElementById('regions');
+       if (regionSelect.value) {
+         this.loadMigrationProjection(regionSelect.value);
+       }
+     },
+
+     handleMigrationTabActivation() {
+       const regionSelect = document.getElementById('regions');
+       if (regionSelect && regionSelect.value) {
+         this.loadMigrationProjection(regionSelect.value);
+         this.loadMigrationPyramid(regionSelect.value);
+       }
+     },
+
+     handleYearSliderChange() {
+       const regionSelect = document.getElementById('regions');
+       if (regionSelect.value) {
+         this.loadMigrationPyramid(regionSelect.value);
+       }
+     },
+
+     loadRegionalDevelopmentData(regionCode) {
+
+       const intro = document.getElementById('development-intro');
+       if (intro) intro.style.display = 'block';
+
+       this.loadDevelopmentTags(regionCode);
+       this.loadDevelopmentScores(regionCode);
+       this.loadStrengthsWeaknesses(regionCode);
+       this.loadDevelopmentPlot(regionCode);
+     },
+
+     loadDevelopmentTags(regionCode) {
+       const container = document.getElementById('regional_development_tags');
+       const tags = DEVELOPMENT_TAG_DATA[regionCode];
+
+       if (!tags) {
+         container.innerHTML = '<p>No data available.</p>';
+         return;
+       }
+
+       let html = '<div class="regional_development_tags">';
+       ['urban_type', 'devel_status_type', 'devel_trend_type',].forEach(key => {
+         const tagValue = tags[key];
+         if (tagValue) {
+           html += `<button>${tagValue}</button>`;
+         }
+       });
+       html += '</div>';
+
+       container.innerHTML = html;
+     },
+
+     loadDevelopmentScores(regionCode) {
+       const container = document.getElementById('regional_development_scores');
+       const data = REGION_SCORES[regionCode];
+
+       if (!data) {
+         container.innerHTML = '<p>No data available.</p>';
+         return;
+       }
+
+       const formatScore = (val) => `${Math.round(val * 10)}/10`;
+
+       const html = `
+         <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Development scores</p>
+         <div class="score-cards">
+           <div class="card">
+             <h3>Economic</h3>
+             <p>${formatScore(data.econ_index)}</p>
            </div>
+           <div class="card">
+             <h3>Social</h3>
+             <p>${formatScore(data.social_index)}</p>
+           </div>
+           <div class="card">
+             <h3>Living environment</h3>
+             <p>${formatScore(data.liv_env_index)}</p>
+           </div>
+           <div class="card total">
+             <h3>Overall</h3>
+             <p>${formatScore(data.devel_score)}</p>
+           </div>
+         </div>
+         <br>
+       `;
+
+       container.innerHTML = html;
+     },
+
+     loadStrengthsWeaknesses(regionCode) {
+       const container = document.getElementById('strengths_weaknesses');
+       const data = STRENGTHS_WEAKNESSES_DATA[regionCode];
+
+       if (!data) {
+         container.innerHTML = '<br>';
+         return;
+       }
+
+       const html = `
+         <div class="strengths_weaknesses">
+           <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Strengths and weaknesses</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.regional_development_status || 'No data available.'}</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.regional_development_strengths || 'No data available.'}</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.regional_development_weaknesses || 'No data available.'}</p>
            <br>
-         `;
+         </div>
+       `;
 
-         container.innerHTML = html;
-       },
+       container.innerHTML = html;
+     },
 
-       loadStrengthsWeaknesses(regionCode) {
-         const container = document.getElementById('strengths_weaknesses');
-         const data = STRENGTHS_WEAKNESSES_DATA[regionCode];
+     loadDevelopmentPlot(regionCode) {
+       const container = document.getElementById('regional_development_scores_plot_wrapper');
+       const plotPath = `plots/regional-scores/${regionCode}.html`;
 
-         if (!data) {
-           container.innerHTML = '<br>';
-           return;
-         }
-
-         const html = `
-           <div class="strengths_weaknesses">
-             <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Strengths and weaknesses</p>
-             <p style="font-size: 12px; margin-bottom: 6px;">${data.regional_development_status || 'No data available.'}</p>
-             <p style="font-size: 12px; margin-bottom: 6px;">${data.regional_development_strengths || 'No data available.'}</p>
-             <p style="font-size: 12px; margin-bottom: 6px;">${data.regional_development_weaknesses || 'No data available.'}</p>
-             <p style="font-size: 12px;">${data.regional_demographics || 'No data available.'}</p>
-             <br>
-           </div>
-         `;
-
-         container.innerHTML = html;
-       },
-
-       loadDevelopmentPlot(regionCode) {
-         const container = document.getElementById('regional_development_scores_plot_wrapper');
-         const plotPath = `plots/regional-scores/${regionCode}.html`;
-
-         // Check if file exists by trying to load it
-         fetch(plotPath)
-           .then(response => {
-             if (response.ok) {
-               const html = `
-                 <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Development scores over time</p>
-                 <iframe src="${plotPath}" width="100%" height="320" frameborder="0"></iframe>
-                 <br>
-               `;
-               container.innerHTML = html;
-             } else {
-               container.innerHTML = '<p style="color:#999;">No data available for this region.</p>';
-             }
-           })
-           .catch(() => {
-             container.innerHTML = '<p style="color:#999;">No data available for this region.</p>';
-           });
-       },
-
-       loadMigrationData(regionCode) {
-         this.loadMigrationTags(regionCode);
-         this.loadMigrationTypeDescription(regionCode);
-         if (document.getElementById('content-tab3').classList.contains('active')) {
-           this.loadMigrationProjection(regionCode);
-           this.loadMigrationPyramid(regionCode);
-         }
-       },
-
-       loadMigrationTags(regionCode) {
-         const container = document.getElementById('regional_migration_tags');
-         const tags = MIGRATION_TAG_DATA[regionCode];
-
-         if (!tags) {
-           container.innerHTML = '<p>No data available.</p>';
-           return;
-         }
-
-         let html = '<div class="regional_migration_tags">';
-         ['tag_1', 'tag_2', 'tag_3', 'tag_4'].forEach(key => {
-           const tagValue = tags[key];
-           if (tagValue) {
-             html += `<button>${tagValue}</button>`;
-           }
-         });
-         html += '</div>';
-
-         container.innerHTML = html;
-       },
-
-       loadMigrationTypeDescription(regionCode) {
-         const container = document.getElementById('migration_type_description');
-         const data = TYPE_DESCRIPTION_DATA[regionCode];
-
-         if (!data) {
-           container.innerHTML = '';
-           return;
-         }
-
-         const html = `
-           <div class="migration_type_description">
-             <p style="font-size: 12px; margin-bottom: 2px;">${data.description_text || 'No data available.'}</p>
-             <br>
-           </div>
-         `;
-
-         container.innerHTML = html;
-       },
-
-       loadMigrationProjection(regionCode) {
-         const age = document.getElementById('age').value;
-         const gender = document.getElementById('gender').value;
-         const education = document.getElementById('education').value;
-         const filename = `${regionCode}_${age}_${gender}_${education}.html`;
-         const plotPath = `plots/regional-projections/${filename}`;
-
-         // First check if file exists
-         fetch(plotPath)
-           .then(response => {
-             if (response.ok) {
-               // Use iframe for HTML plots
-               document.getElementById('plot-content').innerHTML =
-                 `<iframe src="${plotPath}" width="100%" height="400" frameborder="0" style="border: none;"></iframe>`;
-             } else {
-               throw new Error('File not found');
-             }
-           })
-           .catch(() => {
-             document.getElementById('plot-content').innerHTML = `
-               <div class="plot-error" style="text-align: center; padding: 20px; color: #666;">
-                 <p>Plot not available</p>
-                 <small>File not found: ${filename}</small>
-               </div>
+       fetch(plotPath)
+         .then(response => {
+           if (response.ok) {
+             const html = `
+               <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Development scores over time</p>
+               <iframe src="${plotPath}" width="100%" height="320" frameborder="0"></iframe>
+               <br>
              `;
-           });
-       },
+             container.innerHTML = html;
+           } else {
+             container.innerHTML = '<p style="color:#999;">No data available for this region.</p>';
+           }
+         })
+         .catch(() => {
+           container.innerHTML = '<p style="color:#999;">No data available for this region.</p>';
+         });
+     },
 
-       loadMigrationPyramid(regionCode) {
-         const year = document.getElementById('yearSlider').value;
-         const pyramidPath = `plots/regional-pyramids/${regionCode}_${year}.html`;
+     loadMigrationData(regionCode) {
 
-         fetch(pyramidPath)
-           .then(response => {
-             if (response.ok) {
-               document.getElementById('pyramid-content').innerHTML =
-                 `<iframe src="${pyramidPath}" width="100%" height="340" frameborder="0"></iframe>`;
-             } else {
-               document.getElementById('pyramid-content').innerHTML =
-                 `<div style="text-align: center; padding: 20px; color: #666;"><p>Population pyramid not available for ${regionCode} in ${year}</p></div>`;
-             }
-           })
-           .catch(() => {
+       const intro = document.getElementById('migration-intro');
+       if (intro) intro.style.display = 'block';
+
+       this.loadMigrationTags(regionCode);
+       this.loadMigrationTypeDescription(regionCode);
+       if (document.getElementById('content-tab3').classList.contains('active')) {
+         this.loadMigrationProjection(regionCode);
+         this.loadMigrationPyramid(regionCode);
+       }
+     },
+
+     loadMigrationTags(regionCode) {
+       const container = document.getElementById('regional_migration_tags');
+       const tags = MIGRATION_TAG_DATA[regionCode];
+
+       if (!tags) {
+         container.innerHTML = '<p>No data available.</p>';
+         return;
+       }
+
+       let html = '<div class="regional_migration_tags">';
+       ['pop_growth_tag', 'nat_change_tag', 'migr_tag', 'pop_age_tag', 'age_rate_tag'].forEach(key => {
+         const tagValue = tags[key];
+         if (tagValue) {
+           html += `<button>${tagValue}</button>`;
+         }
+       });
+       html += '</div>';
+
+       container.innerHTML = html;
+     },
+
+
+
+     loadMigrationTypeDescription(regionCode) {
+       const container = document.getElementById('migration_type_description');
+       const data = TYPE_DESCRIPTION_DATA[regionCode];
+
+       if (!data) {
+         container.innerHTML = '';
+         return;
+       }
+
+       const html = `
+         <div class="migration_type_description">
+           <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Strengths and weaknesses</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.pop_growth_text || 'No data available.'}</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.nat_change_text || 'No data available.'}</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.migr_text || 'No data available.'}</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.pop_age_text || 'No data available.'}</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.age_rate_text || 'No data available.'}</p>
+           <br>
+         </div>
+       `;
+
+       container.innerHTML = html;
+     },
+
+     loadMigrationProjection(regionCode) {
+       const age = document.getElementById('age').value;
+       const gender = document.getElementById('gender').value;
+       const education = document.getElementById('education').value;
+       const filename = `${regionCode}_${age}_${gender}_${education}.html`;
+       const plotPath = `plots/regional-projections/${filename}`;
+
+       fetch(plotPath)
+         .then(response => {
+           if (response.ok) {
+             document.getElementById('plot-content').innerHTML =
+               `<iframe src="${plotPath}" width="100%" height="400" frameborder="0" style="border: none;"></iframe>`;
+           } else {
+             throw new Error('File not found');
+           }
+         })
+         .catch(() => {
+           document.getElementById('plot-content').innerHTML = `
+             <div class="plot-error" style="text-align: center; padding: 20px; color: #666;">
+               <p>Plot not available</p>
+               <small>File not found: ${filename}</small>
+             </div>
+           `;
+         });
+     },
+
+     loadMigrationPyramid(regionCode) {
+       const year = document.getElementById('yearSlider').value;
+       const pyramidPath = `plots/regional-pyramids/${regionCode}_${year}.html`;
+
+       fetch(pyramidPath)
+         .then(response => {
+           if (response.ok) {
+             document.getElementById('pyramid-content').innerHTML =
+               `<iframe src="${pyramidPath}" width="100%" height="340" frameborder="0"></iframe>`;
+           } else {
              document.getElementById('pyramid-content').innerHTML =
                `<div style="text-align: center; padding: 20px; color: #666;"><p>Population pyramid not available for ${regionCode} in ${year}</p></div>`;
-           });
-       },
-
-       // UI Helper Methods
-       showLoading(element) {
-         const parent = element.parentElement;
-         const indicator = parent.querySelector('.loading-indicator');
-         if (indicator) {
-           indicator.style.display = 'block';
-         }
-         parent.classList.add('loading');
-       },
-
-       hideLoading(element) {
-         const parent = element.parentElement;
-         const indicator = parent.querySelector('.loading-indicator');
-         if (indicator) {
-           indicator.style.display = 'none';
-         }
-         parent.classList.remove('loading');
-       },
-
-       showMigrationSections() {
-         const projectionSection = document.getElementById('migration-projection');
-         const pyramidSection = document.getElementById('migration-pyramid');
-         if (projectionSection) projectionSection.classList.add('show');
-         if (pyramidSection) pyramidSection.classList.add('show');
-       },
-
-       hideMigrationSections() {
-         const projectionSection = document.getElementById('migration-projection');
-         const pyramidSection = document.getElementById('migration-pyramid');
-         if (projectionSection) projectionSection.classList.remove('show');
-         if (pyramidSection) pyramidSection.classList.remove('show');
-       },
-
-       showExploreButton() {
-         const button = document.getElementById('viewImageButtonDevelopment');
-         const buttonContainer = document.querySelector('.explore-comparable');
-         if (buttonContainer) buttonContainer.classList.add('show');
-         if (button) button.disabled = false;
-       },
-
-       hideExploreButton() {
-         const button = document.getElementById('viewImageButtonDevelopment');
-         const buttonContainer = document.querySelector('.explore-comparable');
-         if (buttonContainer) buttonContainer.classList.remove('show');
-         if (button) button.disabled = true;
-       },
-
-       clearRegionSelection() {
-         document.getElementById('region-title').textContent = "";
-         this.clearMapSelection();
-         this.clearPolicyDisplay();
-         this.hideMigrationSections();
-         this.hideExploreButton();
-         this.clearSessionState();
-
-         // Clear content containers
-         document.getElementById('regional_development_tags').innerHTML = '<p>Select a region</p>';
-         document.getElementById('regional_development_scores').innerHTML = '';
-         document.getElementById('strengths_weaknesses').innerHTML = '<br>';
-         document.getElementById('regional_development_scores_plot_wrapper').innerHTML = '';
-         document.getElementById('regional_migration_tags').innerHTML = '<p>Select a region</p>';
-         document.getElementById('migration_type_description').innerHTML = '';
-         document.getElementById('plot-content').innerHTML = '';
-         document.getElementById('pyramid-content').innerHTML = '';
-       },
-
-       // Region Search Methods
-       findAndSelectRegion(regionId, regionName) {
-         const regionSelect = document.getElementById('regions');
-         const countrySelect = document.getElementById('country');
-
-         // Check if region exists in current dropdown
-         const existingOption = Array.from(regionSelect.options).find(option => option.value === regionId);
-         if (existingOption) {
-           regionSelect.value = regionId;
-           this.handleRegionChange();
-           return;
-         }
-
-         // Search through all countries
-         this.searchRegionAcrossCountries(regionId, regionName, countrySelect, regionSelect);
-       },
-
-       async searchRegionAcrossCountries(regionId, regionName, countrySelect, regionSelect) {
-         this.showRegionSearchLoading(true);
-
-         const originalCountry = countrySelect.value;
-         const originalRegion = regionSelect.value;
-
-         for (const [countryCode, regions] of Object.entries(REGION_DATA)) {
-           const targetRegion = regions.find(([code, name]) => code === regionId);
-
-           if (targetRegion) {
-             countrySelect.value = countryCode;
-             this.handleCountryChange();
-
-             setTimeout(() => {
-               regionSelect.value = regionId;
-               this.showRegionSearchLoading(false);
-               this.handleRegionChange();
-             }, 100);
-             return;
            }
-         }
+         })
+         .catch(() => {
+           document.getElementById('pyramid-content').innerHTML =
+             `<div style="text-align: center; padding: 20px; color: #666;"><p>Population pyramid not available for ${regionCode} in ${year}</p></div>`;
+         });
+     },
 
-         // Region not found - restore original values
-         console.log('Region not found in any country');
-         countrySelect.value = originalCountry;
-         regionSelect.value = originalRegion;
-         this.showRegionSearchLoading(false);
-       },
+     showLoading(element) {
+       const parent = element.parentElement;
+       const indicator = parent.querySelector('.loading-indicator');
+       if (indicator) {
+         indicator.style.display = 'block';
+       }
+       parent.classList.add('loading');
+     },
 
-       showRegionSearchLoading(isLoading) {
-         const regionTitle = document.getElementById('region-title');
-         const dropdownContainer = document.querySelector('.dropdown-container');
+     hideLoading(element) {
+       const parent = element.parentElement;
+       const indicator = parent.querySelector('.loading-indicator');
+       if (indicator) {
+         indicator.style.display = 'none';
+       }
+       parent.classList.remove('loading');
+     },
 
-         if (isLoading) {
-           regionTitle.textContent = 'Searching for region...';
-           regionTitle.style.opacity = '0.7';
-           regionTitle.style.fontStyle = 'italic';
-           dropdownContainer.style.visibility = 'hidden';
-           dropdownContainer.style.opacity = '0';
-           dropdownContainer.style.transition = 'opacity 0.2s ease';
-         } else {
-           regionTitle.style.opacity = '1';
-           regionTitle.style.fontStyle = 'normal';
-           dropdownContainer.style.visibility = 'visible';
-           dropdownContainer.style.opacity = '1';
-         }
-       },
+     showMigrationSections() {
+       const projectionSection = document.getElementById('migration-projection');
+       const pyramidSection = document.getElementById('migration-pyramid');
+       if (projectionSection) projectionSection.classList.add('show');
+       if (pyramidSection) pyramidSection.classList.add('show');
+     },
 
-       // Session Management
-       saveSessionState(country, region) {
-         sessionStorage.setItem('selectedCountry', country);
-         sessionStorage.setItem('selectedRegion', region);
-       },
+     hideMigrationSections() {
+       const projectionSection = document.getElementById('migration-projection');
+       const pyramidSection = document.getElementById('migration-pyramid');
+       if (projectionSection) projectionSection.classList.remove('show');
+       if (pyramidSection) pyramidSection.classList.remove('show');
+     },
 
-       clearSessionState() {
-         sessionStorage.removeItem('selectedCountry');
-         sessionStorage.removeItem('selectedRegion');
-       },
+     showExploreButton() {
+       const button = document.getElementById('viewImageButtonDevelopment');
+       const buttonContainer = document.querySelector('.explore-comparable');
+       if (buttonContainer) buttonContainer.classList.add('show');
+       if (button) button.disabled = false;
+     },
 
-       restoreSessionState() {
-         const savedCountry = sessionStorage.getItem('selectedCountry');
-         const savedRegion = sessionStorage.getItem('selectedRegion');
+     hideExploreButton() {
+       const button = document.getElementById('viewImageButtonDevelopment');
+       const buttonContainer = document.querySelector('.explore-comparable');
+       if (buttonContainer) buttonContainer.classList.remove('show');
+       if (button) button.disabled = true;
+     },
 
-         if (savedCountry) {
-           document.getElementById('country').value = savedCountry;
+     clearRegionSelection() {
+       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+       document.getElementById('default-instructions').classList.add('active');
+       document.getElementById('start-over-container').style.display = 'none';
+
+       document.getElementById('region-title').textContent = "";
+       this.clearMapSelection();
+       this.clearPolicyDisplay();
+       this.hideMigrationSections();
+       this.hideExploreButton();
+       this.clearSessionState();
+
+       const devIntro = document.getElementById('development-intro');
+       if (devIntro) devIntro.style.display = 'none';
+
+       const migIntro = document.getElementById('migration-intro');
+       if (migIntro) migIntro.style.display = 'none';
+
+       document.getElementById('regional_development_tags').innerHTML = '<p>Select a region</p>';
+       document.getElementById('regional_development_scores').innerHTML = '';
+       document.getElementById('strengths_weaknesses').innerHTML = '<br>';
+       document.getElementById('regional_development_scores_plot_wrapper').innerHTML = '';
+       document.getElementById('regional_migration_tags').innerHTML = '<p>Select a region</p>';
+       document.getElementById('migration_type_description').innerHTML = '';
+       document.getElementById('plot-content').innerHTML = '';
+       document.getElementById('pyramid-content').innerHTML = '';
+     },
+
+     findAndSelectRegion(regionId, regionName) {
+       const regionSelect = document.getElementById('regions');
+       const countrySelect = document.getElementById('country');
+
+       const existingOption = Array.from(regionSelect.options).find(option => option.value === regionId);
+       if (existingOption) {
+         regionSelect.value = regionId;
+         this.handleRegionChange();
+         return;
+       }
+
+       this.searchRegionAcrossCountries(regionId, regionName, countrySelect, regionSelect);
+     },
+
+     async searchRegionAcrossCountries(regionId, regionName, countrySelect, regionSelect) {
+       this.showRegionSearchLoading(true);
+
+       const originalCountry = countrySelect.value;
+       const originalRegion = regionSelect.value;
+
+       for (const [countryCode, regions] of Object.entries(REGION_DATA)) {
+         const targetRegion = regions.find(([code, name]) => code === regionId);
+
+         if (targetRegion) {
+           this.state.isProgrammaticSelection = true;
+           countrySelect.value = countryCode;
            this.handleCountryChange();
 
            setTimeout(() => {
-             if (savedRegion) {
-               document.getElementById('regions').value = savedRegion;
-               this.handleRegionChange();
-
-               setTimeout(() => {
-                 this.selectRegionOnMap(savedRegion);
-               }, 500);
-             }
-           }, 500);
-         }
-       },
-
-       // Utility Methods
-       updateYear() {
-         const slider = document.getElementById('yearSlider');
-         const yearValue = document.getElementById('yearValue');
-         if (slider && yearValue) {
-           yearValue.textContent = slider.value;
-         }
-       },
-
-       updatePyramid() {
-         // Called by slider onchange event
-       },
-
-       // Regional Image Methods
-       openRegionalImage() {
-         const regionSelect = document.getElementById('regions');
-         if (!regionSelect || !regionSelect.value) {
-           alert('Please select a region first');
+             regionSelect.value = regionId;
+             this.showRegionSearchLoading(false);
+             this.handleRegionChange();
+             this.state.isProgrammaticSelection = false;
+           }, 100);
            return;
          }
-
-         const regionCode = regionSelect.value;
-         const groupNumber = this.findRegionGroup(regionCode);
-
-         if (groupNumber) {
-           const imagePath = `plots/regional_dev_matrix/regdev_matrix_group_${groupNumber}.html`;
-           window.open(imagePath, '_blank');
-         } else {
-           alert('No comparison data available for this region');
-         }
-       },
-
-       findRegionGroup(regionCode) {
-         for (const [group, regions] of Object.entries(this.regionGroups)) {
-           if (regions.includes(regionCode)) {
-             return group;
-           }
-         }
-         return null;
        }
-     };
 
-     // Initialize the application when DOM is loaded
-     document.addEventListener('DOMContentLoaded', function() {
-       RegionalApp.init();
-       RegionalApp.updateYear(); // Initialize year display
-     });
+       console.log('Region not found in any country');
+       countrySelect.value = originalCountry;
+       regionSelect.value = originalRegion;
+       this.showRegionSearchLoading(false);
+       this.state.isProgrammaticSelection = false;
+     },
 
-     // Legacy function aliases for backward compatibility
-     function updateYear() {
-       RegionalApp.updateYear();
+     showRegionSearchLoading(isLoading) {
+       const regionTitle = document.getElementById('region-title');
+       const dropdownContainer = document.querySelector('.dropdown-container');
+
+       if (isLoading) {
+         regionTitle.textContent = 'Searching for region...';
+         regionTitle.style.opacity = '0.7';
+         regionTitle.style.fontStyle = 'italic';
+         dropdownContainer.style.visibility = 'hidden';
+         dropdownContainer.style.opacity = '0';
+         dropdownContainer.style.transition = 'opacity 0.2s ease';
+       } else {
+         regionTitle.style.opacity = '1';
+         regionTitle.style.fontStyle = 'normal';
+         dropdownContainer.style.visibility = 'visible';
+         dropdownContainer.style.opacity = '1';
+       }
+     },
+
+     saveSessionState(country, region) {
+       sessionStorage.setItem('selectedCountry', country);
+       sessionStorage.setItem('selectedRegion', region);
+     },
+
+     clearSessionState() {
+       sessionStorage.removeItem('selectedCountry');
+       sessionStorage.removeItem('selectedRegion');
+     },
+
+     restoreSessionState() {
+       const savedCountry = sessionStorage.getItem('selectedCountry');
+       const savedRegion = sessionStorage.getItem('selectedRegion');
+
+       if (savedCountry) {
+         document.getElementById('country').value = savedCountry;
+         this.handleCountryChange();
+
+         setTimeout(() => {
+           if (savedRegion) {
+             document.getElementById('regions').value = savedRegion;
+             this.handleRegionChange();
+
+             setTimeout(() => {
+               this.selectRegionOnMap(savedRegion);
+             }, 500);
+           }
+         }, 500);
+       }
+     },
+
+     updateYear() {
+       const slider = document.getElementById('yearSlider');
+       const yearValue = document.getElementById('yearValue');
+       if (slider && yearValue) {
+         yearValue.textContent = slider.value;
+       }
+     },
+
+     updatePyramid() {
+     },
+
+     openRegionalImage() {
+       const regionSelect = document.getElementById('regions');
+       if (!regionSelect || !regionSelect.value) {
+         alert('Please select a region first');
+         return;
+       }
+
+       const regionCode = regionSelect.value;
+       const groupNumber = this.findRegionGroup(regionCode);
+
+       if (groupNumber) {
+         const imagePath = `plots/regional_dev_matrix/regdev_matrix_group_${groupNumber}.html`;
+         window.open(imagePath, '_blank');
+       } else {
+         alert('No comparison data available for this region');
+       }
+     },
+
+     findRegionGroup(regionCode) {
+       for (const [group, regions] of Object.entries(this.regionGroups)) {
+         if (regions.includes(regionCode)) {
+           return group;
+         }
+       }
+       return null;
      }
+   };
 
-     function updatePyramid() {
-       RegionalApp.updatePyramid();
-     }
+   document.addEventListener('DOMContentLoaded', function() {
+     RegionalApp.init();
+     RegionalApp.updateYear();
+   });
 
-     function openRegionalImage() {
-       RegionalApp.openRegionalImage();
-     }
-    </script>
-  </body>
+   function updateYear() {
+     RegionalApp.updateYear();
+   }
+
+   function updatePyramid() {
+     RegionalApp.updatePyramid();
+   }
+
+   function openRegionalImage() {
+     RegionalApp.openRegionalImage();
+   }
+
+  </script>
+
+
 </html>

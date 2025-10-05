@@ -106,6 +106,137 @@
        box-shadow: 0 4px 12px rgba(37, 42, 83, 0.15);
      }
 
+     .corner-feedback {
+       position: fixed;
+       top: 100px;
+       right: 20px;
+       background: #ac5737;
+       color: white;
+       border: none;
+       border-radius: 8px;
+       padding: 1rem;
+       cursor: pointer;
+       z-index: 1000;
+       animation: pulse-glow 2s infinite;
+       font-weight: 600;
+       font-size: 0.85rem;
+       transition: all 0.3s ease;
+     }
+
+     .corner-feedback:hover {
+       background: #8b4429;
+       animation: none;
+       transform: scale(1.05);
+     }
+
+     @keyframes pulse-glow {
+       0%, 100% {
+         box-shadow: 0 0 10px rgba(172, 87, 55, 0.5);
+         transform: scale(1);
+       }
+       50% {
+         box-shadow: 0 0 20px rgba(172, 87, 55, 0.8);
+         transform: scale(1.02);
+       }
+     }
+
+     .popup-overlay {
+       position: fixed;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100%;
+       background-color: rgba(0, 0, 0, 0.5);
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       z-index: 2000;
+       opacity: 0;
+       visibility: hidden;
+       transition: all 0.3s ease;
+     }
+
+     .popup-overlay.active {
+       opacity: 1;
+       visibility: visible;
+     }
+
+     .popup-content {
+       background: white;
+       padding: 2rem;
+       border-radius: 8px;
+       max-width: 600px;
+       width: 90%;
+       max-height: 90vh;
+       overflow-y: auto;
+       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+       transform: scale(0.8);
+       transition: transform 0.3s ease;
+       position: relative;
+     }
+
+     .popup-overlay.active .popup-content {
+       transform: scale(1);
+     }
+
+     .popup-title {
+       font-family: 'Lora', serif;
+       font-size: 1.5rem;
+       font-weight: 700;
+       color: #252a53;
+       margin-bottom: 1rem;
+     }
+
+     .popup-subtitle {
+       color: #252a53;
+       margin-bottom: 2rem;
+       line-height: 1.5;
+     }
+
+     .form-iframe {
+       width: 100%;
+       height: 600px;
+       border: none;
+       border-radius: 4px;
+     }
+
+     .popup-close-btn {
+       position: absolute;
+       top: 1rem;
+       right: 1rem;
+       background: #e2e6f0;
+       border: none;
+       padding: 0.5rem 1rem;
+       border-radius: 4px;
+       cursor: pointer;
+       font-size: 1.2rem;
+       color: #252a53;
+       transition: background-color 0.3s ease;
+     }
+
+     .popup-close-btn:hover {
+       background: #d4d8e3;
+     }
+
+     .popup-option-button {
+       display: inline-block;
+       margin-top: 1rem;
+       padding: 0.5rem 1rem;
+       background: #f8f9fb;
+       color: #252a53;
+       text-decoration: none;
+       border-radius: 4px;
+       border: 2px solid #e2e6f0;
+       transition: all 0.3s ease;
+       font-weight: 500;
+     }
+
+     .popup-option-button:hover {
+       background-color: #252a53;
+       color: white;
+       border-color: #252a53;
+     }
+
      .footer {
        display: grid;
        grid-template-columns: repeat(4, 1fr);
@@ -236,6 +367,10 @@
         body {
           background-size: 48% 26%;
         }
+
+        .form-iframe {
+          height: 500px;
+        }
       }
 
       @media (min-width: 2400px) {
@@ -321,6 +456,23 @@
         .footer-column p {
           width: auto !important;
         }
+
+        .popup-content {
+          width: 95%;
+          padding: 1rem;
+          max-height: 95vh;
+        }
+
+        .form-iframe {
+          height: 450px;
+        }
+
+        .corner-feedback {
+          top: 120px;
+          right: 10px;
+          padding: 0.8rem;
+          font-size: 0.75rem;
+        }
       }
     </style>
   </head>
@@ -347,6 +499,10 @@
       </div>
     </div>
 
+    <button onclick="openPopup()" class="corner-feedback">
+      💡 Add your policy ideas!
+    </button>
+
     <div class="main-content">
       <div class="container">
         <div class="homepage-left">
@@ -362,7 +518,7 @@
 
           <div class="content-section section-intro">
             <p style="font-family: 'Montserrat', sans-serif;">
-              This Dashboard shows how targeted migration policies can stop regional decline and spark new growth. By combining cutting-edge data with real policy examples, it helps you:
+              This Dashboard shows how targeted migration and regional development policies can stop regional decline and spark new growth. By combining cutting-edge data with real policy examples, it helps you:
             </p>
           </div>
 
@@ -433,6 +589,28 @@
       </div>
     </div>
 
+    <div id="popupOverlay" class="popup-overlay">
+      <div class="popup-content">
+        <button onclick="closePopup()" class="popup-close-btn">×</button>
+
+        <div class="popup-title">Add your input to the policies</div>
+        <div class="popup-subtitle">
+          Share your thoughts and experiences directly with our team!
+        </div>
+
+        <iframe
+          src="https://forms.gle/NTSfnwofF92U8bxQ8"
+          class="form-iframe"
+          title="Policy input form">
+          Loading form...
+        </iframe>
+
+        <a href="https://forms.gle/aCc9CcX3g7W4mLvaA" target="_blank" class="popup-option-button">
+          🔗 Open in new tab
+        </a>
+      </div>
+    </div>
+
     <footer class="footer">
       <div class="footer-column">
         <img src="img/eu_logo.png" class="h-10">
@@ -465,5 +643,32 @@
         </p>
       </div>
     </footer>
+
+    <script>
+     function openPopup() {
+       document.getElementById('popupOverlay').classList.add('active');
+       document.body.style.overflow = 'hidden';
+     }
+
+     function closePopup() {
+       document.getElementById('popupOverlay').classList.remove('active');
+       document.body.style.overflow = 'auto';
+     }
+
+     // Close popup when clicking outside the form
+     document.getElementById('popupOverlay').addEventListener('click', function(e) {
+       if (e.target === this) {
+         closePopup();
+       }
+     });
+
+     // Close popup with Escape key
+     document.addEventListener('keydown', function(e) {
+       if (e.key === 'Escape' && document.getElementById('popupOverlay').classList.contains('active')) {
+         closePopup();
+       }
+     });
+
+    </script>
   </body>
 </html>
