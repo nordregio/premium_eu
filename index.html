@@ -39,8 +39,27 @@
         padding: 20px 40px;
       }
 
+      .disclaimer-banner {
+        background: linear-gradient(135deg, #ac5737 0%, #d4734e 100%);
+        color: white;
+        padding: 1rem 2rem;
+        text-align: center;
+        position: fixed;
+        width: 100%;
+        top: 80px;
+        left: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+
+      .disclaimer-banner strong {
+        font-weight: 700;
+      }
+
       .main-content {
-        padding: 60px 0px 40px 0px;
+        padding: 140px 0px 40px 0px;
         flex-grow: 1;
         display: flex;
         align-items: center;
@@ -62,7 +81,6 @@
        flex-wrap: wrap;
        padding: 3rem;
        font-size: 0.9rem;
-       /* border-radius: 8px; */
        box-shadow: 0 2px 8px rgba(37, 42, 83, 0.08);
        border: 1px solid rgba(37, 42, 83, 0.1);
      }
@@ -72,7 +90,6 @@
         width: 48%;
         font-size: 0.9rem;
         background: white;
-        /* border-radius: 8px; */
         box-shadow: 0 2px 8px rgba(37, 42, 83, 0.08);
         border: 1px solid rgba(37, 42, 83, 0.1);
       }
@@ -94,7 +111,6 @@
         border: 2px solid #e2e6f0;
         align-items: center;
         justify-content: space-between;
-        /* border-radius: 6px; */
         font-weight: 500;
       }
 
@@ -108,7 +124,7 @@
 
      .corner-feedback {
        position: fixed;
-       top: 100px;
+       top: 160px;
        right: 20px;
        background: #ac5737;
        color: white;
@@ -324,12 +340,11 @@
       .cta-text {
         font-weight: 500;
         color: #252a53;
-        /* font-style: italic; */
       }
 
       @media (max-width: 1600px) {
         .main-content {
-          padding: 4rem 1rem 1.5rem 1rem;
+          padding: 140px 1rem 1.5rem 1rem;
         }
 
         .homepage-left, .homepage-right {
@@ -346,6 +361,11 @@
 
         .homepage-actions button {
           font-size: 0.8rem;
+        }
+
+        .disclaimer-banner {
+          font-size: 0.8rem;
+          padding: 0.8rem 1.5rem;
         }
 
         .footer {
@@ -384,6 +404,11 @@
 
         .homepage-actions button {
           font-size: 1.1rem;
+        }
+
+        .disclaimer-banner {
+          font-size: 1rem;
+          padding: 1.2rem 2.5rem;
         }
 
         .footer {
@@ -436,8 +461,14 @@
           height: 2rem !important;
         }
 
+        .disclaimer-banner {
+          top: 3rem;
+          font-size: 0.75rem;
+          padding: 0.75rem 1rem;
+        }
+
         .main-content {
-          padding: 6rem 0.5rem 1rem 0.5rem;
+          padding: 7rem 0.5rem 1rem 0.5rem;
         }
 
         .homepage-left, .homepage-right {
@@ -468,7 +499,7 @@
         }
 
         .corner-feedback {
-          top: 120px;
+          top: 130px;
           right: 10px;
           padding: 0.8rem;
           font-size: 0.75rem;
@@ -499,8 +530,12 @@
       </div>
     </div>
 
+    <div class="disclaimer-banner">
+      ⚠️ This Dashboard is still under construction, to be hard-launched in March. Data and policies are still in the draft stage.
+    </div>
+
     <button onclick="openPopup()" class="corner-feedback">
-      💡 Add your policy ideas!
+      💡 Add your input
     </button>
 
     <div class="main-content">
@@ -593,9 +628,16 @@
       <div class="popup-content">
         <button onclick="closePopup()" class="popup-close-btn">×</button>
 
-        <div class="popup-title">Add your input to the policies</div>
+        <!-- <div class="popup-title">Add your input</div> -->
         <div class="popup-subtitle">
-          Share your thoughts and experiences directly with our team!
+          <br>
+
+          The Dashboard is a community knowledge hub where you can share your best practices, implemented policies from your region, and policy suggestions – to inspire others from regions like yours.
+          <br>
+          <br>
+          Help us expand the network of regions learning from each other while facing decline.
+
+
         </div>
 
         <iframe
@@ -655,14 +697,12 @@
        document.body.style.overflow = 'auto';
      }
 
-     // Close popup when clicking outside the form
      document.getElementById('popupOverlay').addEventListener('click', function(e) {
        if (e.target === this) {
          closePopup();
        }
      });
 
-     // Close popup with Escape key
      document.addEventListener('keydown', function(e) {
        if (e.key === 'Escape' && document.getElementById('popupOverlay').classList.contains('active')) {
          closePopup();

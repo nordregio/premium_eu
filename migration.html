@@ -13,7 +13,487 @@
 
     <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png" />
 
-    <link rel="stylesheet" href="styles_migration.css">
+    <!-- <link rel="stylesheet" href="styles_migration.css"> -->
+
+    <style>
+
+      body {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      color: #252a53;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      }
+
+      .footer {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      padding: 1.25rem;
+      color: #252a53;
+      text-align: left;
+      font-size: 0.625rem;
+      background-color: #252a53;
+      margin-top: auto;
+      }
+
+      .footer-column {
+      padding: 0rem 0.625rem 0rem 0.625rem;
+      }
+
+      footer h1 {
+      font-size: 0.625rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: white;
+      }
+
+      footer h2 {
+      font-size: 0.5625rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      color: white;
+      }
+
+      footer p {
+      margin-bottom: 0.375rem;
+      font-size: 0.625rem;
+      color: white;
+      }
+
+      footer a {
+      color: white;
+      text-decoration: none;
+      }
+
+      footer a:hover {
+      text-decoration: underline;
+      }
+
+      @media (max-width: 1600px) {
+      .footer {
+      font-size: 0.5rem;
+      }
+
+      footer h1 {
+      font-size: 0.5rem;
+      }
+
+      footer h2 {
+      font-size: 0.45rem;
+      }
+
+      footer p {
+      font-size: 0.5rem;
+      }
+      }
+
+      @media (min-width: 2400px) {
+      .footer {
+      font-size: 0.8rem;
+      }
+
+      footer h1 {
+      font-size: 0.8rem;
+      }
+
+      footer h2 {
+      font-size: 0.7rem;
+      }
+
+      footer p {
+      font-size: 0.8rem;
+      }
+      }
+
+      @media (max-width: 1200px) {
+      .footer {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+      }
+      }
+
+      @media (max-width: 768px) {
+      .footer {
+      grid-template-columns: 1fr;
+      font-size: 0.6rem;
+      }
+
+      .footer-column p {
+      width: auto !important;
+      }
+      }
+
+      .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      position: fixed;
+      width: 100%;
+      height: 80px;
+      top: 0;
+      left: 0;
+      z-index: 1001;
+      padding: 20px 40px;
+      }
+
+      .main-content {
+      padding: 100px 20px 40px 20px;
+      flex-grow: 1;
+      }
+
+      .region-tabs {
+      display: flex;
+      position: sticky;
+      top: 80px;
+      z-index: 10;
+      background: white;
+      margin: 20px 0;
+      }
+
+      .region-tabs button {
+      flex: 1;
+      cursor: pointer;
+      color: #252a53;
+      background-color: white;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 0.5rem 1rem;
+      border: 3px solid #252a53;
+      transition: background-color 0.2s ease-in-out;
+      }
+
+      .region-tabs button:not(:last-child) {
+      margin-right: 2px;
+      }
+
+      .region-tabs button:hover,
+      .region-tabs button.active {
+      background-color: #252a53;
+      color: white;
+      }
+
+      .hidden {
+      display: none;
+      }
+
+      /* Perspectives specific styles */
+      .perspectives-intro {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      color: #252a53;
+      }
+
+      .perspectives-filters {
+      margin-bottom: 20px;
+      }
+
+      .filter-section {
+      margin-bottom: 15px;
+      }
+
+      .filter-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #252a53;
+      }
+
+      .main-topic-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+      }
+
+      .main-topic-button {
+      background: #eee;
+      border: 1px solid #252a53;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 12px;
+      text-align: center;
+      color: #252a53;
+      transition: all 0.3s ease;
+      border-radius: 4px;
+      font-weight: 400;
+      }
+
+      .main-topic-button:hover {
+      transform: translateY(-2px);
+      background-color: #f5f5f5;
+      }
+
+      .main-topic-button.active {
+      background: #252a53;
+      color: white;
+      font-weight: 600;
+      }
+
+      .topic-groups {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+      min-height: 40px;
+      transition: all 0.3s ease;
+      }
+
+      .topic-groups.hidden {
+      opacity: 0.3;
+      pointer-events: none;
+      }
+
+      .topic-group-button {
+      background: #f8f9fa;
+      border: 1px solid #ccc;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 11px;
+      text-align: center;
+      color: #666;
+      transition: all 0.3s ease;
+      border-radius: 4px;
+      font-weight: 400;
+      position: relative;
+      }
+
+      .topic-group-button:hover {
+      background-color: #e9ecef;
+      border-color: #999;
+      }
+
+      .topic-group-button.active {
+      background: #6c757d;
+      color: white;
+      border-color: #6c757d;
+      font-weight: 500;
+      }
+
+      .topic-group-button.related {
+      background: #e8f4f8;
+      border-color: #252a53;
+      color: #252a53;
+      }
+
+      .topic-group-button.related:hover {
+      background-color: #d1ecf1;
+      }
+
+      .topic-group-button.related.active {
+      background: #252a53;
+      color: white;
+      border-color: #252a53;
+      }
+
+      .topic-group-button.dimmed {
+      opacity: 0.4;
+      cursor: not-allowed;
+      }
+
+      .topic-connection-info {
+      font-size: 11px;
+      color: #666;
+      font-style: italic;
+      margin-bottom: 8px;
+      min-height: 15px;
+      }
+
+      .dropdown-filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+      }
+
+      .dropdown-filter {
+      display: flex;
+      flex-direction: column;
+      }
+
+      .dropdown-filter label {
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: #252a53;
+      }
+
+      .dropdown-filter select {
+      padding: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #333;
+      background-color: white;
+      }
+
+      .dropdown-filter select:focus {
+      outline: none;
+      border-color: #252a53;
+      }
+
+      .perspectives-count {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 10px;
+      font-weight: 500;
+      }
+
+      .perspectives-quotes {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 15px;
+      }
+
+      .quote-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+
+      .quote-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-color: #252a53;
+      }
+
+      .quote-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+      }
+
+      .quote-card-tag {
+      background: #252a53;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 500;
+      }
+
+      .quote-card-content {
+      font-size: 13px;
+      line-height: 1.4;
+      color: #333;
+      font-style: italic;
+      }
+
+      .quote-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      }
+
+      .quote-modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 700px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      }
+
+      .quote-modal-close {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #aaa;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      }
+
+      .quote-modal-close:hover {
+      color: #252a53;
+      background-color: #f5f5f5;
+      }
+
+      .quote-modal-title {
+      font-family: 'Lora', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #252a53;
+      margin-bottom: 15px;
+      padding-right: 40px;
+      }
+
+      .quote-modal-quote {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 20px;
+      font-style: italic;
+      padding: 15px;
+      background: #f8f9fa;
+      border-left: 4px solid #252a53;
+      }
+
+      .quote-modal-additional {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 20px;
+      }
+
+      .quote-modal-meta {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      }
+
+      .quote-modal-meta-item {
+      margin-bottom: 8px;
+      font-size: 13px;
+      }
+
+      .quote-modal-meta-label {
+      font-weight: 600;
+      color: #252a53;
+      display: inline-block;
+      min-width: 120px;
+      }
+
+      .no-quotes-message {
+      font-size: 12px;
+      }
+
+      .highlight-text {
+      background: linear-gradient(120deg, rgba(172, 87, 55, 0.1) 0%, transparent 100%);
+      padding: 0.125rem 0.25rem;
+      border-radius: 0.1875rem;
+      font-weight: 500;
+      }
+
+
+    </style>
+
   </head>
 
   <body>
@@ -102,11 +582,11 @@
             <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
               These stories add context to the data shown elsewhere in the Dashboard, helping you see how real experiences shape mobility patterns and what makes regions more or less attractive to newcomers.
             </p>
-            <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;"> Start by selecting the topic you are interested in. </p>
-            <p style="margin-bottom: 0; line-height: 1.6; font-size: 12px; color: #666; font-style: italic;">
-              Note: This section contains sample data for demonstration purposes.
-            </p>
-
+            <p style="margin-bottom: 0px; line-height: 1.6; font-size: 14px; color: #333;"> Start by selecting the topic you are interested in. </p>
+            <!-- <p style="margin-bottom: 0; line-height: 1.6; font-size: 12px; color: #666; font-style: italic;">
+                 Note: This section contains sample data for demonstration purposes.
+                 </p>
+            -->
           </div>
         </div>
 
@@ -120,6 +600,9 @@
             </div>
           </div>
 
+
+
+
           <!-- Topic Groups -->
           <div class="filter-section">
             <h3>Sub-topics</h3>
@@ -131,6 +614,9 @@
             </div>
           </div>
 
+
+
+
           <!-- Dropdown Filters -->
           <div class="filter-section">
             <h3>Filter by characteristics</h3>
@@ -139,18 +625,18 @@
                 <label for="gender-filter">Gender</label>
                 <select id="gender-filter" name="gender">
                   <option value="">All genders</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
                 </select>
               </div>
               <div class="dropdown-filter">
                 <label for="age-filter">Age group</label>
                 <select id="age-filter" name="age_group">
                   <option value="">All ages</option>
-                  <option value="18-25">18-25</option>
-                  <option value="26-40">26-40</option>
-                  <option value="41-54">41-54</option>
-                  <option value="55-70">55-70</option>
+                  <!-- <option value="18-25">18-25</option>
+                       <option value="26-40">26-40</option>
+                       <option value="41-54">41-54</option>
+                       <option value="55-70">55-70</option> -->
                 </select>
               </div>
               <div class="dropdown-filter">
@@ -199,7 +685,7 @@
             This page gives you a map overview of integration across Europe, showing how well different regions support newcomers in settling, working, and participating in society.
           </p>
           <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
-            Explore regional scores to see where integration is strongest, where challenges remain, and how your region compares. The index is based on in-depth interviews and combines indicators on employment, education, social inclusion, and civic participation to provide a snapshot of how effectively regions turn arrival into belonging.
+            Explore regional scores to see where integration is strongest, where challenges remain, and how your region compares. The index combines indicators on employment, education, social inclusion, and civic participation to provide a snapshot of how effectively regions turn arrival into belonging.
           </p>
           <p style="margin-bottom: 0; line-height: 1.6; font-size: 14px; color: #333;">
             Use the map to identify leading examples and regions facing similar integration challenges. Insights that can guide more inclusive and resilient regional development.
@@ -269,6 +755,7 @@
      let allTopicGroups = [];
      let allBirthLocations = [];
      let allInterviewLocations = [];
+     let allAgeGroups = [];
      let topicConnections = {}; // Maps main topics to their related additional topics
 
      // Initialize the application
@@ -280,7 +767,7 @@
      // Load perspectives data from CSV
      async function loadPerspectivesData() {
        try {
-         const response = await fetch('data/migration_perspectives/perspectives.csv');
+         const response = await fetch('data/migration_perspectives/quotes.csv');
          const csvText = await response.text();
 
          // Parse CSV data
@@ -295,17 +782,16 @@
            // Parse CSV line, handling quoted fields
            const values = parseCSVLine(line);
 
-           if (values.length >= 9) {
+           if (values.length >= 8) {
              const perspective = {
                quote: values[0].replace(/"/g, '').trim(),
-               topic_main: values[1].replace(/"/g, '').trim(),
+               topic_main: values[1].replace(/"/g, '').trim().split(',').map(t => t.trim()),
                topic_additional: parseArrayField(values[2]),
                interview_location: values[3].replace(/"/g, '').trim(),
                migration_type: values[4].replace(/"/g, '').trim(),
                age_group: values[5].replace(/"/g, '').trim(),
                birth_location: values[6].replace(/"/g, '').trim(),
-               gender: values[7].replace(/"/g, '').trim(),
-               additional_info: values[8].replace(/"/g, '').trim()
+               gender: values[7].replace(/"/g, '').trim()
              };
              data.push(perspective);
            }
@@ -365,26 +851,31 @@
        const topicGroups = new Set();
        const birthLocations = new Set();
        const interviewLocations = new Set();
+       const ageGroups = new Set();
 
        // Build topic connections
        topicConnections = {};
 
        PERSPECTIVES_DATA.forEach(perspective => {
+         // Handle topic_main as array
          if (perspective.topic_main) {
-           mainTopics.add(perspective.topic_main);
+           perspective.topic_main.forEach(mainTopic => {
+             mainTopics.add(mainTopic);
 
-           // Build connections between main topics and additional topics
-           if (!topicConnections[perspective.topic_main]) {
-             topicConnections[perspective.topic_main] = new Set();
-           }
-           perspective.topic_additional.forEach(additionalTopic => {
-             topicConnections[perspective.topic_main].add(additionalTopic);
-             topicGroups.add(additionalTopic);
+             // Build connections between main topics and additional topics
+             if (!topicConnections[mainTopic]) {
+               topicConnections[mainTopic] = new Set();
+             }
+             perspective.topic_additional.forEach(additionalTopic => {
+               topicConnections[mainTopic].add(additionalTopic);
+               topicGroups.add(additionalTopic);
+             });
            });
          }
 
          if (perspective.birth_location) birthLocations.add(perspective.birth_location);
          if (perspective.interview_location) interviewLocations.add(perspective.interview_location);
+         if (perspective.age_group) ageGroups.add(perspective.age_group);
        });
 
        // Convert sets to arrays and sort
@@ -392,6 +883,7 @@
        allTopicGroups = Array.from(topicGroups).sort();
        allBirthLocations = Array.from(birthLocations).sort();
        allInterviewLocations = Array.from(interviewLocations).sort();
+       allAgeGroups = Array.from(ageGroups).sort();
 
        // Convert topic connection sets to arrays
        Object.keys(topicConnections).forEach(mainTopic => {
@@ -453,6 +945,15 @@
          option.textContent = location;
          interviewLocationSelect.appendChild(option);
        });
+
+       // Populate age groups
+       const ageSelect = document.getElementById('age-filter');
+       allAgeGroups.forEach(ageGroup => {
+         const option = document.createElement('option');
+         option.value = ageGroup;
+         option.textContent = ageGroup;
+         ageSelect.appendChild(option);
+       });
      }
 
      // Toggle main topic selection
@@ -469,6 +970,9 @@
 
        // Clear selected topic groups when main topics change
        selectedTopicGroups = [];
+       document.querySelectorAll('.topic-group-button').forEach(btn => {
+         btn.classList.remove('active');
+       });
 
        // Update topic group visibility and connection info
        updateTopicGroupVisibility();
@@ -508,9 +1012,9 @@
        // Update connection info
        if (relatedTopics.size > 0) {
          const mainTopicsText = selectedMainTopics.join(', ');
-         connectionInfo.textContent = `Additional topics related to ${mainTopicsText}:`;
+         connectionInfo.textContent = `Sub-topics related to ${mainTopicsText}:`;
        } else {
-         connectionInfo.textContent = 'No additional topics found for selected main topics';
+         connectionInfo.textContent = 'No sub-topics found for selected main topics';
        }
 
        // Update button states
@@ -552,7 +1056,9 @@
        // Filter by main topics
        if (selectedMainTopics.length > 0) {
          filteredPerspectives = filteredPerspectives.filter(perspective =>
-           selectedMainTopics.includes(perspective.topic_main)
+           selectedMainTopics.some(selectedTopic =>
+             perspective.topic_main.includes(selectedTopic)
+           )
          );
        }
 
@@ -597,7 +1103,11 @@
        const countElement = document.getElementById('perspectives-count');
 
        if (perspectives.length === 0) {
-         container.innerHTML = '<div class="no-quotes-message">No perspectives found for the selected criteria.</div>';
+         // Show different message if no main topic is selected vs. filters returning no results
+         const message = selectedMainTopics.length === 0
+                       ? 'Select a topic above to explore migration perspectives'
+                       : 'No perspectives found for the selected criteria. Try adjusting your filters.';
+         container.innerHTML = `<div class="no-quotes-message">${message}</div>`;
          countElement.style.display = 'none';
          return;
        }
@@ -649,15 +1159,15 @@
        // Set modal content
        title.textContent = 'Migration Perspective';
        quote.textContent = `"${perspective.quote}"`;
-       additional.textContent = perspective.additional_info;
+       additional.style.display = 'none'; // Hide since we don't have this field
 
        meta.innerHTML = `
          <div class="quote-modal-meta-item">
            <span class="quote-modal-meta-label">Main topic:</span>
-           ${perspective.topic_main}
+           ${perspective.topic_main.join(', ')}
          </div>
          <div class="quote-modal-meta-item">
-           <span class="quote-modal-meta-label">Additional topics:</span>
+           <span class="quote-modal-meta-label">Sub-topic:</span>
            ${perspective.topic_additional.join(', ')}
          </div>
          <div class="quote-modal-meta-item">
@@ -710,7 +1220,7 @@
        });
      }
 
-     // Fixed switchTab function
+     // Tab switching function
      function switchTab(tabId) {
        // Hide the default tab content
        const defaultTab = document.getElementById('tab-content');
