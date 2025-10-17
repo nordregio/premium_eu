@@ -92,7 +92,7 @@
      }
 
      .map-dropdown label {
-       font-size: 10px;
+       font-size: 14px;
        font-weight: 700;
        color: #252a53;
        margin-bottom: 4px;
@@ -153,7 +153,7 @@
      }
 
      #region-title {
-       font-size: 14px;
+       font-size: 18px;
        font-weight: 700;
        color: #252a53;
        margin: 15px 0 10px 0;
@@ -744,7 +744,7 @@
        }
 
        #region-title {
-         font-size: 16px;
+         font-size: 18px;
          padding: 0.5rem 0.75rem;
        }
 
@@ -758,6 +758,7 @@
   </head>
   <body>
     <!-- Header Section -->
+
     <div class="header">
       <div>
         <a href="index.html">
@@ -765,6 +766,11 @@
         </a>
       </div>
       <div style="font-family: 'Montserrat', sans-serif; font-size: 14px">
+        <button type="button"
+                onclick="window.location.href='index.html';"
+                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+          HOME
+        </button>
         <button type="button"
                 onclick="window.location.href='about.html';"
                 class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
@@ -777,6 +783,7 @@
         </button>
       </div>
     </div>
+
 
     <!-- Main Content -->
     <div class="main-content">
@@ -861,45 +868,45 @@
 
         <div id="default-instructions" class="tab-content active">
           <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
-            <h2 style="font-family: 'Lora', serif; font-size: 16px; font-weight: 700; margin-bottom: 14px; margin-top: 0; color: #252a53;">
+            <h2 style="font-family: 'Lora', serif; font-size: 18px; font-weight: 700; margin-bottom: 14px; margin-top: 0; color: #252a53;">
               Explore European Regional Data
             </h2>
 
-            <p style="font-size: 12px; line-height: 1.6; color: #333; margin-bottom: 20px;">
+            <p style="font-size: 14px; line-height: 1.6; color: #333; margin-bottom: 20px;">
               This page helps you see where your region stands, understand the forces shaping it, and find policy ideas you can adapt to strengthen its future.
             </p>
 
             <div style="margin-bottom: 14px;">
-              <h3 style="font-size: 13px; font-weight: 700; color: #252a53; margin-bottom: 6px; margin-top: 0;">
+              <h3 style="font-size: 15px; font-weight: 700; color: #252a53; margin-bottom: 6px; margin-top: 0;">
                 Step 1: Select a Region
               </h3>
-              <p style="font-size: 12px; line-height: 1.6; color: #333; margin: 0;">
+              <p style="font-size: 14px; line-height: 1.6; color: #333; margin: 0;">
                 Choose a country and region from the dropdowns on the left, or click directly on any region in the interactive map.
               </p>
             </div>
 
-            <div style="margin-bottom: 14px;">
-              <h3 style="font-size: 13px; font-weight: 700; color: #252a53; margin-bottom: 6px; margin-top: 0;">
+            <div style="margin-bottom: 15px;">
+              <h3 style="font-size: 14px; font-weight: 700; color: #252a53; margin-bottom: 6px; margin-top: 0;">
                 Step 2: Explore Data
               </h3>
-              <p style="font-size: 12px; line-height: 1.6; color: #333; margin: 0;">
+              <p style="font-size: 14px; line-height: 1.6; color: #333; margin: 0;">
                 Once a region is selected, use the tabs above to explore policy solutions, development scores, and migration trends.
               </p>
             </div>
 
             <div>
-              <h3 style="font-size: 13px; font-weight: 700; color: #252a53; margin-bottom: 8px; margin-top: 0;">
+              <h3 style="font-size: 15px; font-weight: 700; color: #252a53; margin-bottom: 8px; margin-top: 0;">
                 What You'll Discover
               </h3>
-              <ul style="font-size: 12px; line-height: 1.7; color: #333; padding-left: 20px; margin: 0;">
+              <ul style="font-size: 14px; line-height: 1.7; color: #333; padding-left: 20px; margin: 0;">
                 <li style="margin-bottom: 6px;">
-                  <strong>Policy solutions:</strong> Tailored to your region’s specific development profile and needs. Learn from examples that have worked in other regions and filter by type of policy.
+                  <strong style="color: #252a53;">Policy solutions:</strong> Tailored to your region’s specific development profile and needs. Learn from examples that have worked in other regions and filter by type of policy.
                 </li>
                 <li style="margin-bottom: 6px;">
-                  <strong>Regional development:</strong> See economic, social, and living environment indicators to identify strengths and weaknesses.
+                  <strong style="color: #252a53;">Regional development:</strong> See economic, social, and living environment indicators to identify strengths and weaknesses.
                 </li>
                 <li style="margin-bottom: 6px;">
-                  <strong>Migration:</strong> Learn about the age, gender, and education of those moving to your region and how these trends will evolve.
+                  <strong style="color: #252a53;">Migration:</strong> Learn about the age, gender, and education of those moving to your region and how these trends will evolve.
                 </li>
               </ul>
             </div>
@@ -911,15 +918,18 @@
         <div id="content-tab1" class="tab-content">
           <div id="policy-intro" style="display: none;">
             <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
-              <p style="margin-bottom: 14px; line-height: 1.6; font-size: 12px; color: #333;">
-                Here you'll find policy ideas from across Europe to help your region tackle decline and attract newcomers. Every example is linked to regions with similar challenges, so you can compare approaches, get inspired, and even reach out to peers.
+              <p style="margin-bottom: 14px; line-height: 1.6; font-size: 14px; color: #333;">
+                Here you can find <strong style="color: #252a53;">policy suggestions from your or other regions</strong>, based on what has worked to tackle decline and attract newcomers.
+                <br>
+                <br>
+                These policies should be viewed as examples to inspire adaption and not a one-size-fits-all solution. Almost all policies are linked to regions going through a similar development as your region so you can compare approaches and even reach out to peers.
               </p>
 
-              <p style="margin-bottom: 10px; line-height: 1.6; font-size: 12px; color: #333;">
-                You can filter policies by <strong>relevant policy areas</strong> and explore three types of solutions:
+              <p style="margin-bottom: 10px; line-height: 1.6; font-size: 14px; color: #333;">
+                You can filter policies by <strong style="color: #252a53;">relevant policy areas</strong> and explore three types of solutions:
               </p>
 
-              <ol style="margin-left: 20px; margin-bottom: 14px; line-height: 1.7; font-size: 12px; color: #333;">
+              <ol style="margin-left: 20px; margin-bottom: 14px; line-height: 1.7; font-size: 14px; color: #333;">
                 <li style="margin-bottom: 6px;">
                   <strong style="color: #252a53;">AI-scraped and summarised</strong> from public sources
                 </li>
@@ -931,15 +941,13 @@
                 </li>
               </ol>
 
-              <p style="margin-bottom: 14px; line-height: 1.6; font-size: 12px; color: #333;">
-                This page is your evidence-based library of solutions and a place to exchange ideas with other regions.
-              </p>
+              <!-- <div style="background: white; border: 1px solid #ddd; padding: 12px; border-radius: 4px; margin-top: 14px;">
+                   <p style="font-size: 13px; color: #666; line-height: 1.5; margin: 0;">
+                   <strong style="color: #252a53;">Disclaimer:</strong> We provide policy recommendations based on what has worked in other regions. They are examples to inspire adaptation, not one-size-fits-all solutions.
+                   </p>
+                   </div>
+              -->
 
-              <div style="background: white; border: 1px solid #ddd; padding: 12px; border-radius: 4px; margin-top: 14px;">
-                <p style="font-size: 11px; color: #666; line-height: 1.5; margin: 0;">
-                  <strong style="color: #252a53;">Disclaimer:</strong> We provide policy recommendations based on what has worked in other regions. They are examples to inspire adaptation, not one-size-fits-all solutions.
-                </p>
-              </div>
             </div>
           </div>
 
@@ -974,11 +982,11 @@
 
           <div id="development-intro" style="display: none;">
             <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
-              <p style="margin-bottom: 14px; line-height: 1.6; font-size: 12px; color: #333;">
+              <p style="margin-bottom: 14px; line-height: 1.6; font-size: 14px; color: #333;">
                 This page shows your region's development status based on key economic, social, and living environment indicators. You can explore overall scores, identify strengths and weaknesses, and track how your region's performance has changed over time.
               </p>
 
-              <p style="margin-bottom: 0; line-height: 1.6; font-size: 12px; color: #333;">
+              <p style="margin-bottom: 0; line-height: 1.6; font-size: 14px; color: #333;">
                 Understanding these patterns is essential for policymakers: it provides the context behind demographic change, helping you design policies that strengthen resilience, address weaknesses, and build on your region's unique assets.
               </p>
             </div>
@@ -1013,7 +1021,7 @@
 
           <div id="migration-intro" style="display: none;">
             <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
-              <p style="margin-bottom: 0; line-height: 1.6; font-size: 12px; color: #333;">
+              <p style="margin-bottom: 0; line-height: 1.6; font-size: 14px; color: #333;">
                 Migration patterns shape who lives, works, and invests in a region. Here you can see which migration characteristics define your region, based on recent flows, demographics, and the profiles of people moving in and out.
               </p>
             </div>
