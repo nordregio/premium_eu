@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8">
@@ -1034,7 +1034,7 @@
           </div>
 
           <div class="migration-projection" id="migration-projection">
-            <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Migration projection (sample data)</p>
+            <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Migration projection</p>
 
             <div class="migration_projections_controls">
               <div class="migration_projections_control-group">
@@ -1043,36 +1043,18 @@
                   <option value="total">Total</option>
 
                   <option value="0-19">0-19</option>
-                  <option value="20-64">20-64</option>
+                  <option value="20–39">20–39</option>
+                  <option value="40–64">40–64</option>
                   <option value="65+">65+</option>
 
-                  <!-- <option value="0">0</option>
-                       <option value="5">5</option>
-                       <option value="10">10</option>
-                       <option value="15">15</option>
-                       <option value="20">20</option>
-                       <option value="25">25</option>
-                       <option value="30">30</option>
-                       <option value="35">35</option>
-                       <option value="40">40</option>
-                       <option value="45">45</option>
-                       <option value="50">50</option>
-                       <option value="55">55</option>
-                       <option value="60">60</option>
-                       <option value="65">65</option>
-                       <option value="70">70</option>
-                       <option value="75">75</option>
-                       <option value="80">80</option>
-                       <option value="85">85</option>
-                  -->
                 </select>
               </div>
               <div class="migration_projections_control-group">
                 <label for="gender">Gender</label>
                 <select id="gender" name="gender">
                   <option value="total">Total</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
                 </select>
               </div>
               <div class="migration_projections_control-group">
@@ -1080,14 +1062,9 @@
                 <select id="education" name="education">
                   <option value="total">Total</option>
 
-                  <option value="primary">Primary</option>
-                  <option value="secondary">Secondary</option>
-                  <option value="tertiary">Tertiary</option>
-
-                  <!-- <option value="primary">Low</option>
-                       <option value="secondary">Middle</option>
-                       <option value="tertiary">High</option>
-                  -->
+                  <option value="Low">Low</option>
+                  <option value="Middle">Middle</option>
+                  <option value="High">High</option>
 
 
                 </select>
@@ -1946,7 +1923,7 @@
        const tags = DEVELOPMENT_TAG_DATA[regionCode];
 
        if (!tags) {
-         container.innerHTML = '<p>No data available.</p>';
+         container.innerHTML = '<p></p>';
          return;
        }
 
@@ -2092,10 +2069,10 @@
          <div class="migration_type_description">
            <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Strengths and weaknesses</p>
            <p style="font-size: 12px; margin-bottom: 6px;">${data.pop_growth_text || 'No data available.'}</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.nat_change_text || 'No data available.'}</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.migr_text || 'No data available.'}</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.pop_age_text || 'No data available.'}</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.age_rate_text || 'No data available.'}</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.nat_change_text || ''}</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.migr_text || ''}</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.pop_age_text || ''}</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.age_rate_text || ''}</p>
            <br>
          </div>
        `;
@@ -2104,10 +2081,11 @@
      },
 
      loadMigrationProjection(regionCode) {
-       const age = document.getElementById('age').value;
+       const age = document.getElementById('age').value.replace(/[–—]/g, '-');
        const gender = document.getElementById('gender').value;
        const education = document.getElementById('education').value;
-       const filename = `${regionCode}_${age}_${gender}_${education}.html`;
+
+       const filename = `${regionCode}_${age}_${gender.toLowerCase()}_${education.toLowerCase()}.html`;
        const plotPath = `plots/regional-projections/${filename}`;
 
        fetch(plotPath)
@@ -2116,18 +2094,21 @@
              document.getElementById('plot-content').innerHTML =
                `<iframe src="${plotPath}" width="100%" height="400" frameborder="0" style="border: none;"></iframe>`;
            } else {
-             throw new Error('File not found');
+             throw new Error('No data');
            }
          })
          .catch(() => {
            document.getElementById('plot-content').innerHTML = `
              <div class="plot-error" style="text-align: center; padding: 20px; color: #666;">
-               <p>Plot not available</p>
-               <small>File not found: ${filename}</small>
+               <p>No data</p>
+               <small style="color: #fff;">File not found: ${filename}</small>
              </div>
            `;
          });
      },
+
+
+
 
      loadMigrationPyramid(regionCode) {
        const year = document.getElementById('yearSlider').value;
@@ -2345,7 +2326,7 @@
          const imagePath = `plots/regional_dev_matrix/regdev_matrix_group_${groupNumber}.html`;
          window.open(imagePath, '_blank');
        } else {
-         alert('No comparison data available for this region');
+         alert('No comparison data available for this region (yet!)');
        }
      },
 
