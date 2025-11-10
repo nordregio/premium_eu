@@ -195,11 +195,18 @@
        flex: 1;
        height: 20px;
      }
-     .box:nth-child(1) { background-color: rgba(251, 236, 212, 255); }
-     .box:nth-child(2) { background-color: rgba(240, 204, 163, 255); }
-     .box:nth-child(3) { background-color: rgba(224, 167, 121, 255); }
-     .box:nth-child(4) { background-color: rgba(201, 127, 85, 255); }
-     .box:nth-child(5) { background-color: rgba(172, 87, 55, 255); }
+     .box:nth-child(1) { background-color: rgba(254, 247, 233, 255); }
+     .box:nth-child(2) { background-color: rgba(253, 239, 214, 255); }
+     .box:nth-child(3) { background-color: rgba(252, 230, 196, 255); }
+     .box:nth-child(4) { background-color: rgba(250, 219, 174, 255); }
+     .box:nth-child(5) { background-color: rgba(247, 206, 150, 255); }
+     .box:nth-child(6) { background-color: rgba(242, 190, 126, 255); }
+     .box:nth-child(7) { background-color: rgba(236, 170, 101, 255); }
+     .box:nth-child(8) { background-color: rgba(225, 146, 80, 255); }
+     .box:nth-child(9) { background-color: rgba(209, 120, 61, 255); }
+     .box:nth-child(10) { background-color: rgba(185, 94, 46, 255); }
+     .box:nth-child(11) { background-color: rgba(156, 68, 36, 255); }
+     .box:nth-child(12) { background-color: rgba(125, 47, 27, 255); }
      .loader {
        position: absolute;
        top: 30px;
@@ -312,29 +319,23 @@
 
   <body>
 
-
     <div class="header">
       <div>
         <a href="index.html">
-          <img src="img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png" class="h-12">
+          <img src="static/img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png" class="h-12">
         </a>
       </div>
       <div style="font-family: 'Montserrat', sans-serif; font-size: 14px">
-        <button type="button"
-                onclick="window.location.href='index.html';"
-                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
-          HOME
-        </button>
         <button type="button"
                 onclick="window.location.href='about.html';"
                 class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
           ABOUT
         </button>
-        <button type="button"
-                onclick="window.open('https://premium-eu.org/', '_blank')"
-                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
-          PROJECT PAGE
-        </button>
+        <button
+          type="button"
+          onclick="window.open('https://premium-eu.org/', '_blank')"
+          class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+          PROJECT PAGE</button>
       </div>
     </div>
 
@@ -367,19 +368,19 @@
         <ul style="list-style: none; padding-left: 0;">
           <li style="margin-bottom: 10px;">
             <i class="fas fa-chart-line" style="margin-right: 6px;"></i>
-            Overall development – A combined measure of jobs, well-being, and quality of life in your region.
+            Overall development – A combined measure of economic, social, and environmental factors which drive quality of life in your region.
           </li>
           <li style="margin-bottom: 10px;">
             <i class="fas fa-briefcase" style="margin-right: 6px;"></i>
-            Economic strength – The availability of jobs, income levels, and business growth that drive prosperity.
+            Economic strength – Employment, economic resilience, and innovation that drive prosperity.
           </li>
           <li style="margin-bottom: 10px;">
             <i class="fas fa-hands-helping" style="margin-right: 6px;"></i>
-            Social well-being – Access to education, healthcare, and essential services that support a thriving community.
+            Social well-being – Measures of safety and equality which shape daily life.
           </li>
           <li style="margin-bottom: 10px;">
             <i class="fas fa-home" style="margin-right: 6px;"></i>
-            Living environment – Infrastructure, housing, and environmental factors that shape daily life.
+            Living environment – Access to a habitable environment, infrastructure, and healthcare which support a thriving community.
           </li>
         </ul>
 
@@ -419,6 +420,13 @@
             <div class="box"></div>
             <div class="box"></div>
             <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
           </div>
 
           <div class="legend-labels">
@@ -432,10 +440,62 @@
 
         <script>
          const colorMaps = {
-           "development_score": ["rgba(251,236,212,1)", "rgba(240,204,163,1)", "rgba(224,167,121,1)", "rgba(201,127,85,1)", "rgba(172,87,55,1)"],
-           "econ_index": ["rgba(210,209,227,1)", "rgba(173,172,201,1)", "rgba(136,136,174,1)", "rgba(101,103,145,1)", "rgba(37,42,83,1)"],
-           "social_index": ["rgba(174,193,182,1)", "rgba(135,159,137,1)", "rgba(105,125,97,1)", "rgba(79,89,60,1)", "rgba(52,52,24,1)"],
-           "living_env_index": ["rgba(221,221,211,1)", "rgba(192,182,175,1)", "rgba(161,139,139,1)", "rgba(130,104,117,1)", "rgba(52,37,64,1)"],
+           "development_score": [
+             "rgba(254,247,233,1)",
+             "rgba(253,239,214,1)",
+             "rgba(252,230,196,1)",
+             "rgba(250,219,174,1)",
+             "rgba(247,206,150,1)",
+             "rgba(242,190,126,1)",
+             "rgba(236,170,101,1)",
+             "rgba(225,146,80,1)",
+             "rgba(209,120,61,1)",
+             "rgba(185,94,46,1)",
+             "rgba(156,68,36,1)",
+             "rgba(125,47,27,1)"
+           ],
+           "econ_index": [
+             "rgba(235,235,245,1)",
+             "rgba(223,222,239,1)",
+             "rgba(210,209,232,1)",
+             "rgba(195,194,222,1)",
+             "rgba(180,178,212,1)",
+             "rgba(163,161,200,1)",
+             "rgba(144,142,187,1)",
+             "rgba(123,122,170,1)",
+             "rgba(101,101,150,1)",
+             "rgba(78,79,126,1)",
+             "rgba(55,58,102,1)",
+             "rgba(32,37,78,1)"
+           ],
+           "social_index": [
+             "rgba(205,219,209,1)",
+             "rgba(190,207,198,1)",
+             "rgba(177,194,184,1)",
+             "rgba(162,181,170,1)",
+             "rgba(147,166,155,1)",
+             "rgba(132,151,140,1)",
+             "rgba(117,134,124,1)",
+             "rgba(100,116,108,1)",
+             "rgba(83,98,91,1)",
+             "rgba(67,79,74,1)",
+             "rgba(50,60,56,1)",
+             "rgba(34,42,39,1)"
+           ],
+           "living_env_index": [
+             "rgba(236,236,229,1)",
+             "rgba(226,224,218,1)",
+             "rgba(216,212,207,1)",
+             "rgba(205,200,196,1)",
+             "rgba(192,184,182,1)",
+             "rgba(178,168,169,1)",
+             "rgba(162,150,153,1)",
+             "rgba(145,132,137,1)",
+             "rgba(127,112,120,1)",
+             "rgba(107,91,101,1)",
+             "rgba(86,69,83,1)",
+             "rgba(64,48,64,1)"
+           ],
          };
 
          let updateTimeout = null;
@@ -480,7 +540,7 @@
                ? {
                  html: `
                    <div>
-                     <strong>${object.NUTS_NAME}</strong> (${object.NUTS_ID})<br>
+                     <strong>${object.NUTS_NAME}</strong><br>
                      ${object.CNTR} <br><br>
                      <table style="width: 100%; border-collapse: collapse;">
                        <tr>
