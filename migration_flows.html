@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration flows</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+     body {
+       margin: 0;
+       font-family: 'Montserrat', sans-serif;
+       font-weight: 400;
+       background: white;
+       min-height: 100vh;
+       color: #252a53;
+     }
+
+     .container {
+       max-width: 1600px;
+       margin: 0 auto;
+       padding: 20px;
+     }
+
+     .header {
+       text-align: center;
+       margin-bottom: 30px;
+     }
+
+     .main-content {
+       display: flex;
+       gap: 30px;
+       align-items: flex-start;
+     }
+
+     .chart-container {
+       background: white;
+       padding: 30px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+       flex: 1;
+     }
+
+     #chart {
+       display: flex;
+       justify-content: center;
+       align-items: center;
+     }
+
+     #chart svg {
+       display: block;
+     }
+
+     .sidebar {
+       display: flex;
+       flex-direction: column;
+       gap: 20px;
+       min-width: 320px;
+       max-width: 320px;
+     }
+
+     .control-panel {
+       background: white;
+       padding: 20px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+     }
+
+     .control-panel h3 {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 14px;
+       font-weight: 700;
+       margin-top: 0;
+       margin-bottom: 8px;
+       color: #252a53;
+     }
+
+     .filter-section {
+       margin-bottom: 15px;
+     }
+
+     .filter-section h3 {
+       font-size: 14px;
+       font-weight: 700;
+       margin-bottom: 8px;
+       color: #252a53;
+     }
+
+     .stats-panel h3 {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 14px;
+       font-weight: 700;
+       margin-top: 0;
+       margin-bottom: 8px;
+       color: #252a53;
+     }
+
+     .legend h3 {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 14px;
+       font-weight: 700;
+       margin-top: 0;
+       margin-bottom: 8px;
+       color: #252a53;
+       position: sticky;
+       top: 0;
+       background: white;
+       padding-bottom: 10px;
+     }
+
+     .instructions-panel {
+       background: white;
+       border: 1px solid #e0e0e0;
+     }
+
+     .instruction-text {
+       font-size: 12px;
+       line-height: 1.6;
+       color: #555;
+     }
+
+     .instruction-text p {
+       margin: 0 0 12px 0;
+     }
+
+     .instruction-text p:last-child {
+       margin-bottom: 0;
+     }
+
+     .instruction-text strong {
+       color: #252a53;
+       font-weight: 600;
+     }
+
+     .filter-group {
+       margin-bottom: 15px;
+     }
+
+     .filter-group select {
+       width: 100%;
+       padding: 6px 8px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+       font-family: 'Montserrat', sans-serif;
+       font-size: 12px;
+       background: white;
+       cursor: pointer;
+       transition: border-color 0.2s;
+       color: #333;
+     }
+
+     .filter-group select:hover {
+       border-color: #999;
+     }
+
+     .filter-group select:focus {
+       outline: none;
+       border-color: #252a53;
+     }
+
+     .button-group {
+       display: flex;
+       gap: 8px;
+       flex-wrap: wrap;
+     }
+
+     .filter-button {
+       flex: 1;
+       min-width: 60px;
+       padding: 6px 12px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+       background: white;
+       font-family: 'Montserrat', sans-serif;
+       font-size: 11px;
+       font-weight: 400;
+       cursor: pointer;
+       transition: all 0.3s ease;
+       text-align: center;
+       color: #666;
+     }
+
+     .filter-button:hover {
+       background-color: #f5f5f5;
+       border-color: #999;
+     }
+
+     .filter-button.active {
+       background: #252a53;
+       color: white;
+       border-color: #252a53;
+       font-weight: 500;
+     }
+
+     .stats-panel {
+       background: white;
+       padding: 20px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+     }
+
+     .stat-item {
+       display: flex;
+       justify-content: space-between;
+       padding: 8px 0;
+       border-bottom: 1px solid #f0f0f0;
+       font-size: 12px;
+     }
+
+     .stat-item:last-child {
+       border-bottom: none;
+     }
+
+     .stat-label {
+       color: #666;
+       font-weight: 500;
+     }
+
+     .stat-value {
+       color: #252a53;
+       font-weight: 700;
+     }
+
+     .legend {
+       background: white;
+       padding: 20px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+       max-height: 400px;
+       overflow-y: auto;
+     }
+
+     .legend-item {
+       display: flex;
+       align-items: center;
+       margin: 6px 0;
+       font-size: 11px;
+       font-weight: 400;
+       color: #252a53;
+       cursor: pointer;
+       padding: 5px;
+       border-radius: 4px;
+       transition: background-color 0.2s ease;
+     }
+
+     .legend-item:hover {
+       background-color: #f5f5f5;
+     }
+
+     .legend-color {
+       width: 12px;
+       height: 12px;
+       margin-right: 8px;
+       border-radius: 2px;
+       flex-shrink: 0;
+     }
+
+     .tooltip {
+       position: absolute;
+       background: rgba(37, 42, 83, 0.95);
+       color: white;
+       padding: 12px 16px;
+       font-size: 12px;
+       font-weight: 400;
+       pointer-events: none;
+       opacity: 0;
+       transition: opacity 0.3s;
+       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+       border: 1px solid rgba(255,255,255,0.1);
+       border-radius: 4px;
+       line-height: 1.5;
+       z-index: 1000;
+       max-width: 280px;
+     }
+
+     .chord {
+       fill-opacity: 0.65;
+       stroke-opacity: 0;
+       transition: all 0.3s ease;
+     }
+
+     .chord:hover {
+       fill-opacity: 0.85;
+     }
+
+     .group {
+       cursor: pointer;
+       transition: all 0.3s ease;
+     }
+
+     .group:hover {
+       filter: brightness(1.1);
+     }
+
+     .group text {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 10px;
+       font-weight: 500;
+       fill: #252a53;
+     }
+
+     .loading {
+       text-align: center;
+       padding: 40px;
+       font-size: 14px;
+       color: #666;
+     }
+
+     #flowThreshold {
+       width: 100%;
+       margin-top: 5px;
+       -webkit-appearance: none;
+       height: 6px;
+       background: #ddd;
+       border-radius: 3px;
+       outline: none;
+     }
+
+     #flowThreshold::-webkit-slider-thumb {
+       -webkit-appearance: none;
+       appearance: none;
+       width: 16px;
+       height: 16px;
+       background: #252a53;
+       border-radius: 50%;
+       cursor: pointer;
+       background-size: cover;
+     }
+
+     #flowThreshold::-moz-range-thumb {
+       width: 16px;
+       height: 16px;
+       background: #252a53;
+       border-radius: 50%;
+       cursor: pointer;
+       border: none;
+     }
+
+     .threshold-value {
+       font-size: 11px;
+       color: #666;
+       margin-top: 5px;
+       text-align: right;
+     }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="main-content">
+        <div class="chart-container">
+          <div id="loading" class="loading">Loading data...</div>
+          <div id="chart" style="display: none;"></div>
+        </div>
+
+        <div class="sidebar">
+          <div class="control-panel instructions-panel">
+            <!-- <h3>How to use</h3> -->
+            <div class="instruction-text">
+              <!-- <p><strong>About the data:</strong> This visualization shows estimated bilateral migration flows between European countries. The data is broken down by year (2000-2015), age group, sex, and education level.</p> -->
+              <p><strong>Explore migration flows:</strong> Hover over country arcs or flow ribbons to see detailed migration statistics.</p>
+              <p><strong>Filter data:</strong> Use the controls below to filter by year, age group, sex, and education level.</p>
+              <p><strong>Adjust visibility:</strong> Move the threshold slider left to include smaller migration flows and see more connections.</p>
+              <p><strong>Legend interaction:</strong> Hover over countries in the legend to highlight their connections.</p>
+            </div>
+          </div>
+
+          <div class="control-panel">
+            <div class="filter-section">
+              <h3>Year</h3>
+              <div class="filter-group">
+                <select id="yearFilter">
+                  <option value="2015">2015</option>
+                  <option value="2010">2010</option>
+                  <option value="2005">2005</option>
+                  <option value="2000">2000</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="filter-section">
+              <h3>Age group</h3>
+              <div class="filter-group">
+                <div class="button-group" id="ageFilter">
+                  <button class="filter-button active" data-value="all">All</button>
+                  <button class="filter-button" data-value="0-19">0-19</button>
+                  <button class="filter-button" data-value="20-39">20-39</button>
+                  <button class="filter-button" data-value="40-64">40-64</button>
+                  <button class="filter-button" data-value="65+">65+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="filter-section">
+              <h3>Sex</h3>
+              <div class="filter-group">
+                <div class="button-group" id="sexFilter">
+                  <button class="filter-button active" data-value="all">All</button>
+                  <button class="filter-button" data-value="Female">Female</button>
+                  <button class="filter-button" data-value="Male">Male</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="filter-section">
+              <h3>Education</h3>
+              <div class="filter-group">
+                <div class="button-group" id="educationFilter">
+                  <button class="filter-button active" data-value="all">All</button>
+                  <button class="filter-button" data-value="High">High</button>
+                  <button class="filter-button" data-value="Middle">Middle</button>
+                  <button class="filter-button" data-value="Low">Low</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="filter-section">
+              <h3>Minimum flow threshold</h3>
+              <div class="filter-group">
+                <input type="range" id="flowThreshold" min="0" max="10000" value="10000" step="100">
+                <div class="threshold-value">Min: <span id="thresholdValue">10000</span> migrants</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-panel" id="statsPanel">
+            <h3>Statistics</h3>
+            <div class="stat-item">
+              <span class="stat-label">Total Flow:</span>
+              <span class="stat-value" id="totalFlow">-</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Active Routes:</span>
+              <span class="stat-value" id="activeRoutes">-</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Countries:</span>
+              <span class="stat-value" id="countryCount">-</span>
+            </div>
+          </div>
+
+          <div class="legend" id="legend">
+            <h3>Countries</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+     // Country name mapping
+     const countryNames = {
+       'AUT': 'Austria', 'BEL': 'Belgium', 'BGR': 'Bulgaria', 'CHE': 'Switzerland',
+       'CYP': 'Cyprus', 'CZE': 'Czechia', 'DEU': 'Germany', 'DNK': 'Denmark',
+       'ESP': 'Spain', 'EST': 'Estonia', 'FIN': 'Finland', 'FRA': 'France',
+       'GBR': 'United Kingdom', 'GRC': 'Greece', 'HRV': 'Croatia', 'HUN': 'Hungary',
+       'IRL': 'Ireland', 'ISL': 'Iceland', 'ITA': 'Italy', 'LTU': 'Lithuania',
+       'LUX': 'Luxembourg', 'LVA': 'Latvia', 'MLT': 'Malta', 'NLD': 'Netherlands',
+       'NOR': 'Norway', 'POL': 'Poland', 'PRT': 'Portugal', 'ROU': 'Romania',
+       'SVK': 'Slovakia', 'SVN': 'Slovenia', 'SWE': 'Sweden'
+     };
+
+     // Color scale for countries
+     const colorScale = d3.scaleOrdinal()
+                          .domain(Object.keys(countryNames))
+                          .range([
+                            '#252a53', '#2d3748', '#4a5568', '#1a202c', '#2b6cb0',
+                            '#3182ce', '#4299e1', '#63b3ed', '#90cdf4', '#bee3f8',
+                            '#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe',
+                            '#00f2fe', '#43e97b', '#38f9d7', '#ffecd2', '#fcb69f',
+                            '#a8edea', '#fed6e3', '#d299c2', '#fef9d7', '#ecc5fb',
+                            '#667eea', '#764ba2', '#e056fd', '#686de0', '#30336b', '#95afc0'
+                          ]);
+
+     let fullData = [];
+     let currentFilters = {
+       year: 2015,
+       age: 'all',
+       sex: 'all',
+       education: 'all',
+       threshold: 10000
+     };
+
+     // Load CSV data
+     d3.csv('data/migration_flows/d_odasey5_edu3_age4.csv').then(data => {
+       fullData = data.map(d => ({
+         orig: d.orig,
+         dest: d.dest,
+         year: +d.year5,
+         age: d.age,
+         sex: d.sex,
+         education: d.education,
+         flow: +d.flow
+       }));
+
+       document.getElementById('loading').style.display = 'none';
+       document.getElementById('chart').style.display = 'block';
+
+       setupFilters();
+       updateVisualization();
+     }).catch(error => {
+       console.error('Error loading data:', error);
+       document.getElementById('loading').innerHTML = 'Error loading data.';
+     });
+
+     function setupFilters() {
+       // Year filter
+       document.getElementById('yearFilter').addEventListener('change', (e) => {
+         currentFilters.year = +e.target.value;
+         updateVisualization();
+       });
+
+       // Button group filters
+       setupButtonGroup('ageFilter', 'age');
+       setupButtonGroup('sexFilter', 'sex');
+       setupButtonGroup('educationFilter', 'education');
+
+       // Threshold slider
+       const thresholdSlider = document.getElementById('flowThreshold');
+       const thresholdValue = document.getElementById('thresholdValue');
+
+       thresholdSlider.addEventListener('input', (e) => {
+         currentFilters.threshold = +e.target.value;
+         thresholdValue.textContent = e.target.value;
+         updateVisualization();
+       });
+     }
+
+     function setupButtonGroup(groupId, filterKey) {
+       const buttons = document.querySelectorAll(`#${groupId} .filter-button`);
+       buttons.forEach(button => {
+         button.addEventListener('click', () => {
+           buttons.forEach(b => b.classList.remove('active'));
+           button.classList.add('active');
+           currentFilters[filterKey] = button.dataset.value;
+           updateVisualization();
+         });
+       });
+     }
+
+     function filterData() {
+       let filtered = fullData.filter(d => {
+         if (d.year !== currentFilters.year) return false;
+         if (d.orig === d.dest) return false; // Exclude internal flows
+         if (currentFilters.age !== 'all' && d.age !== currentFilters.age) return false;
+         if (currentFilters.sex !== 'all' && d.sex !== currentFilters.sex) return false;
+         if (currentFilters.education !== 'all' && d.education !== currentFilters.education) return false;
+         return true;
+       });
+
+       // Aggregate flows by origin-destination pair
+       const flowMap = new Map();
+       filtered.forEach(d => {
+         const key = `${d.orig}-${d.dest}`;
+         flowMap.set(key, (flowMap.get(key) || 0) + d.flow);
+       });
+
+       // Apply threshold and get active countries
+       const activeCountries = new Set();
+       const flows = [];
+       flowMap.forEach((flow, key) => {
+         if (flow >= currentFilters.threshold) {
+           const [orig, dest] = key.split('-');
+           flows.push({ orig, dest, flow });
+           activeCountries.add(orig);
+           activeCountries.add(dest);
+         }
+       });
+
+       return { flows, countries: Array.from(activeCountries).sort() };
+     }
+
+     function createMatrix(flows, countries) {
+       const countryIndex = new Map(countries.map((c, i) => [c, i]));
+       const n = countries.length;
+       const matrix = Array(n).fill(0).map(() => Array(n).fill(0));
+
+       flows.forEach(({ orig, dest, flow }) => {
+         const i = countryIndex.get(orig);
+         const j = countryIndex.get(dest);
+         if (i !== undefined && j !== undefined) {
+           matrix[i][j] = flow;
+         }
+       });
+
+       return matrix;
+     }
+
+     function updateVisualization() {
+       const { flows, countries } = filterData();
+
+       if (countries.length === 0) {
+         document.getElementById('chart').innerHTML = '<div class="loading">No data matches the current filters. Try to move the threshold slider left to include smaller migration flows and see more connections.</div>';
+         updateStats(0, 0, 0);
+         return;
+       }
+
+       const matrix = createMatrix(flows, countries);
+
+       // Update statistics
+       const totalFlow = flows.reduce((sum, f) => sum + f.flow, 0);
+       updateStats(totalFlow, flows.length, countries.length);
+
+       // Clear existing chart
+       d3.select('#chart').html('');
+
+       // Chart dimensions
+       const width = 800;
+       const height = 800;
+       const innerRadius = Math.min(width, height) * 0.35;
+       const outerRadius = innerRadius + 20;
+
+       // Create SVG
+       const svg = d3.select('#chart')
+                     .append('svg')
+                     .attr('width', width)
+                     .attr('height', height);
+
+       const g = svg.append('g')
+                    .attr('transform', `translate(${width / 2}, ${height / 2})`);
+
+       // Create chord layout
+       const chord = d3.chord()
+                       .padAngle(0.03)
+                       .sortSubgroups(d3.descending);
+
+       const arc = d3.arc()
+                     .innerRadius(innerRadius)
+                     .outerRadius(outerRadius);
+
+       const ribbon = d3.ribbon()
+                        .radius(innerRadius);
+
+       const chords = chord(matrix);
+       const tooltip = d3.select('#tooltip');
+
+       // Draw groups (countries)
+       const groups = g.selectAll('.group')
+                       .data(chords.groups)
+                       .enter()
+                       .append('g')
+                       .attr('class', 'group');
+
+       groups.append('path')
+             .style('fill', d => colorScale(countries[d.index]))
+             .style('stroke', d => d3.rgb(colorScale(countries[d.index])).darker(0.5))
+             .style('stroke-width', 1.5)
+             .attr('d', arc)
+             .on('mouseover', function(event, d) {
+               const country = countries[d.index];
+               const totalOut = d3.sum(matrix[d.index]);
+               const totalIn = d3.sum(matrix, row => row[d.index]);
+
+               tooltip.html(`
+                 <strong>${countryNames[country]}</strong><br/>
+                 Emigrants: ${Math.round(totalOut).toLocaleString()}<br/>
+                 Immigrants: ${Math.round(totalIn).toLocaleString()}<br/>
+                 Net migration: ${Math.round(totalIn - totalOut).toLocaleString()}
+               `)
+                      .style('opacity', 1)
+                      .style('left', (event.pageX + 15) + 'px')
+                      .style('top', (event.pageY - 15) + 'px');
+
+               // Highlight related chords
+               g.selectAll('.chord')
+                .style('opacity', chord =>
+                  chord.source.index === d.index || chord.target.index === d.index ? 0.8 : 0.05
+                );
+
+               // Highlight this group
+               d3.select(this).style('filter', 'brightness(1.2)');
+
+               // Highlight legend item
+               d3.selectAll('.legend-item')
+                 .style('background-color', (_, i) =>
+                   countries[i] === country ? '#e8f4f8' : 'transparent'
+                 );
+             })
+             .on('mouseout', function() {
+               tooltip.style('opacity', 0);
+               g.selectAll('.chord').style('opacity', 0.65);
+               d3.select(this).style('filter', null);
+               d3.selectAll('.legend-item').style('background-color', 'transparent');
+             });
+
+       // Add country labels
+       groups.append('text')
+             .each(d => { d.angle = (d.startAngle + d.endAngle) / 2; })
+             .attr('dy', '.35em')
+             .attr('transform', d => `
+               rotate(${(d.angle * 180 / Math.PI - 90)})
+               translate(${outerRadius + 15})
+               ${d.angle > Math.PI ? 'rotate(180)' : ''}
+             `)
+             .style('text-anchor', d => d.angle > Math.PI ? 'end' : null)
+             .text(d => countryNames[countries[d.index]]);
+
+       // Draw chords (migration flows)
+       const chordPaths = g.selectAll('.chord')
+                           .data(chords)
+                           .enter()
+                           .append('path')
+                           .attr('class', 'chord')
+                           .style('fill', d => colorScale(countries[d.source.index]))
+                           .style('stroke', 'none')
+                           .attr('d', ribbon)
+                           .on('mouseover', function(event, d) {
+                             const sourceCountry = countryNames[countries[d.source.index]];
+                             const targetCountry = countryNames[countries[d.target.index]];
+                             const flow = matrix[d.source.index][d.target.index];
+                             const reverseFlow = matrix[d.target.index][d.source.index];
+
+                             tooltip.html(`
+                               <strong>Migration Flow</strong><br/>
+                               ${sourceCountry} → ${targetCountry}: ${Math.round(flow).toLocaleString()}<br/>
+                               ${targetCountry} → ${sourceCountry}: ${Math.round(reverseFlow).toLocaleString()}<br/>
+                               <em>Net: ${Math.round(flow - reverseFlow).toLocaleString()}</em>
+                             `)
+                                    .style('opacity', 1)
+                                    .style('left', (event.pageX + 15) + 'px')
+                                    .style('top', (event.pageY - 15) + 'px');
+
+                             d3.select(this).style('fill-opacity', 0.85);
+                           })
+                           .on('mouseout', function() {
+                             tooltip.style('opacity', 0);
+                             d3.select(this).style('fill-opacity', 0.65);
+                           });
+
+
+       // Update legend
+       updateLegend(countries);
+     }
+
+     function updateLegend(countries) {
+       const legend = d3.select('#legend');
+       legend.selectAll('.legend-item').remove();
+
+       const legendItems = legend.selectAll('.legend-item')
+                                 .data(countries)
+                                 .enter()
+                                 .append('div')
+                                 .attr('class', 'legend-item')
+                                 .on('mouseover', function(event, country) {
+                                   const countryIndex = countries.indexOf(country);
+
+                                   d3.selectAll('.group')
+                                     .style('opacity', (d) => d.index === countryIndex ? 1 : 0.3);
+
+                                   d3.selectAll('.chord')
+                                     .style('opacity', chord =>
+                                       chord.source.index === countryIndex ||
+                                                              chord.target.index === countryIndex ? 0.8 : 0.05
+                                     );
+
+                                   d3.select(this).style('background-color', '#e8f4f8');
+                                 })
+                                 .on('mouseout', function() {
+                                   d3.selectAll('.group').style('opacity', 1);
+                                   d3.selectAll('.chord').style('opacity', 0.65);
+                                   d3.select(this).style('background-color', 'transparent');
+                                 });
+
+       legendItems.append('div')
+                  .attr('class', 'legend-color')
+                  .style('background-color', d => colorScale(d));
+
+       legendItems.append('span')
+                  .text(d => countryNames[d]);
+     }
+
+     function updateStats(totalFlow, activeRoutes, countryCount) {
+       document.getElementById('totalFlow').textContent = Math.round(totalFlow).toLocaleString();
+       document.getElementById('activeRoutes').textContent = activeRoutes.toLocaleString();
+       document.getElementById('countryCount').textContent = countryCount;
+     }
+    </script>
+  </body>
+</html>

@@ -533,8 +533,10 @@
     <div class="main-content">
       <div class="region-tabs">
         <button class="tab-button" onclick="switchTab('content-tab1')">Projections</button>
+        <button class="tab-button" onclick="switchTab('content-tab4')">Flows</button>
         <button class="tab-button" onclick="switchTab('content-tab2')">Perspectives</button>
         <button class="tab-button" onclick="switchTab('content-tab3')">Integration</button>
+
       </div>
 
       <!-- Default tab content shown on load -->
@@ -547,6 +549,9 @@
         <ul style="margin-left: 20px; gap: 12px;">
           <li style="margin-bottom: 12px;">
             <strong>Projections:</strong> Explore past trends and future migration patterns shaping Europe.
+          </li>
+          <li style="margin-bottom: 12px;">
+            <strong>Flows:</strong> View an interactive visualization with bilateral migration flows between European countries.
           </li>
           <li style="margin-bottom: 12px;">
             <strong>Perspectives:</strong> Hear voices and experiences collected through in-depth interviews across Europe.
@@ -565,20 +570,6 @@
 
 
         <br>
-        <!-- <p style="font-size: 14px";>add deck gl map with dropdowns, flows/stocks toggle, years slider</p> -->
-        <!--
-             <br>
-             <p style="font-size: 14px";>
-             Description for chord diagram
-             <br>
-             How to use
-             <br>
-             Hover over countries or flows to see detailed migration data.
-             The thickness of the connections represents migration volume between countries.
-             </p>
-        -->
-        <!--
-             <iframe src="static/plots/migration_chord_plot.html" width="100%" height="800px"></iframe> -->
       </div>
 
 
@@ -705,6 +696,18 @@
           </p>
         </div>
         <iframe src="map_migration_integration.html" width="100%" height="800px"></iframe>
+      </div>
+
+      <!-- Tab 4: Flows -->
+      <div id="content-tab4" class="tab-content hidden">
+        <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
+          <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
+            This visualization shows bilateral migration flows between European countries.
+            <br>
+            The data is broken down by year (2000-2015), age group, sex, and education level.
+          </p>
+        </div>
+        <iframe src="migration_flows.html" width="100%" height="1400px"></iframe>
       </div>
     </div>
 
