@@ -342,14 +342,124 @@
        margin-top: 5px;
        text-align: right;
      }
+
+     .country-details {
+       background: white;
+       padding: 30px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+       margin-top: 30px;
+     }
+
+     .country-details h2 {
+       margin-top: 0;
+       margin-bottom: 20px;
+       font-size: 16px;
+       color: #252a53;
+     }
+
+     .country-selector {
+       margin-bottom: 20px;
+     }
+
+     .country-selector select {
+       width: 100%;
+       max-width: 400px;
+       padding: 8px 12px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+       font-family: 'Montserrat', sans-serif;
+       font-size: 12px;
+       background: white;
+       cursor: pointer;
+       color: #333;
+     }
+
+     .details-container {
+       display: grid;
+       grid-template-columns: 1fr 1fr;
+       gap: 30px;
+       margin-top: 20px;
+     }
+
+     .flows-list {
+       display: flex;
+       flex-direction: column;
+       gap: 0;
+     }
+
+     .flows-list h3 {
+       font-size: 14px;
+       font-weight: 700;
+       margin-top: 0;
+       margin-bottom: 12px;
+       color: #252a53;
+     }
+
+     .flow-item {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       padding: 10px 12px;
+       border-bottom: 1px solid #f0f0f0;
+       font-size: 12px;
+     }
+
+     .flow-item:last-child {
+       border-bottom: none;
+     }
+
+     .flow-country {
+       font-weight: 500;
+       color: #252a53;
+       flex: 1;
+     }
+
+     .flow-value {
+       font-weight: 700;
+       color: #252a53;
+       text-align: right;
+       min-width: 100px;
+     }
+
+     .flow-bar {
+       margin-top: 4px;
+       height: 4px;
+       background: #e0e0e0;
+       border-radius: 2px;
+       overflow: hidden;
+     }
+
+     .flow-bar-fill {
+       height: 100%;
+       background: #252a53;
+       border-radius: 2px;
+     }
+
+     .no-selection {
+       color: #999;
+       font-size: 12px;
+       /* font-style: italic; */
+     }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="main-content">
-        <div class="chart-container">
-          <div id="loading" class="loading">Loading data...</div>
-          <div id="chart" style="display: none;"></div>
+        <div style="flex: 1;">
+          <div class="chart-container">
+            <div id="loading" class="loading">Loading data...</div>
+            <div id="chart" style="display: none;"></div>
+          </div>
+
+          <div class="country-details">
+            <h2>Country details</h2>
+            <div class="country-selector">
+              <select id="countrySelect">
+                <option value="">Select a country...</option>
+              </select>
+            </div>
+            <div id="detailsContent" class="no-selection">Select a country to see where people move to and come from.</div>
+          </div>
         </div>
 
         <div class="sidebar">
@@ -481,6 +591,9 @@
        threshold: 10000
      };
 
+     let currentFlows = []; // Store current filtered flows for details panel
+     let activeCountries = []; // Store active countries
+
      // Load CSV data
      d3.csv('data/migration_flows/d_odasey5_edu3_age4.csv').then(data => {
        fullData = data.map(d => ({
@@ -508,6 +621,11 @@
        document.getElementById('yearFilter').addEventListener('change', (e) => {
          currentFilters.year = +e.target.value;
          updateVisualization();
+         // Update country details if a country is selected
+         const selectedCountry = document.getElementById('countrySelect').value;
+         if (selectedCountry) {
+           updateCountryDetails(selectedCountry);
+         }
        });
 
        // Button group filters
@@ -523,6 +641,16 @@
          currentFilters.threshold = +e.target.value;
          thresholdValue.textContent = e.target.value;
          updateVisualization();
+         // Update country details if a country is selected
+         const selectedCountry = document.getElementById('countrySelect').value;
+         if (selectedCountry) {
+           updateCountryDetails(selectedCountry);
+         }
+       });
+
+       // Country selector
+       document.getElementById('countrySelect').addEventListener('change', (e) => {
+         updateCountryDetails(e.target.value);
        });
      }
 
@@ -534,6 +662,11 @@
            button.classList.add('active');
            currentFilters[filterKey] = button.dataset.value;
            updateVisualization();
+           // Update country details if a country is selected
+           const selectedCountry = document.getElementById('countrySelect').value;
+           if (selectedCountry) {
+             updateCountryDetails(selectedCountry);
+           }
          });
        });
      }
@@ -556,18 +689,56 @@
        });
 
        // Apply threshold and get active countries
-       const activeCountries = new Set();
+       const activeCountriesSet = new Set();
        const flows = [];
        flowMap.forEach((flow, key) => {
          if (flow >= currentFilters.threshold) {
            const [orig, dest] = key.split('-');
            flows.push({ orig, dest, flow });
-           activeCountries.add(orig);
-           activeCountries.add(dest);
+           activeCountriesSet.add(orig);
+           activeCountriesSet.add(dest);
          }
        });
 
-       return { flows, countries: Array.from(activeCountries).sort() };
+       return { flows, countries: Array.from(activeCountriesSet).sort() };
+     }
+
+     function getCountryDetailsData(countryCode) {
+       // Filter data specifically for the country details panel
+       // This filters by all current filters
+       let filtered = fullData.filter(d => {
+         if (d.year !== currentFilters.year) return false;
+         if (d.orig === d.dest) return false; // Exclude internal flows
+         if (currentFilters.age !== 'all' && d.age !== currentFilters.age) return false;
+         if (currentFilters.sex !== 'all' && d.sex !== currentFilters.sex) return false;
+         if (currentFilters.education !== 'all' && d.education !== currentFilters.education) return false;
+         return true;
+       });
+
+       // Aggregate flows by origin-destination pair
+       const destinations = [];
+       const origins = [];
+
+       const flowMap = new Map();
+       filtered.forEach(d => {
+         const key = `${d.orig}-${d.dest}`;
+         flowMap.set(key, (flowMap.get(key) || 0) + d.flow);
+       });
+
+       flowMap.forEach((flow, key) => {
+         const [orig, dest] = key.split('-');
+         if (orig === countryCode) {
+           destinations.push({ country: dest, flow: flow });
+         }
+         if (dest === countryCode) {
+           origins.push({ country: orig, flow: flow });
+         }
+       });
+
+       destinations.sort((a, b) => b.flow - a.flow);
+       origins.sort((a, b) => b.flow - a.flow);
+
+       return { destinations, origins };
      }
 
      function createMatrix(flows, countries) {
@@ -586,12 +757,83 @@
        return matrix;
      }
 
+     function updateCountryDetails(countryCode) {
+       const detailsContent = document.getElementById('detailsContent');
+
+       if (!countryCode) {
+         detailsContent.innerHTML = '<div class="no-selection">Select a country from the dropdown to see migration details.</div>';
+         return;
+       }
+
+       // Get filtered data based on all current filter settings
+       const { destinations, origins } = getCountryDetailsData(countryCode);
+
+       const topDestinations = destinations.slice(0, 10);
+       const topOrigins = origins.slice(0, 10);
+
+       const maxFlow = Math.max(
+         ...topDestinations.map(d => d.flow),
+         ...topOrigins.map(d => d.flow)
+       );
+
+       let html = '<div class="details-container">';
+
+       // Destinations (emigration)
+       html += '<div class="flows-list">';
+       html += `<h3>${countryNames[countryCode]} → Destinations</h3>`;
+       if (topDestinations.length === 0) {
+         html += '<div style="color: #999; font-style: italic; padding: 10px;">No emigration flows to other countries</div>';
+       } else {
+         topDestinations.forEach(item => {
+           const percentage = (item.flow / maxFlow) * 100;
+           html += `
+             <div class="flow-item">
+               <span class="flow-country">${countryNames[item.country]}</span>
+               <span class="flow-value">${Math.round(item.flow).toLocaleString()}</span>
+             </div>
+             <div class="flow-bar">
+               <div class="flow-bar-fill" style="width: ${percentage}%"></div>
+             </div>
+           `;
+         });
+       }
+       html += '</div>';
+
+       // Origins (immigration)
+       html += '<div class="flows-list">';
+       html += `<h3>Immigration → ${countryNames[countryCode]}</h3>`;
+       if (topOrigins.length === 0) {
+         html += '<div style="color: #999; font-style: italic; padding: 10px;">No immigration flows from other countries</div>';
+       } else {
+         topOrigins.forEach(item => {
+           const percentage = (item.flow / maxFlow) * 100;
+           html += `
+             <div class="flow-item">
+               <span class="flow-country">${countryNames[item.country]}</span>
+               <span class="flow-value">${Math.round(item.flow).toLocaleString()}</span>
+             </div>
+             <div class="flow-bar">
+               <div class="flow-bar-fill" style="width: ${percentage}%"></div>
+             </div>
+           `;
+         });
+       }
+       html += '</div>';
+
+       html += '</div>';
+
+       detailsContent.innerHTML = html;
+     }
+
      function updateVisualization() {
        const { flows, countries } = filterData();
+       currentFlows = flows;
+       activeCountries = countries;
 
        if (countries.length === 0) {
          document.getElementById('chart').innerHTML = '<div class="loading">No data matches the current filters. Try to move the threshold slider left to include smaller migration flows and see more connections.</div>';
          updateStats(0, 0, 0);
+         updateCountrySelector([]);
          return;
        }
 
@@ -600,6 +842,9 @@
        // Update statistics
        const totalFlow = flows.reduce((sum, f) => sum + f.flow, 0);
        updateStats(totalFlow, flows.length, countries.length);
+
+       // Update country selector
+       updateCountrySelector(countries);
 
        // Clear existing chart
        d3.select('#chart').html('');
@@ -646,6 +891,12 @@
              .style('stroke', d => d3.rgb(colorScale(countries[d.index])).darker(0.5))
              .style('stroke-width', 1.5)
              .attr('d', arc)
+             .style('cursor', 'pointer')
+             .on('click', function(event, d) {
+               const country = countries[d.index];
+               document.getElementById('countrySelect').value = country;
+               updateCountryDetails(country);
+             })
              .on('mouseover', function(event, d) {
                const country = countries[d.index];
                const totalOut = d3.sum(matrix[d.index]);
@@ -767,6 +1018,32 @@
 
        legendItems.append('span')
                   .text(d => countryNames[d]);
+     }
+
+     function updateCountrySelector(countries) {
+       const selector = document.getElementById('countrySelect');
+       const currentValue = selector.value;
+
+       // Keep the first option
+       const firstOption = selector.options[0];
+       selector.innerHTML = '';
+       selector.appendChild(firstOption);
+
+       // Add country options
+       countries.forEach(country => {
+         const option = document.createElement('option');
+         option.value = country;
+         option.textContent = countryNames[country];
+         selector.appendChild(option);
+       });
+
+       // Restore previous selection if still valid
+       if (currentValue && countries.includes(currentValue)) {
+         selector.value = currentValue;
+       } else {
+         selector.value = '';
+         document.getElementById('detailsContent').innerHTML = '<div class="no-selection">Select a country to see where people move to and come from.</div>';
+       }
      }
 
      function updateStats(totalFlow, activeRoutes, countryCount) {
