@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/deck.gl/8.9.27/deck.gl.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/3.6.0/maplibre-gl.min.js'></script>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/3.6.0/maplibre-gl.css' rel='stylesheet'/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Lora:wght@700&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/deck.gl@^9.0.0/dist.min.js"></script>
+    <link href="https://unpkg.com/deck.gl@^9.0.0/dist/stylesheet.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.css" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            color: #252a53;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            margin: 0;
+            overflow: hidden;
+            background: white;
+        }
+
+        .main-content {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            flex-direction: row;
+        }
+
+        .map-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: none;
+        }
+
+        #map {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            flex-grow: 1;
+            cursor: crosshair;
+        }
+
+        #map-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 450px;
+            max-width: 450px;
+            padding: 20px;
+            overflow-y: auto;
+            background: white;
+            border-left: 1px solid #f0f0f0;
+        }
+
+        .control-panel {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .control-panel h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #252a53;
+            line-height: 1.2;
+        }
+
+        .filter-section {
+            margin-bottom: 15px;
+        }
+
+        .filter-section h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #252a53;
+            line-height: 1.2;
+        }
+
+        .filter-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #252a53;
+            margin-bottom: 8px;
+            display: block;
+            line-height: 1.2;
+        }
+
+        select {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            background: white;
+            cursor: pointer;
+            color: #333;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #252a53;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-button {
+            flex: 1;
+            min-width: 60px;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+            text-align: center;
+        }
+
+        .filter-button:hover {
+            background-color: #f5f5f5;
+            border-color: #999;
+        }
+
+        .filter-button.active {
+            background: #252a53;
+            color: white;
+            border-color: #252a53;
+            font-weight: 600;
+        }
+
+        .metric-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .metric-btn {
+            flex: 1;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+            text-align: center;
+        }
+
+        .metric-btn:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
+        .metric-btn.active {
+            background: #252a53;
+            color: white;
+            border-color: #252a53;
+            font-weight: 600;
+        }
+
+        .legend {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .legend h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #252a53;
+            line-height: 1.2;
+        }
+
+        .legend-colors {
+            display: flex;
+            width: 100%;
+            height: 20px;
+            margin-bottom: 8px;
+            border-radius: 0;
+        }
+
+        .legend-color-box {
+            flex: 1;
+            height: 100%;
+            border-radius: 0;
+        }
+
+        .legend-labels {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 400;
+            color: #666;
+        }
+
+        .info-panel {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .info-panel.active {
+            display: block;
+        }
+
+        .info-panel h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #252a53;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            line-height: 1.2;
+        }
+
+        .close-info-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-info-btn:hover {
+            color: #252a53;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-weight: 700;
+            color: #252a53;
+        }
+
+        .reset-button {
+            width: 100%;
+            padding: 6px 12px;
+            margin-top: 12px;
+            background: #252a53;
+            color: white;
+            border: 1px solid #252a53;
+            border-radius: 4px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reset-button:hover {
+            background: #1a1d3a;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #252a53;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #252a53;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 5px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 400;
+            color: #666;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 2000;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            display: none;
+        }
+
+        .selected-countries {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .selected-countries h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #252a53;
+            line-height: 1.2;
+        }
+
+        .country-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #252a53;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin: 4px 4px 4px 0;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .country-tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .country-tag button:hover {
+            opacity: 0.7;
+        }
+
+        .no-selection {
+            color: #999;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                min-width: 380px;
+                max-width: 380px;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .map-container {
+                height: 60%;
+            }
+
+            .sidebar {
+                min-width: 100%;
+                max-width: 100%;
+                height: 40%;
+                flex-direction: row;
+                gap: 0;
+                overflow-x: auto;
+                overflow-y: hidden;
+                border-left: none;
+                border-top: 1px solid #f0f0f0;
+            }
+
+            .control-panel,
+            .legend,
+            .info-panel,
+            .selected-countries {
+                min-width: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="map-container">
+            <div class="header">
+                <h1 style="font-family: 'Montserrat', sans-serif; font-size: 20px; margin: 0; font-weight: 600;">Migration Projections</h1>
+            </div>
+            <div id="map">
+                <div id="map-inner"></div>
+                <div class="loading" id="loading">Loading data...</div>
+                <div class="map-hint" id="mapHint">Click on a country to select/deselect</div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="control-panel">
+
+                <div class="filter-section">
+                    <label class="filter-label">Metric</label>
+                    <div class="metric-selector">
+                        <button class="metric-btn active" data-metric="pop">Population</button>
+                        <button class="metric-btn" data-metric="imm">Immigration</button>
+                        <button class="metric-btn" data-metric="emi">Emigration</button>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <label class="filter-label">Period</label>
+                    <input type="range" id="periodSlider" class="slider" min="0" max="0" value="0" step="1">
+                    <div class="slider-labels" id="periodLabels"></div>
+                </div>
+
+                <div class="filter-section">
+                    <label class="filter-label">Origin of Birth</label>
+                    <div class="button-group" id="cobFilter">
+                        <button class="filter-button active" data-value="all">All</button>
+                        <button class="filter-button" data-value="EU">EU</button>
+                        <button class="filter-button" data-value="NAT">National</button>
+                        <button class="filter-button" data-value="NEU">Non-EU</button>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <label class="filter-label">Sex</label>
+                    <div class="button-group" id="sexFilter">
+                        <button class="filter-button active" data-value="all">All</button>
+                        <button class="filter-button" data-value="Female">Female</button>
+                        <button class="filter-button" data-value="Male">Male</button>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <label class="filter-label">Age Group</label>
+                    <div class="button-group" id="ageFilter">
+                        <button class="filter-button active" data-value="all">All</button>
+                        <button class="filter-button" data-value="0-19">0-19</button>
+                        <button class="filter-button" data-value="20-39">20-39</button>
+                        <button class="filter-button" data-value="40-64">40-64</button>
+                        <button class="filter-button" data-value="65+">65+</button>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <label class="filter-label">Education Level</label>
+                    <div class="button-group" id="educationFilter">
+                        <button class="filter-button active" data-value="all">All</button>
+                        <button class="filter-button" data-value="Low">Low</button>
+                        <button class="filter-button" data-value="Middle">Middle</button>
+                        <button class="filter-button" data-value="High">High</button>
+                    </div>
+                </div>
+
+                <button class="reset-button" id="resetButton">Reset All Filters</button>
+            </div>
+
+            <div class="legend">
+                <h3 id="legendTitle">Population</h3>
+                <div class="legend-colors" id="legendContent"></div>
+                <div class="legend-labels">
+                    <span>Low</span>
+                    <span>High</span>
+                </div>
+            </div>
+
+            <div class="selected-countries">
+                <h3>Selected Countries</h3>
+                <div id="selectedCountriesList" class="no-selection">No countries selected</div>
+            </div>
+
+            <div class="info-panel" id="infoPanel">
+                <h3 id="infoPanelTitle">Country Data <button class="close-info-btn" id="closeInfoBtn">&times;</button></h3>
+                <div id="infoPanelContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+     // Store all data
+     let fullData = [];
+     let aggregatedData = {};
+     let geoData = null;
+     let deckInstance = null;
+     let selectedCountries = new Set();
+     let countryNameMap = {}; // Map ISO3N to country name for display
+     let currentDisplayedCountry = null; // Track which country is shown in info panel
+
+     // Current filter state
+     let filters = {
+       metric: 'pop',
+       period: '',
+       cob: 'all',
+       sex: 'all',
+       age: 'all',
+       education: 'all'
+     };
+
+     // Color schemes for choropleth - 12 color scale (reversed: dark = high, light = low)
+     const colorSchemes = {
+       pop: [
+         '#fef7e9', '#fdefd6', '#fce6c4', '#fadaae', '#f7ce96', '#f2be7e',
+         '#ecaa65', '#e19250', '#d17840', '#b95e2e', '#9c4424', '#7d2f1b'
+       ],
+       imm: [
+         '#7d98ed', '#758edf', '#6d84d1', '#657ac3', '#5d70b5', '#5566a7',
+         '#4d5c99', '#45528b', '#3d487d', '#353e6f', '#2d3461', '#252a53'
+       ],
+       emi: [
+         '#977dcf', '#8e75c2', '#856db5', '#7c65a8', '#735d9b', '#6a558e',
+         '#614d81', '#584574', '#4f3d67', '#46355a', '#3d2d4d', '#342540'
+       ]
+     };
+
+     // ISO3N to country code mapping
+     const iso3nToCode = {
+       40: 'AT', 56: 'BE', 100: 'BG', 191: 'HR', 196: 'CY', 203: 'CZ', 208: 'DK',
+       233: 'EE', 246: 'FI', 250: 'FR', 276: 'DE', 300: 'EL', 348: 'HU', 352: 'IS',
+       372: 'IE', 380: 'IT', 428: 'LV', 440: 'LT', 442: 'LU', 470: 'MT', 528: 'NL',
+       578: 'NO', 616: 'PL', 620: 'PT', 642: 'RO', 703: 'SK', 705: 'SI', 724: 'ES',
+       752: 'SE', 756: 'CH', 826: 'GB', 792: 'TR'
+     };
+
+     // Load CSV data
+     async function loadData() {
+       try {
+         const response = await fetch('data/migration_projections/Proj_results_Mediumscenario_broad_agegr_3education.csv');
+         const text = await response.text();
+         const lines = text.trim().split('\n');
+         const headers = lines[0].replace(/"/g, '').split(',');
+
+         fullData = lines.slice(1).map(line => {
+           const values = line.replace(/"/g, '').split(',');
+           return {
+             country: values[1],
+             iso3n: parseInt(values[2]),
+             period: values[3],
+             cob: values[4],
+             sex: values[5],
+             agegr: values[6],
+             edu_names3: values[8],
+             pop: parseInt(values[9]) || 0,
+             imm: parseInt(values[10]) || 0,
+             emi: parseInt(values[11]) || 0
+           };
+         });
+
+         // Build country name map
+         fullData.forEach(d => {
+           countryNameMap[d.iso3n] = d.country;
+         });
+
+         // Load geojson
+         const geoResponse = await fetch('data/migration_projections/NUTS_RG_20M_2024_4326.geojson');
+         geoData = await geoResponse.json();
+
+         initializeFilters();
+         updateVisualization();
+         document.getElementById('loading').style.display = 'none';
+       } catch (error) {
+         console.error('Error loading data:', error);
+         document.getElementById('loading').innerHTML = 'Error loading data. Ensure CSV and GeoJSON files are in same directory.';
+       }
+     }
+
+     function initializeFilters() {
+       // Get unique periods
+       const periods = [...new Set(fullData.map(d => d.period))].sort();
+
+       // Setup period slider
+       const periodSlider = document.getElementById('periodSlider');
+       const periodLabels = document.getElementById('periodLabels');
+
+       periodSlider.max = periods.length - 1;
+       periodSlider.value = 0;
+
+       // Create labels for slider
+       let labelsHtml = '';
+       periods.forEach((period, index) => {
+         if (index === 0 || index === periods.length - 1 || index % Math.ceil(periods.length / 6) === 0) {
+           labelsHtml += `<span>${period}</span>`;
+         } else {
+           labelsHtml += `<span style="opacity: 0;">${period}</span>`;
+         }
+       });
+       periodLabels.innerHTML = labelsHtml;
+
+       periodSlider.addEventListener('input', (e) => {
+         const selectedIndex = parseInt(e.target.value);
+         filters.period = periods[selectedIndex];
+         updateVisualization();
+       });
+
+       // Setup filter buttons
+       setupButtonFilters('cobFilter', 'cob');
+       setupButtonFilters('sexFilter', 'sex');
+       setupButtonFilters('ageFilter', 'age');
+       setupButtonFilters('educationFilter', 'education');
+
+       // Metric selector
+       document.querySelectorAll('.metric-btn').forEach(btn => {
+         btn.addEventListener('click', () => {
+           document.querySelectorAll('.metric-btn').forEach(b => b.classList.remove('active'));
+           btn.classList.add('active');
+           filters.metric = btn.dataset.metric;
+           updateVisualization();
+         });
+       });
+
+       // Reset button
+       document.getElementById('resetButton').addEventListener('click', () => {
+         filters = {
+           metric: 'pop',
+           period: '',
+           cob: 'all',
+           sex: 'all',
+           age: 'all',
+           education: 'all'
+         };
+         selectedCountries.clear();
+         currentDisplayedCountry = null;
+         periodSlider.value = 0;
+         document.querySelectorAll('.filter-button').forEach(btn => {
+           btn.classList.remove('active');
+           if (btn.dataset.value === 'all') btn.classList.add('active');
+         });
+         document.querySelectorAll('.metric-btn').forEach(btn => btn.classList.remove('active'));
+         document.querySelector('.metric-btn[data-metric="pop"]').classList.add('active');
+         document.getElementById('infoPanel').classList.remove('active');
+         updateSelectedCountriesList();
+         updateVisualization();
+       });
+
+       // Close info button
+       document.getElementById('closeInfoBtn').addEventListener('click', () => {
+         const cntrCode = document.getElementById('infoPanel').dataset.countryCode;
+         if (cntrCode) {
+           toggleCountrySelection(cntrCode);
+         }
+       });
+     }
+
+     function setupButtonFilters(groupId, filterKey) {
+       const buttons = document.querySelectorAll(`#${groupId} .filter-button`);
+       buttons.forEach(button => {
+         button.addEventListener('click', () => {
+           buttons.forEach(b => b.classList.remove('active'));
+           button.classList.add('active');
+           filters[filterKey] = button.dataset.value;
+           updateVisualization();
+         });
+       });
+     }
+
+     function aggregateData() {
+       aggregatedData = {};
+
+       fullData.forEach(d => {
+         // Check filter conditions
+         if (filters.period && d.period !== filters.period) return;
+         if (filters.cob !== 'all' && d.cob !== filters.cob) return;
+         if (filters.sex !== 'all' && d.sex !== filters.sex) return;
+         if (filters.age !== 'all' && d.agegr !== filters.age) return;
+         if (filters.education !== 'all' && d.edu_names3 !== filters.education) return;
+
+         // Aggregate by country
+         if (!aggregatedData[d.country]) {
+           aggregatedData[d.country] = {
+             country: d.country,
+             iso3n: d.iso3n,
+             pop: 0,
+             imm: 0,
+             emi: 0
+           };
+         }
+
+         aggregatedData[d.country].pop += d.pop;
+         aggregatedData[d.country].imm += d.imm;
+         aggregatedData[d.country].emi += d.emi;
+       });
+     }
+
+     function getColor(value, metric, isSelected) {
+       const scheme = colorSchemes[metric];
+       if (!value) return [220, 220, 220]; // Light gray for no data
+
+       // Find max value in current aggregation
+       const values = Object.values(aggregatedData).map(d => d[metric]);
+       const maxValue = Math.max(...values);
+
+       if (maxValue === 0) return [220, 220, 220];
+
+       // Normalize to 0-11 index for 12 color scale
+       const index = Math.floor((value / maxValue) * (scheme.length - 1));
+       const hexColor = scheme[Math.min(index, scheme.length - 1)];
+
+       // Convert hex to RGB
+       const hex = hexColor.replace('#', '');
+       const r = parseInt(hex.substring(0, 2), 16);
+       const g = parseInt(hex.substring(2, 4), 16);
+       const b = parseInt(hex.substring(4, 6), 16);
+
+       return [r, g, b];
+     }
+
+     function updateLegend() {
+       const metricNames = { pop: 'Population', imm: 'Immigration', emi: 'Emigration' };
+       document.getElementById('legendTitle').textContent = metricNames[filters.metric];
+
+       const scheme = colorSchemes[filters.metric];
+
+       let html = '';
+       scheme.forEach((color) => {
+         html += `<div class="legend-color-box" style="background-color: ${color}"></div>`;
+       });
+       document.getElementById('legendContent').innerHTML = html;
+     }
+
+     function toggleCountrySelection(countryCode) {
+       if (selectedCountries.has(countryCode)) {
+         selectedCountries.delete(countryCode);
+         document.getElementById('infoPanel').classList.remove('active');
+         currentDisplayedCountry = null;
+       } else {
+         selectedCountries.add(countryCode);
+         currentDisplayedCountry = countryCode;
+         // Find and display the country data
+         const countryData = Object.values(aggregatedData).find(d =>
+           iso3nToCode[d.iso3n] === countryCode
+         );
+         if (countryData) {
+           showInfoPanel({
+             CNTR_CODE: countryCode,
+             country: countryData.country,
+             pop: countryData.pop,
+             imm: countryData.imm,
+             emi: countryData.emi
+           });
+         }
+       }
+       updateSelectedCountriesList();
+       renderMap();
+     }
+
+     function updateSelectedCountriesList() {
+       const list = document.getElementById('selectedCountriesList');
+
+       if (selectedCountries.size === 0) {
+         list.innerHTML = '<div class="no-selection">No countries selected</div>';
+         return;
+       }
+
+       let html = '';
+       Array.from(selectedCountries).sort().forEach(code => {
+         html += `
+           <div class="country-tag">
+             ${code}
+             <button onclick="removeSelectedCountry('${code}')">×</button>
+           </div>
+         `;
+       });
+       list.innerHTML = html;
+     }
+
+     window.removeSelectedCountry = function(countryCode) {
+       selectedCountries.delete(countryCode);
+       if (currentDisplayedCountry === countryCode) {
+         currentDisplayedCountry = null;
+         document.getElementById('infoPanel').classList.remove('active');
+       }
+       updateSelectedCountriesList();
+       renderMap();
+     };
+
+     function updateVisualization() {
+       aggregateData();
+       updateLegend();
+       renderMap();
+
+       // Update info panel if a country is currently displayed
+       if (currentDisplayedCountry) {
+         const countryData = Object.values(aggregatedData).find(d =>
+           iso3nToCode[d.iso3n] === currentDisplayedCountry
+         );
+         if (countryData) {
+           showInfoPanel({
+             CNTR_CODE: currentDisplayedCountry,
+             country: countryData.country,
+             pop: countryData.pop,
+             imm: countryData.imm,
+             emi: countryData.emi
+           });
+         }
+       }
+     }
+
+     function renderMap() {
+       // Filter to only national level (LEVL_CODE == 0)
+       const nationalFeatures = geoData.features.filter(f => f.properties.LEVL_CODE === 0);
+
+       // Add metric values to features and filter out countries with no data
+       const featuresWithData = nationalFeatures
+         .map(feature => {
+           const cntrCode = feature.properties.CNTR_CODE;
+           const countryName = feature.properties.NAME_LATN;
+
+           // Find matching country in aggregated data
+           const countryData = Object.values(aggregatedData).find(d =>
+             iso3nToCode[d.iso3n] === cntrCode
+           );
+
+           return {
+             ...feature,
+             properties: {
+               ...feature.properties,
+               value: countryData ? countryData[filters.metric] : 0,
+               country: countryData ? countryData.country : countryName,
+               pop: countryData ? countryData.pop : 0,
+               imm: countryData ? countryData.imm : 0,
+               emi: countryData ? countryData.emi : 0
+             }
+           };
+         })
+         .filter(feature => {
+           // Only include features that have data for at least one metric
+           return feature.properties.pop > 0 || feature.properties.imm > 0 || feature.properties.emi > 0;
+         });
+
+       // Create GeoJsonLayer
+       const geoJsonLayer = new deck.GeoJsonLayer({
+         id: 'geojson',
+         data: featuresWithData,
+         pickable: true,
+         stroked: true,
+         filled: true,
+         lineWidthScale: 20,
+         lineWidthMinPixels: 1.5,
+         getFillColor: f => {
+           const isSelected = selectedCountries.has(f.properties.CNTR_CODE);
+           const color = getColor(f.properties.value, filters.metric, isSelected);
+
+           if (isSelected) {
+             // Add border effect for selected countries
+             return [...color, 255];
+           }
+           return [...color, 200];
+         },
+         getLineColor: f => {
+           const isSelected = selectedCountries.has(f.properties.CNTR_CODE);
+           if (isSelected) {
+             return [50, 50, 100]; // Darker border for selected
+           }
+           return [200, 200, 200];
+         },
+         getLineWidth: f => {
+           return selectedCountries.has(f.properties.CNTR_CODE) ? 2 : 1;
+         },
+         onClick: (info) => {
+           if (info.object) {
+             toggleCountrySelection(info.object.properties.CNTR_CODE);
+           }
+         }
+       });
+
+       // Initialize or update deck with MapLibre basemap
+       if (!deckInstance) {
+         const container = document.getElementById('map-inner');
+
+         deckInstance = new deck.DeckGL({
+           container,
+           map: maplibregl,
+           mapStyle: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+           initialViewState: {
+             latitude: 54.5260,
+             longitude: 15.2551,
+             zoom: 3,
+             bearing: 0,
+             pitch: 0
+           },
+           controller: true,
+           layers: [geoJsonLayer]
+         });
+       } else {
+         deckInstance.setProps({
+           layers: [geoJsonLayer]
+         });
+       }
+     }
+
+     function showInfoPanel(properties) {
+       const panel = document.getElementById('infoPanel');
+       const title = document.getElementById('infoPanelTitle');
+       const content = document.getElementById('infoPanelContent');
+
+       panel.dataset.countryCode = properties.CNTR_CODE;
+
+       title.innerHTML = `${properties.country || properties.NAME_LATN} <button class="close-info-btn" id="closeInfoBtn">&times;</button>`;
+       document.getElementById('closeInfoBtn').addEventListener('click', () => {
+         toggleCountrySelection(properties.CNTR_CODE);
+       });
+
+       // Get filtered data for the hovered country
+       const cntrCode = properties.CNTR_CODE;
+       const countryData = Object.values(aggregatedData).find(d =>
+         iso3nToCode[d.iso3n] === cntrCode
+       );
+
+       // Use filtered aggregated data if available, with fallback
+       const pop = countryData ? countryData.pop : (properties.pop || 0);
+       const imm = countryData ? countryData.imm : (properties.imm || 0);
+       const emi = countryData ? countryData.emi : (properties.emi || 0);
+
+       content.innerHTML = `
+         <div class="info-item">
+           <span class="info-label">Population</span>
+           <span class="info-value">${pop.toLocaleString()}</span>
+         </div>
+         <div class="info-item">
+           <span class="info-label">Immigration</span>
+           <span class="info-value">${imm.toLocaleString()}</span>
+         </div>
+         <div class="info-item">
+           <span class="info-label">Emigration</span>
+           <span class="info-value">${emi.toLocaleString()}</span>
+         </div>
+         <div class="info-item">
+           <span class="info-label">Net Migration</span>
+           <span class="info-value">${(imm - emi).toLocaleString()}</span>
+         </div>
+       `;
+
+       panel.classList.add('active');
+     }
+
+     // Load data when page loads
+     window.addEventListener('load', loadData);
+    </script>
+</body>
+</html>
