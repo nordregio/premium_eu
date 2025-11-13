@@ -1,0 +1,282 @@
+<!doctype html>
+<html data-theme="light">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>PREMIUM-EU</title>
+
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/deck.gl@^9.0.0/dist.min.js"></script>
+    <link
+      href="https://unpkg.com/deck.gl@^9.0.0/dist/stylesheet.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.js"></script>
+    <link
+      href="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+
+    <style>
+
+     body {
+       width: 100%;
+       height: 100%;
+       margin: 0;
+       padding: 0;
+       overflow: hidden;
+       font-family: 'Montserrat', sans-serif;
+       font-weight: 400;
+       background: white;
+       color: #252a53;
+     }
+
+     .deck-widget {
+       --button-size: 36px;
+     }
+
+     .deck-tooltip {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 12px;
+       color: white  !important;
+       background-color: #252a53 !important;
+     }
+
+     .main-container {
+       display: flex;
+       width: 100vw;
+       height: 100vh;
+       position: relative;
+     }
+
+     #map-wrapper {
+       flex: 1;
+       position: relative;
+       width: 100%;
+       height: 100%;
+     }
+
+     .sidebar {
+       width: 340px;
+       height: 100vh;
+       background: white;
+       display: flex;
+       flex-direction: column;
+       border-left: 1px solid #e0e0e0;
+       overflow-y: auto;
+       padding: 20px;
+       gap: 20px;
+     }
+
+     .instructions-panel {
+       background: white;
+       padding: 20px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+       border-radius: 0;
+       flex-shrink: 0;
+     }
+
+     .instruction-text {
+       font-size: 12px;
+       line-height: 1.6;
+       color: #555;
+     }
+
+     .instruction-text p {
+       margin: 0 0 12px 0;
+     }
+
+     .instruction-text p:last-child {
+       margin-bottom: 0;
+     }
+
+     .instruction-text strong {
+       color: #252a53;
+       font-weight: 600;
+     }
+
+     /* Set root font size for responsive scaling */
+     html {
+       font-size: 16px; /* Base font size */
+     }
+
+     @media (max-width: 1024px) {
+       html {
+         font-size: 14px; /* Smaller base for mobile */
+       }
+     }
+
+     @media (min-width: 1025px) and (max-width: 1440px) {
+       html {
+         font-size: 15px;
+       }
+     }
+
+     @media (min-width: 1441px) {
+       html {
+         font-size: 16px;
+       }
+     }
+
+     .loader {
+       position: absolute;
+       bottom: 30px;
+       left: 50%;
+       z-index: 1000;
+       width: 90px;
+       height: 14px;
+       background: repeating-linear-gradient(90deg,#252a53 0 calc(25% - 5px),#0000 0 25%) left/calc(4*100%/3) 100%;
+       animation: l1 0.5s infinite linear;
+     }
+
+     @keyframes l1 {
+       100% {background-position: right}
+     }
+
+    </style>
+  </head>
+
+  <body>
+
+    <div class="main-container">
+      <div id="map-wrapper">
+        <div id="loader" class="loader"></div>
+      </div>
+
+      <div class="sidebar">
+        <div class="instructions-panel">
+          <div class="instruction-text">
+            <p><strong>Explore migration integration:</strong> Hover over regions to see integration index scores.</p>
+            <p><strong>Data details:</strong> The integration index is calculated based on XXX. Higher values indicate stronger integration.</p>
+            <p><strong>Zoom and pan:</strong> Use the map controls to zoom in and out, and navigate to specific regions of interest.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+     function createPolygonLayer(data) {
+       return new deck.PolygonLayer({
+         id: "PolygonLayer",
+         data: data || [],
+         pickable: true,
+         getPolygon: d => d.border || [],
+         getFillColor: d => d.fill_color_integration_index || [150, 150, 150, 255],
+         getLineColor: [255, 255, 255, 255],
+         lineWidthMinPixels: 0.3,
+         opacity: 1,
+       });
+     }
+
+     const loaderEl = document.getElementById("loader");
+
+     (async () => {
+       // Wait for DOM to be ready
+       await new Promise(resolve => {
+         if (document.readyState === 'loading') {
+           document.addEventListener('DOMContentLoaded', resolve);
+         } else {
+           resolve();
+         }
+       });
+
+       const { DeckGL, MapView, CompassWidget, ZoomWidget } = deck;
+
+       // LOAD DATA FIRST
+       const loaderTimeout = setTimeout(() => {
+         loaderEl.style.display = "block";
+       }, 50);
+
+       let data = [];
+       try {
+         const response = await fetch(`data/migration_integration/index.json`);
+         if (!response.ok) throw new Error(`Failed to load data`);
+
+         data = await response.json();
+         if (!Array.isArray(data)) {
+           console.error("Data is not an array. Wrapping it.");
+           data = [data];
+         }
+       } catch (error) {
+         console.error(`Error loading integration data:`, error);
+       } finally {
+         clearTimeout(loaderTimeout);
+         loaderEl.style.display = "none";
+       }
+
+       // NOW INITIALIZE MAP WITH DATA
+       let polygonLayer = createPolygonLayer(data);
+
+       window.deckgl = new DeckGL({
+         container: 'map-wrapper',
+         map: maplibregl,
+         mapStyle: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+         initialViewState: {
+           bearing: 0,
+           latitude: 58,
+           longitude: 20,
+           maxZoom: 20,
+           minZoom: 3,
+           pitch: 0,
+           zoom: 3,
+         },
+         views: [new MapView({ id: "map", controller: true })],
+
+         layers: [polygonLayer],
+         getTooltip: ({ object }) =>
+           object
+           ? {
+             html: `
+               <div>
+                 <strong>${object.NUTS_NAME}</strong> (${object.NUTS_ID})<br>
+                 ${object.CNTR} <br><br>
+                 <table style="width: 100%; border-collapse: collapse;">
+                   <tr>
+                     <td style="text-align: left; font-weight: 700;">Integration index:   </td>
+                     <td style="text-align: right;">${object.integration_index}</td>
+                   </tr>
+                   <tr>
+                     <td style="text-align: left; font-weight: 700;">Number of respondents:</td>
+                     <td style="text-align: right;">${object.n_respondents}</td>
+                   </tr>
+                 </table>
+               </div>
+             `,
+           }
+           : null,
+         getCursor: ({ isHovering }) => (isHovering ? 'crosshair' : 'default'),
+         widgets: [
+           new CompassWidget({ id: "compass", viewId: "map" }),
+           new ZoomWidget({ id: "zoom", viewId: "map" }),
+         ],
+       });
+
+       // Force initial render with multiple methods
+       setTimeout(() => {
+         if (window.deckgl) {
+           window.deckgl.redraw(true);
+           // Simulate a mouse move to trigger render
+           const canvas = document.querySelector('canvas');
+           if (canvas) {
+             const event = new MouseEvent('mousemove', {
+               bubbles: true,
+               cancelable: true,
+               view: window
+             });
+             canvas.dispatchEvent(event);
+           }
+         }
+       }, 300);
+     })();
+    </script>
+  </body>
+</html>
