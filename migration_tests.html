@@ -1,423 +1,448 @@
 <!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Population Projections Dashboard</title>
+    <title></title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Lora:wght@700&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+     * {
+       margin: 0;
+       padding: 0;
+       box-sizing: border-box;
+     }
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 400;
-            color: #252a53;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-            background: #f9f9f9;
-        }
+     body {
+       font-family: 'Montserrat', sans-serif;
+       font-weight: 400;
+       color: #252a53;
+       width: 100%;
+       min-height: 100vh;
+       background: white;
+     }
 
-        .main-content {
-            display: flex;
-            width: 100%;
-            height: 100vh;
-            flex-direction: row;
-        }
+     .container {
+       max-width: 1600px;
+       margin: 0 auto;
+       padding: 20px;
+     }
 
-        .charts-container {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto auto auto auto;
-            overflow-y: auto;
-            padding: 20px;
-            gap: 20px;
-            background: #f9f9f9;
-        }
+     .main-content {
+       display: flex;
+       gap: 30px;
+       align-items: flex-start;
+     }
 
-        .charts-container > div:nth-child(1) {
-            grid-column: 1 / -1;
-            min-height: 280px;
-        }
+     .charts-container {
+       flex: 1;
+       display: grid;
+       grid-template-columns: 1fr 1fr;
+       grid-template-rows: auto auto auto auto auto;
+       gap: 20px;
+     }
 
-        .charts-container > div:nth-child(2),
-        .charts-container > div:nth-child(3),
-        .charts-container > div:nth-child(4),
-        .charts-container > div:nth-child(5) {
-            min-height: 280px;
-        }
+     .charts-container > div:nth-child(1) {
+       grid-column: 1 / -1;
+       min-height: 280px;
+     }
 
-        .charts-container > div:nth-child(6),
-        .charts-container > div:nth-child(7) {
-            min-height: 420px;
-        }
+     .charts-container > div:nth-child(2),
+     .charts-container > div:nth-child(3),
+     .charts-container > div:nth-child(4),
+     .charts-container > div:nth-child(5) {
+       min-height: 280px;
+     }
 
-        .charts-container > div:nth-child(8) {
-            grid-column: 1 / -1;
-            min-height: 550px;
-        }
+     .charts-container > div:nth-child(6),
+     .charts-container > div:nth-child(7) {
+       min-height: 420px;
+     }
 
-        .chart-wrapper {
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            padding: 20px;
-        }
+     .charts-container > div:nth-child(8) {
+       grid-column: 1 / -1;
+       min-height: 550px;
+     }
 
-        .chart-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #252a53;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+     .chart-wrapper {
+       background: white;
+       padding: 20px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+     }
 
-        .chart {
-            width: 100%;
-            height: 240px;
-        }
+     .chart-title {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 13px;
+       font-weight: 500;
+       margin-bottom: 15px;
+       color: #252a53;
+       letter-spacing: 0.5px;
+     }
 
-        .chart-wrapper:nth-child(6) .chart,
-        .chart-wrapper:nth-child(7) .chart {
-            height: 380px;
-        }
+     .chart-subtitle {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 12px;
+       font-weight: 400;
+       margin-bottom: 12px;
+       color: #666;
+       letter-spacing: 0px;
+     }
 
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            min-width: 420px;
-            max-width: 420px;
-            padding: 20px;
-            overflow-y: auto;
-            background: white;
-            border-left: 1px solid #f0f0f0;
-        }
+     .chart {
+       width: 100%;
+       height: 240px;
+     }
 
-        .control-section {
-            background: white;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border-radius: 4px;
-        }
+     .chart-wrapper:nth-child(6) .chart,
+     .chart-wrapper:nth-child(7) .chart {
+       height: 380px;
+     }
 
-        .control-section h3 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 15px;
-            color: #252a53;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+     .sidebar {
+       display: flex;
+       flex-direction: column;
+       gap: 20px;
+       min-width: 320px;
+       max-width: 320px;
+     }
 
-        .filter-section {
-            margin-bottom: 15px;
-        }
+     .control-panel {
+       background: white;
+       padding: 20px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+     }
 
-        .filter-label {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            color: #666;
-            margin-bottom: 6px;
-            display: block;
-            line-height: 1.2;
-        }
+     .control-panel h3 {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 13px;
+       font-weight: 500;
+       margin-top: 0;
+       margin-bottom: 15px;
+       color: #252a53;
+       text-transform: uppercase;
+       letter-spacing: 0.5px;
+     }
 
-        select {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 13px;
-            font-weight: 400;
-            background: white;
-            cursor: pointer;
-            color: #333;
-        }
+     .filter-section {
+       margin-bottom: 15px;
+     }
 
-        select:focus {
-            outline: none;
-            border-color: #252a53;
-            box-shadow: 0 0 0 2px rgba(37, 42, 83, 0.1);
-        }
+     .filter-label {
+       font-family: 'Montserrat', sans-serif;
+       font-size: 11px;
+       font-weight: 500;
+       color: #666;
+       margin-bottom: 6px;
+       display: block;
+       line-height: 1.2;
+     }
 
-        .info-panel {
-            background: white;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border-radius: 4px;
-        }
+     select {
+       width: 100%;
+       padding: 8px 12px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+       font-family: 'Montserrat', sans-serif;
+       font-size: 12px;
+       font-weight: 400;
+       background: white;
+       cursor: pointer;
+       color: #333;
+     }
 
-        .info-panel h3 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 15px;
-            color: #252a53;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+     select:hover {
+       border-color: #999;
+     }
 
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 13px;
-            font-weight: 400;
-            border-bottom: 1px solid #f0f0f0;
-        }
+     select:focus {
+       outline: none;
+       border-color: #252a53;
+     }
 
-        .info-item:last-child {
-            border-bottom: none;
-        }
+     .info-panel {
+       background: white;
+       padding: 20px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+     }
 
-        .info-label {
-            color: #666;
-            font-weight: 500;
-        }
+     .info-panel h3 {
+       font-family: 'Montserrat', sans-serif;
+       margin-top: 0;
+       margin-bottom: 20px;
+       font-size: 14px;
+       color: #252a53;
+       font-weight: 500;
+     }
 
-        .info-value {
-            font-weight: 700;
-            color: #252a53;
-            text-align: right;
-        }
+     .instructions-panel {
+       border: 1px solid #e0e0e0;
+     }
 
-        .rank-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 12px;
-            border-bottom: 1px solid #f0f0f0;
-        }
+     .instruction-text {
+       font-size: 12px;
+       line-height: 1.6;
+       color: #555;
+     }
 
-        .rank-item:last-child {
-            border-bottom: none;
-        }
+     .instruction-text p {
+       margin: 0 0 12px 0;
+     }
 
-        .rank-country {
-            flex: 1;
-            color: #333;
-        }
+     .instruction-text p:last-child {
+       margin-bottom: 0;
+     }
 
-        .rank-value {
-            font-weight: 700;
-            color: #252a53;
-            min-width: 60px;
-            text-align: right;
-        }
+     .instruction-text strong {
+       color: #252a53;
+       font-weight: 600;
+     }
 
-        .rank-positive {
-            color: #003399;
-        }
+     .info-item {
+       display: flex;
+       justify-content: space-between;
+       padding: 8px 0;
+       font-size: 12px;
+       border-bottom: 1px solid #f0f0f0;
+     }
 
-        .rank-negative {
-            color: #ac5737;
-        }
+     .info-item:last-child {
+       border-bottom: none;
+     }
 
-        .loading {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px 50px;
-            border-radius: 4px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-            z-index: 2000;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            display: none;
-            text-align: center;
-        }
+     .info-label {
+       color: #666;
+       font-weight: 500;
+     }
 
-        .loading.active {
-            display: block;
-        }
+     .info-value {
+       font-weight: 700;
+       color: #252a53;
+       text-align: right;
+     }
 
-        @media (max-width: 1400px) {
-            .sidebar {
-                min-width: 380px;
-                max-width: 380px;
-            }
+     .rank-item {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       padding: 8px 0;
+       font-size: 12px;
+       border-bottom: 1px solid #f0f0f0;
+     }
 
-            .charts-container {
-                gap: 15px;
-                padding: 15px;
-            }
+     .rank-item:last-child {
+       border-bottom: none;
+     }
 
-            .chart-wrapper {
-                padding: 15px;
-            }
+     .rank-country {
+       flex: 1;
+       color: #333;
+     }
 
-            .chart {
-                height: 220px;
-            }
-        }
+     .rank-value {
+       font-weight: 700;
+       color: #252a53;
+       min-width: 60px;
+       text-align: right;
+     }
 
-        @media (max-width: 1024px) {
-            .charts-container {
-                grid-template-columns: 1fr;
-            }
+     .rank-positive {
+       color: #003399;
+     }
 
-            .charts-container > div:nth-child(1) {
-                grid-column: 1;
-            }
+     .rank-negative {
+       color: #ac5737;
+     }
 
-            .chart {
-                height: 250px;
-            }
-        }
+     .loading {
+       position: fixed;
+       top: 50%;
+       left: 50%;
+       transform: translate(-50%, -50%);
+       background: white;
+       padding: 30px 50px;
+       border-radius: 4px;
+       box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+       z-index: 2000;
+       font-family: 'Montserrat', sans-serif;
+       font-size: 14px;
+       font-weight: 500;
+       display: none;
+       text-align: center;
+     }
 
-        @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
-            }
+     .loading.active {
+       display: block;
+     }
 
-            .charts-container {
-                height: 60%;
-                grid-template-columns: 1fr;
-                padding: 10px;
-            }
+     @media (max-width: 1400px) {
+       .sidebar {
+         min-width: 320px;
+         max-width: 320px;
+       }
 
-            .sidebar {
-                min-width: 100%;
-                max-width: 100%;
-                height: 40%;
-                flex-direction: row;
-                gap: 0;
-                overflow-x: auto;
-                overflow-y: hidden;
-                border-left: none;
-                border-top: 1px solid #f0f0f0;
-                padding: 10px;
-            }
+       .charts-container {
+         gap: 15px;
+       }
 
-            .control-section,
-            .info-panel {
-                min-width: 300px;
-            }
-        }
+       .chart-wrapper {
+         padding: 15px;
+       }
+
+       .chart {
+         height: 220px;
+       }
+     }
+
+     @media (max-width: 1024px) {
+       .charts-container {
+         grid-template-columns: 1fr;
+       }
+
+       .charts-container > div:nth-child(1) {
+         grid-column: 1;
+       }
+
+       .chart {
+         height: 250px;
+       }
+     }
+
+     @media (max-width: 768px) {
+       .main-content {
+         flex-direction: column;
+       }
+
+       .charts-container {
+         grid-template-columns: 1fr;
+       }
+
+       .sidebar {
+         min-width: 100%;
+         max-width: 100%;
+         flex-direction: row;
+         gap: 10px;
+         overflow-x: auto;
+         overflow-y: hidden;
+       }
+
+       .control-panel,
+       .info-panel {
+         min-width: 300px;
+       }
+     }
     </style>
-</head>
-<body>
-    <div class="main-content">
+  </head>
+  <body>
+    <div class="container">
+      <div class="main-content">
         <div class="charts-container">
-            <div class="chart-wrapper">
-                <div class="chart-title">Population Projections - % Change (2020-2039)</div>
-                <div id="populationChart" class="chart"></div>
-            </div>
+          <div class="chart-wrapper">
+            <div class="chart-title">Population projection - % change (2020-2039)</div>
+            <div class="chart-subtitle" id="populationSubtitle">—</div>
+            <div id="populationChart" class="chart"></div>
+          </div>
 
-            <div class="chart-wrapper">
-                <div class="chart-title">Population by Sex - Share (%)</div>
-                <div id="sexChart" class="chart"></div>
-            </div>
+          <div class="chart-wrapper">
+            <div class="chart-title">Population by sex - share (%)</div>
+            <div id="sexChart" class="chart"></div>
+          </div>
 
-            <div class="chart-wrapper">
-                <div class="chart-title">Population by Age Group</div>
-                <div id="ageChart" class="chart"></div>
-            </div>
+          <div class="chart-wrapper">
+            <div class="chart-title">Population by age group</div>
+            <div id="ageChart" class="chart"></div>
+          </div>
 
-            <div class="chart-wrapper">
-                <div class="chart-title">Immigration & Emigration Dynamics</div>
-                <div id="migrationDynamicsChart" class="chart"></div>
-            </div>
+          <div class="chart-wrapper">
+            <div class="chart-title">Immigration & emigration dynamics</div>
+            <div id="migrationDynamicsChart" class="chart"></div>
+          </div>
 
-            <div class="chart-wrapper">
-                <div class="chart-title">Migration Balance</div>
-                <div id="migrationBalanceChart" class="chart"></div>
-            </div>
+          <div class="chart-wrapper">
+            <div class="chart-title">Migration balance</div>
+            <div id="migrationBalanceChart" class="chart"></div>
+          </div>
 
-            <div class="chart-wrapper">
-                <div class="chart-title">Education Level Distribution (2020 vs 2039)</div>
-                <div id="educationChart" class="chart"></div>
-            </div>
+          <div class="chart-wrapper">
+            <div class="chart-title">Education level distribution (2020 vs 2039)</div>
+            <div id="educationChart" class="chart"></div>
+          </div>
 
-            <div class="chart-wrapper">
-                <div class="chart-title">Country of Birth Distribution (2020 vs 2039)</div>
-                <div id="cobChart" class="chart"></div>
-            </div>
+          <div class="chart-wrapper">
+            <div class="chart-title">Country of birth distribution (2020 vs 2039)</div>
+            <div id="cobChart" class="chart"></div>
+          </div>
 
-            <div class="chart-wrapper">
-                <div class="chart-title">Country Rankings - Population Change (%)</div>
-                <div id="rankingChart" class="chart"></div>
-            </div>
+          <div class="chart-wrapper">
+            <div class="chart-title">Country rankings - population change (%)</div>
+            <div id="rankingChart" class="chart"></div>
+          </div>
         </div>
 
         <div class="sidebar">
-            <div class="control-section">
-                <h3>Country Selection</h3>
-
-                <div class="filter-section">
-                    <label class="filter-label">Select Country</label>
-                    <select id="countrySelect">
-                        <option value="">Loading countries...</option>
-                    </select>
-                </div>
+          <div class="control-panel instructions-panel">
+            <div class="instruction-text">
+              <p><strong>Explore population trends:</strong> Select a country to view detailed projections for population change, demographic composition, and migration dynamics.</p>
+              <p><strong>Key metrics:</strong> Charts display population growth forecasts from 2020 to 2039, broken down by age, sex, education level, and country of birth.</p>
+              <p><strong>Migration insights:</strong> Compare immigration and emigration flows, and see how each country ranks within Europe in terms of projected population change.</p>
             </div>
+          </div>
 
-            <div class="info-panel">
-                <h3>Summary Statistics</h3>
-                <div id="summaryContent">
-                    <div class="info-item">
-                        <span class="info-label">Selected Country</span>
-                        <span class="info-value" id="selectedCountryLabel">—</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">2020 Population</span>
-                        <span class="info-value" id="pop2020">—</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">2039 Population</span>
-                        <span class="info-value" id="pop2039">—</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Change (%)</span>
-                        <span class="info-value" id="popChange">—</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Total Immigration</span>
-                        <span class="info-value" id="totalImm">—</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Total Emigration</span>
-                        <span class="info-value" id="totalEmi">—</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Net Migration</span>
-                        <span class="info-value" id="netMigration">—</span>
-                    </div>
-                </div>
-            </div>
+          <div class="control-panel">
 
-            <div class="info-panel">
-                <h3>European Ranking</h3>
-                <div id="rankingContent">
-                    <div class="rank-item">
-                        <span class="rank-country">Loading...</span>
-                    </div>
-                </div>
+            <div class="filter-section">
+              <label class="filter-label">Select country</label>
+              <select id="countrySelect">
+                <option value="">Loading countries...</option>
+              </select>
             </div>
+          </div>
+
+          <div class="info-panel">
+            <h3>Summary Statistics</h3>
+            <div id="summaryContent">
+              <div class="info-item">
+                <span class="info-label">Selected Country</span>
+                <span class="info-value" id="selectedCountryLabel">—</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">2020 Population</span>
+                <span class="info-value" id="pop2020">—</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">2039 Population</span>
+                <span class="info-value" id="pop2039">—</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Change (%)</span>
+                <span class="info-value" id="popChange">—</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Total Immigration</span>
+                <span class="info-value" id="totalImm">—</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Total Emigration</span>
+                <span class="info-value" id="totalEmi">—</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Net Migration</span>
+                <span class="info-value" id="netMigration">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-panel">
+            <h3>European Ranking</h3>
+            <div id="rankingContent">
+              <div class="rank-item">
+                <span class="rank-country">Loading...</span>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <div class="loading" id="loading">Loading data...</div>
@@ -620,6 +645,15 @@
        return sorted;
      }
 
+     function formatNumber(num) {
+       if (num >= 1000000) {
+         return (num / 1000000).toFixed(1) + 'M';
+       } else if (num >= 1000) {
+         return (num / 1000).toFixed(0) + 'K';
+       }
+       return num.toLocaleString();
+     }
+
      function updateCharts() {
        const filtered = getFilteredData();
 
@@ -632,6 +666,11 @@
        const aggregated = aggregateByYear(filtered);
        const baselinePop = aggregated.pop[0];
        const popPctChange = aggregated.pop.map(p => ((p - baselinePop) / baselinePop * 100));
+
+       // Update subtitle with baseline and projected population
+       const projectedPop = aggregated.pop[aggregated.pop.length - 1];
+       const subtitle = `Baseline: ${formatNumber(baselinePop)} → Projected: ${formatNumber(projectedPop)}`;
+       document.getElementById('populationSubtitle').textContent = subtitle;
 
        const popTrace = {
          x: aggregated.years,
@@ -931,20 +970,32 @@
 
        Plotly.newPlot('cobChart', [cobTrace2020, cobTrace2039], cobLayout, { responsive: true, displayModeBar: false });
 
-       // 8. Country rankings chart (horizontal bar chart)
+       // 8. Country rankings chart (vertical bar chart with selected country highlight)
        const rankings = calculateCountryRankings();
        const topRankings = rankings.slice(0, rankings.length);
 
        const rankCountries = topRankings.map(r => r[0]);
        const rankChanges = topRankings.map(r => r[1].change);
-       const rankColors = rankChanges.map(c => c >= 0 ? '#003399' : '#ac5737');
+       const rankColors = rankChanges.map((c, idx) => {
+         const country = rankCountries[idx];
+         if (country === filters.country) {
+           return '#3f2e20'; // Darker/highlight color for selected country
+         }
+         return c >= 0 ? '#003399' : '#ac5737';
+       });
 
        const rankingTrace = {
          x: rankCountries,
          y: rankChanges,
          type: 'bar',
          orientation: 'v',
-         marker: { color: rankColors },
+         marker: {
+           color: rankColors,
+           line: {
+             color: rankCountries.map(c => c === filters.country ? '#252a53' : 'transparent'),
+             width: rankCountries.map(c => c === filters.country ? 2 : 0)
+           }
+         },
          hovertemplate: '<b>%{x}</b><br>Population Change: %{y:.1f}%<extra></extra>'
        };
 
@@ -1044,5 +1095,5 @@
 
      window.addEventListener('load', loadData);
     </script>
-</body>
+  </body>
 </html>
