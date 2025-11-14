@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>Migration projections</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Lora:wght@700&display=swap" rel="stylesheet">
@@ -883,7 +883,7 @@
        const eduLayout = {
          margin: { l: 0, r: 0, t: 0, b: 0 },
          paper_bgcolor: 'transparent',
-         font: { family: 'Montserrat, sans-serif', size: 8, color: '#666' },
+         font: { family: 'Montserrat, sans-serif', size: 12, color: '#666' },
          height: 320,
          annotations: [
            {
@@ -908,13 +908,22 @@
        // 7. Country of birth distribution (comparison 2020 vs 2039)
        const cobYearData = aggregateByYearAndField(filtered, 'cob');
 
+       // Map abbreviations to full labels
+       const cobLabelMap = {
+         'NAT': 'Nationals',
+         'EU': 'EU',
+         'NEU': 'Non-EU'
+       };
+
        const cobData2020 = cobYearData[minYear];
        const cobData2039 = cobYearData[maxYear];
 
-       const cobLabels2020 = Object.keys(cobData2020);
+       const cobKeys2020 = Object.keys(cobData2020);
+       const cobLabels2020 = cobKeys2020.map(c => cobLabelMap[c] || c);
        const cobValues2020 = Object.values(cobData2020);
 
-       const cobLabels2039 = Object.keys(cobData2039);
+       const cobKeys2039 = Object.keys(cobData2039);
+       const cobLabels2039 = cobKeys2039.map(c => cobLabelMap[c] || c);
        const cobValues2039 = Object.values(cobData2039);
 
        const cobTrace2020 = {
@@ -924,7 +933,7 @@
          hole: 0.4,
          name: minYear,
          marker: {
-           colors: cobLabels2020.map(c => colorPalette[c] || '#ccc'),
+           colors: cobKeys2020.map(c => colorPalette[c] || '#ccc'),
            line: { color: 'white', width: 1 }
          },
          hovertemplate: '<b>%{label}</b><br>Population: %{value:,.0f}<br>Percentage: %{percent}<extra></extra>',
@@ -938,7 +947,7 @@
          hole: 0.4,
          name: maxYear,
          marker: {
-           colors: cobLabels2039.map(c => colorPalette[c] || '#ccc'),
+           colors: cobKeys2039.map(c => colorPalette[c] || '#ccc'),
            line: { color: 'white', width: 1 }
          },
          hovertemplate: '<b>%{label}</b><br>Population: %{value:,.0f}<br>Percentage: %{percent}<extra></extra>',
@@ -948,7 +957,7 @@
        const cobLayout = {
          margin: { l: 0, r: 0, t: 0, b: 0 },
          paper_bgcolor: 'transparent',
-         font: { family: 'Montserrat, sans-serif', size: 8, color: '#666' },
+         font: { family: 'Montserrat, sans-serif', size: 12, color: '#666' },
          height: 320,
          annotations: [
            {
