@@ -13,31 +13,29 @@
 
     <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png" />
 
-    <!-- <link rel="stylesheet" href="styles_migration.css"> -->
-
     <style>
 
-      body {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 400;
-      color: #252a53;
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      }
+     body {
+       font-family: 'Montserrat', sans-serif;
+       font-weight: 400;
+       color: #252a53;
+       margin: 0;
+       min-height: 100vh;
+       display: flex;
+       flex-direction: column;
+     }
 
-      .footer {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.25rem;
-      padding: 1.25rem;
-      color: #252a53;
-      text-align: left;
-      font-size: 0.625rem;
-      background-color: #252a53;
-      margin-top: auto;
-      }
+     .footer {
+       display: grid;
+       grid-template-columns: repeat(4, 1fr);
+       gap: 1.25rem;
+       padding: 1.25rem;
+       color: #252a53;
+       text-align: left;
+       font-size: 0.625rem;
+       background-color: #252a53;
+       margin-top: auto;
+     }
 
       .footer-column {
       padding: 0rem 0.625rem 0rem 0.625rem;
@@ -491,14 +489,11 @@
       font-weight: 500;
       }
 
-
     </style>
 
   </head>
 
   <body>
-
-
 
     <div class="header">
       <div>
@@ -525,22 +520,15 @@
       </div>
     </div>
 
-
-
-
-
-
     <div class="main-content">
       <div class="region-tabs">
         <button class="tab-button" onclick="switchTab('content-tab1')">Projections</button>
         <button class="tab-button" onclick="switchTab('content-tab4')">Flows</button>
         <button class="tab-button" onclick="switchTab('content-tab2')">Perspectives</button>
         <button class="tab-button" onclick="switchTab('content-tab3')">Integration</button>
-
       </div>
 
       <!-- Default tab content shown on load -->
-
       <div id="tab-content" class="tab-content" style="font-size: 14px; line-height: 1.8;">
         <p style="margin-bottom: 16px;">
           This section of the dashboard brings together different perspectives on migration in Europe.
@@ -562,16 +550,14 @@
         </ul>
       </div>
 
-      <!-- Tab 1: Projections -->
-      <div id="content-tab1" class="tab-content hidden">
-        <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
-          <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
-            This page will be updated tomorrow!
-          </p>
-        </div>
-        <!-- <iframe src="migration_projections.html" width="100%" height="1000px"></iframe> -->
+      <!-- Tab 1: Projections - Lazy loaded -->
+      <div id="content-tab1" class="tab-content hidden" style="width: 100%; padding: 0; margin: 0; overflow: visible;">
+        <iframe
+          id="iframe-projections"
+          data-src="migration_projections.html"
+          style="width: 100%; height: 2600px; border: none; display: block; overflow: auto;"
+        ></iframe>
       </div>
-
 
       <!-- Tab 2: Perspectives -->
       <div id="content-tab2" class="tab-content hidden">
@@ -587,41 +573,23 @@
               These stories add context to the data shown elsewhere in the Dashboard, helping you see how real experiences shape mobility patterns and what makes regions more or less attractive to newcomers.
             </p>
             <p style="margin-bottom: 0px; line-height: 1.6; font-size: 14px; color: #333;"> Start by selecting the topic you are interested in. </p>
-            <!-- <p style="margin-bottom: 0; line-height: 1.6; font-size: 12px; color: #666; font-style: italic;">
-                 Note: This section contains sample data for demonstration purposes.
-                 </p>
-            -->
           </div>
         </div>
 
-
         <div class="perspectives-filters">
-          <!-- Main Topic Selection -->
           <div class="filter-section">
             <h3>Select topics</h3>
-            <div class="main-topic-buttons" id="main-topic-buttons">
-              <!-- Main topic buttons will be populated by JavaScript -->
-            </div>
+            <div class="main-topic-buttons" id="main-topic-buttons"></div>
           </div>
 
-
-
-
-          <!-- Topic Groups -->
           <div class="filter-section">
             <h3>Sub-topics</h3>
             <div class="topic-connection-info" id="topic-connection-info">
               Select a main topic to see related sub-topics
             </div>
-            <div class="topic-groups" id="topic-groups">
-              <!-- Topic group buttons will be populated by JavaScript -->
-            </div>
+            <div class="topic-groups" id="topic-groups"></div>
           </div>
 
-
-
-
-          <!-- Dropdown Filters -->
           <div class="filter-section">
             <h3>Filter by characteristics</h3>
             <div class="dropdown-filters">
@@ -637,10 +605,6 @@
                 <label for="age-filter">Age group</label>
                 <select id="age-filter" name="age_group">
                   <option value="">All ages</option>
-                  <!-- <option value="18-25">18-25</option>
-                       <option value="26-40">26-40</option>
-                       <option value="41-54">41-54</option>
-                       <option value="55-70">55-70</option> -->
                 </select>
               </div>
               <div class="dropdown-filter">
@@ -657,24 +621,19 @@
                 <label for="birth-location-filter">Country of birth</label>
                 <select id="birth-location-filter" name="birth_location">
                   <option value="">All countries</option>
-                  <!-- Will be populated by JavaScript -->
                 </select>
               </div>
               <div class="dropdown-filter">
                 <label for="interview-location-filter">Interview location</label>
                 <select id="interview-location-filter" name="interview_location">
                   <option value="">All locations</option>
-                  <!-- Will be populated by JavaScript -->
                 </select>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Quote Count -->
         <div id="perspectives-count" class="perspectives-count" style="display: none;"></div>
-
-        <!-- Quotes Display -->
         <div id="perspectives-quotes-container" class="perspectives-quotes">
           <div class="no-quotes-message">
             Select topics and filters above to explore migration perspectives.
@@ -682,20 +641,28 @@
         </div>
       </div>
 
-      <!-- Tab 3: Integration -->
+      <!-- Tab 3: Integration - Lazy loaded -->
       <div id="content-tab3" class="tab-content hidden">
-        <iframe src="migration_integration.html" width="100%" height="800px"></iframe>
+        <iframe
+          id="iframe-integration"
+          data-src="migration_integration.html"
+          width="100%"
+          height="800px"
+          style="border: none;"
+        ></iframe>
       </div>
 
-      <!-- Tab 4: Flows -->
+      <!-- Tab 4: Flows - Lazy loaded -->
       <div id="content-tab4" class="tab-content hidden">
-        <iframe src="migration_flows.html" width="100%" height="1800px"></iframe>
+        <iframe
+          id="iframe-flows"
+          data-src="migration_flows.html"
+          width="100%"
+          height="1800px"
+          style="border: none;"
+        ></iframe>
       </div>
     </div>
-
-
-
-
 
     <!-- Quote Modal -->
     <div id="quote-modal" class="quote-modal">
@@ -707,7 +674,6 @@
         <div class="quote-modal-meta" id="quote-modal-meta"></div>
       </div>
     </div>
-
 
     <footer class="footer">
       <div class="footer-column">
@@ -743,10 +709,7 @@
     </footer>
 
     <script>
-     // Perspectives data will be loaded from CSV
      let PERSPECTIVES_DATA = [];
-
-     // Application state
      let selectedMainTopics = [];
      let selectedTopicGroups = [];
      let allMainTopics = [];
@@ -754,21 +717,20 @@
      let allBirthLocations = [];
      let allInterviewLocations = [];
      let allAgeGroups = [];
-     let topicConnections = {}; // Maps main topics to their related additional topics
+     let topicConnections = {};
 
-     // Initialize the application
+     // Track which iframes have been loaded
+     const loadedIframes = new Set();
+
      document.addEventListener('DOMContentLoaded', function() {
        loadPerspectivesData();
        bindEvents();
      });
 
-     // Load perspectives data from CSV
      async function loadPerspectivesData() {
        try {
          const response = await fetch('data/migration_perspectives/quotes.csv');
          const csvText = await response.text();
-
-         // Parse CSV data
          const lines = csvText.trim().split('\n');
          const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
 
@@ -777,7 +739,6 @@
            const line = lines[i];
            if (!line.trim()) continue;
 
-           // Parse CSV line, handling quoted fields
            const values = parseCSVLine(line);
 
            if (values.length >= 8) {
@@ -804,7 +765,6 @@
        }
      }
 
-     // Parse CSV line handling quoted fields
      function parseCSVLine(line) {
        const result = [];
        let current = '';
@@ -827,40 +787,30 @@
        return result;
      }
 
-     // Parse array fields from CSV
      function parseArrayField(field) {
        try {
          const cleaned = field.replace(/^"/, '').replace(/"$/, '').trim();
-
-         // Split by comma and clean each item
-         return cleaned.split(',').map(item =>
-           item.trim()
-         ).filter(item => item.length > 0);
+         return cleaned.split(',').map(item => item.trim()).filter(item => item.length > 0);
        } catch (error) {
          console.error('Error parsing array field:', field, error);
          return [];
        }
      }
 
-     // Initialize perspectives data and UI
      function initializePerspectivesData() {
-       // Extract unique values for filters
        const mainTopics = new Set();
        const topicGroups = new Set();
        const birthLocations = new Set();
        const interviewLocations = new Set();
        const ageGroups = new Set();
 
-       // Build topic connections
        topicConnections = {};
 
        PERSPECTIVES_DATA.forEach(perspective => {
-         // Handle topic_main as array
          if (perspective.topic_main) {
            perspective.topic_main.forEach(mainTopic => {
              mainTopics.add(mainTopic);
 
-             // Build connections between main topics and additional topics
              if (!topicConnections[mainTopic]) {
                topicConnections[mainTopic] = new Set();
              }
@@ -876,19 +826,16 @@
          if (perspective.age_group) ageGroups.add(perspective.age_group);
        });
 
-       // Convert sets to arrays and sort
        allMainTopics = Array.from(mainTopics).sort();
        allTopicGroups = Array.from(topicGroups).sort();
        allBirthLocations = Array.from(birthLocations).sort();
        allInterviewLocations = Array.from(interviewLocations).sort();
        allAgeGroups = Array.from(ageGroups).sort();
 
-       // Convert topic connection sets to arrays
        Object.keys(topicConnections).forEach(mainTopic => {
          topicConnections[mainTopic] = Array.from(topicConnections[mainTopic]).sort();
        });
 
-       // Populate UI elements
        populateMainTopicButtons();
        populateTopicGroupButtons();
        populateDropdownFilters();
@@ -896,7 +843,6 @@
        displayPerspectives([]);
      }
 
-     // Populate main topic buttons
      function populateMainTopicButtons() {
        const container = document.getElementById('main-topic-buttons');
        container.innerHTML = '';
@@ -910,7 +856,6 @@
        });
      }
 
-     // Populate topic group buttons
      function populateTopicGroupButtons() {
        const container = document.getElementById('topic-groups');
        container.innerHTML = '';
@@ -924,9 +869,7 @@
        });
      }
 
-     // Populate dropdown filters
      function populateDropdownFilters() {
-       // Populate birth locations
        const birthLocationSelect = document.getElementById('birth-location-filter');
        allBirthLocations.forEach(location => {
          const option = document.createElement('option');
@@ -935,7 +878,6 @@
          birthLocationSelect.appendChild(option);
        });
 
-       // Populate interview locations
        const interviewLocationSelect = document.getElementById('interview-location-filter');
        allInterviewLocations.forEach(location => {
          const option = document.createElement('option');
@@ -944,7 +886,6 @@
          interviewLocationSelect.appendChild(option);
        });
 
-       // Populate age groups
        const ageSelect = document.getElementById('age-filter');
        allAgeGroups.forEach(ageGroup => {
          const option = document.createElement('option');
@@ -954,7 +895,6 @@
        });
      }
 
-     // Toggle main topic selection
      function toggleMainTopic(topic, buttonElement) {
        const isSelected = selectedMainTopics.includes(topic);
 
@@ -966,30 +906,25 @@
          buttonElement.classList.add('active');
        }
 
-       // Clear selected topic groups when main topics change
        selectedTopicGroups = [];
        document.querySelectorAll('.topic-group-button').forEach(btn => {
          btn.classList.remove('active');
        });
 
-       // Update topic group visibility and connection info
        updateTopicGroupVisibility();
        filterAndDisplayPerspectives();
      }
 
-     // Update topic group visibility based on selected main topics
      function updateTopicGroupVisibility() {
        const connectionInfo = document.getElementById('topic-connection-info');
        const topicGroupsContainer = document.getElementById('topic-groups');
        const topicGroupButtons = topicGroupsContainer.querySelectorAll('.topic-group-button');
 
-       // Clear active states for topic groups
        topicGroupButtons.forEach(button => {
          button.classList.remove('active', 'related', 'dimmed');
        });
 
        if (selectedMainTopics.length === 0) {
-         // No main topics selected - show instruction
          connectionInfo.textContent = 'Select a main topic to see related sub-topics';
          topicGroupButtons.forEach(button => {
            button.classList.add('dimmed');
@@ -997,7 +932,6 @@
          return;
        }
 
-       // Get all related additional topics for selected main topics
        const relatedTopics = new Set();
        selectedMainTopics.forEach(mainTopic => {
          if (topicConnections[mainTopic]) {
@@ -1007,7 +941,6 @@
          }
        });
 
-       // Update connection info
        if (relatedTopics.size > 0) {
          const mainTopicsText = selectedMainTopics.join(', ');
          connectionInfo.textContent = `Sub-topics related to ${mainTopicsText}:`;
@@ -1015,7 +948,6 @@
          connectionInfo.textContent = 'No sub-topics found for selected main topics';
        }
 
-       // Update button states
        topicGroupButtons.forEach(button => {
          const topicName = button.textContent;
          if (relatedTopics.has(topicName)) {
@@ -1027,9 +959,7 @@
        });
      }
 
-     // Toggle topic group selection
      function toggleTopicGroup(topic, buttonElement) {
-       // Don't allow selection of dimmed (unrelated) topics
        if (buttonElement.classList.contains('dimmed')) {
          return;
        }
@@ -1047,11 +977,9 @@
        filterAndDisplayPerspectives();
      }
 
-     // Filter and display perspectives
      function filterAndDisplayPerspectives() {
        let filteredPerspectives = PERSPECTIVES_DATA;
 
-       // Filter by main topics
        if (selectedMainTopics.length > 0) {
          filteredPerspectives = filteredPerspectives.filter(perspective =>
            selectedMainTopics.some(selectedTopic =>
@@ -1060,7 +988,6 @@
          );
        }
 
-       // Filter by topic groups
        if (selectedTopicGroups.length > 0) {
          filteredPerspectives = filteredPerspectives.filter(perspective =>
            selectedTopicGroups.some(selectedTopic =>
@@ -1069,39 +996,26 @@
          );
        }
 
-       // Filter by dropdown selections
        const genderFilter = document.getElementById('gender-filter').value;
        const ageFilter = document.getElementById('age-filter').value;
        const migrationTypeFilter = document.getElementById('migration-type-filter').value;
        const birthLocationFilter = document.getElementById('birth-location-filter').value;
        const interviewLocationFilter = document.getElementById('interview-location-filter').value;
 
-       if (genderFilter) {
-         filteredPerspectives = filteredPerspectives.filter(p => p.gender === genderFilter);
-       }
-       if (ageFilter) {
-         filteredPerspectives = filteredPerspectives.filter(p => p.age_group === ageFilter);
-       }
-       if (migrationTypeFilter) {
-         filteredPerspectives = filteredPerspectives.filter(p => p.migration_type === migrationTypeFilter);
-       }
-       if (birthLocationFilter) {
-         filteredPerspectives = filteredPerspectives.filter(p => p.birth_location === birthLocationFilter);
-       }
-       if (interviewLocationFilter) {
-         filteredPerspectives = filteredPerspectives.filter(p => p.interview_location === interviewLocationFilter);
-       }
+       if (genderFilter) filteredPerspectives = filteredPerspectives.filter(p => p.gender === genderFilter);
+       if (ageFilter) filteredPerspectives = filteredPerspectives.filter(p => p.age_group === ageFilter);
+       if (migrationTypeFilter) filteredPerspectives = filteredPerspectives.filter(p => p.migration_type === migrationTypeFilter);
+       if (birthLocationFilter) filteredPerspectives = filteredPerspectives.filter(p => p.birth_location === birthLocationFilter);
+       if (interviewLocationFilter) filteredPerspectives = filteredPerspectives.filter(p => p.interview_location === interviewLocationFilter);
 
        displayPerspectives(filteredPerspectives);
      }
 
-     // Display perspectives
      function displayPerspectives(perspectives) {
        const container = document.getElementById('perspectives-quotes-container');
        const countElement = document.getElementById('perspectives-count');
 
        if (perspectives.length === 0) {
-         // Show different message if no main topic is selected vs. filters returning no results
          const message = selectedMainTopics.length === 0
                        ? 'Select a topic above to explore migration perspectives'
                        : 'No perspectives found for the selected criteria. Try adjusting your filters.';
@@ -1110,11 +1024,9 @@
          return;
        }
 
-       // Show perspective count
        countElement.textContent = `${perspectives.length} perspective${perspectives.length === 1 ? '' : 's'} found`;
        countElement.style.display = 'block';
 
-       // Create quote cards
        container.innerHTML = '';
        perspectives.forEach((perspective, index) => {
          const card = createQuoteCard(perspective, index);
@@ -1122,18 +1034,15 @@
        });
      }
 
-     // Create quote card
      function createQuoteCard(perspective, index) {
        const card = document.createElement('div');
        card.className = 'quote-card';
        card.onclick = () => openQuoteModal(perspective);
 
-       // Create tags from topic_additional
        const tagsHtml = perspective.topic_additional.map(tag =>
          `<span class="quote-card-tag">${tag}</span>`
        ).join('');
 
-       // Truncate quote for display
        const truncatedQuote = perspective.quote.length > 200
                                                        ? perspective.quote.substring(0, 200) + '...'
                                                        : perspective.quote;
@@ -1146,7 +1055,6 @@
        return card;
      }
 
-     // Open quote modal
      function openQuoteModal(perspective) {
        const modal = document.getElementById('quote-modal');
        const title = document.getElementById('quote-modal-title');
@@ -1154,10 +1062,9 @@
        const additional = document.getElementById('quote-modal-additional');
        const meta = document.getElementById('quote-modal-meta');
 
-       // Set modal content
        title.textContent = 'Migration Perspective';
        quote.textContent = `"${perspective.quote}"`;
-       additional.style.display = 'none'; // Hide since we don't have this field
+       additional.style.display = 'none';
 
        meta.innerHTML = `
          <div class="quote-modal-meta-item">
@@ -1193,14 +1100,11 @@
        modal.style.display = 'block';
      }
 
-     // Close quote modal
      function closeQuoteModal() {
        document.getElementById('quote-modal').style.display = 'none';
      }
 
-     // Bind events
      function bindEvents() {
-       // Modal events
        document.getElementById('quote-modal').addEventListener('click', (e) => {
          if (e.target.id === 'quote-modal') {
            closeQuoteModal();
@@ -1211,14 +1115,31 @@
          closeQuoteModal();
        });
 
-       // Dropdown filter events
        const dropdownFilters = ['gender-filter', 'age-filter', 'migration-type-filter', 'birth-location-filter', 'interview-location-filter'];
        dropdownFilters.forEach(filterId => {
          document.getElementById(filterId).addEventListener('change', filterAndDisplayPerspectives);
        });
      }
 
-     // Tab switching function
+     // Lazy load iframes when tab becomes visible
+     function loadIframeIfNeeded(iframeId) {
+       if (loadedIframes.has(iframeId)) {
+         return; // Already loaded
+       }
+
+       const iframe = document.getElementById(iframeId);
+       if (!iframe) return;
+
+       const src = iframe.getAttribute('data-src');
+       if (src) {
+         iframe.setAttribute('src', src);
+         iframe.removeAttribute('data-src');
+         loadedIframes.add(iframeId);
+         console.log(`Loaded iframe: ${iframeId}`);
+       }
+     }
+
+     // Tab switching function with lazy loading
      function switchTab(tabId) {
        // Hide the default tab content
        const defaultTab = document.getElementById('tab-content');
@@ -1235,6 +1156,15 @@
        const selectedTab = document.getElementById(tabId);
        if (selectedTab) {
          selectedTab.classList.remove('hidden');
+       }
+
+       // Lazy load iframes
+       if (tabId === 'content-tab1') {
+         loadIframeIfNeeded('iframe-projections');
+       } else if (tabId === 'content-tab3') {
+         loadIframeIfNeeded('iframe-integration');
+       } else if (tabId === 'content-tab4') {
+         loadIframeIfNeeded('iframe-flows');
        }
 
        // Update active button state
