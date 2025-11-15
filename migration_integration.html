@@ -111,7 +111,7 @@
 
      @media (max-width: 1024px) {
        html {
-         font-size: 14px; /* Smaller base for mobile */
+         font-size: 14px;
        }
      }
 
@@ -155,9 +155,10 @@
       <div class="sidebar">
         <div class="instructions-panel">
           <div class="instruction-text">
-            <p><strong>Explore migration integration:</strong> Hover over regions to see integration index scores.</p>
-            <p><strong>Data details:</strong> The integration index is calculated based on XXX. Higher values indicate stronger integration.</p>
-            <p><strong>Zoom and pan:</strong> Use the map controls to zoom in and out, and navigate to specific regions of interest.</p>
+            <p><strong>Explore integration across Europe:</strong> How well different regions support newcomers in settling, working, and participating in society.</p>
+            <p><strong>What the Integration index shows:</strong> Scores range from 0 (low integration) to 1 (high integration) and reflect how well first- and second-generation migrants are settling, working, and participating in society.</p>
+            <p><strong>How it is calculated:</strong> The index combines structural (jobs, housing), cultural (language, values), social (networks, friendships), and political/civic participation indicators to provide a snapshot of how effectively regions turn arrival into belonging.</p>
+            <p><strong>Navigate the map:</strong> Use zoom to identify leading examples and regions facing similar integration challenges.</p>
           </div>
         </div>
       </div>
@@ -213,7 +214,6 @@
          loaderEl.style.display = "none";
        }
 
-       // NOW INITIALIZE MAP WITH DATA
        let polygonLayer = createPolygonLayer(data);
 
        window.deckgl = new DeckGL({
@@ -223,7 +223,7 @@
          initialViewState: {
            bearing: 0,
            latitude: 58,
-           longitude: 20,
+           longitude: 15,
            maxZoom: 20,
            minZoom: 3,
            pitch: 0,
@@ -237,16 +237,12 @@
            ? {
              html: `
                <div>
-                 <strong>${object.NUTS_NAME}</strong> (${object.NUTS_ID})<br>
+                 <strong>${object.NUTS_NAME}</strong><br>
                  ${object.CNTR} <br><br>
                  <table style="width: 100%; border-collapse: collapse;">
                    <tr>
                      <td style="text-align: left; font-weight: 700;">Integration index:   </td>
                      <td style="text-align: right;">${object.integration_index}</td>
-                   </tr>
-                   <tr>
-                     <td style="text-align: left; font-weight: 700;">Number of respondents:</td>
-                     <td style="text-align: right;">${object.n_respondents}</td>
                    </tr>
                  </table>
                </div>

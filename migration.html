@@ -143,6 +143,16 @@
       flex-grow: 1;
       }
 
+      #content-tab2:not(.hidden) {
+      display: flex;
+      width: 100%;
+      height: auto;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+      }
+
       .region-tabs {
       display: flex;
       position: sticky;
@@ -175,15 +185,56 @@
       }
 
       .hidden {
-      display: none;
+      display: none !important;
       }
 
       /* Perspectives specific styles */
-      .perspectives-intro {
-      font-size: 14px;
+      .perspectives-container {
+      display: flex;
+      width: 100%;
+      gap: 0;
+      }
+
+      .perspectives-main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      }
+
+      .perspectives-sidebar {
+      width: 340px;
+      background: white;
+      border-left: 1px solid #e0e0e0;
+      overflow-y: auto;
+      padding: 20px;
+      flex-shrink: 0;
+      }
+
+      .instructions-panel {
+      background: white;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 0;
+      flex-shrink: 0;
+      }
+
+      .instruction-text {
+      font-size: 12px;
       line-height: 1.6;
-      margin-bottom: 20px;
+      color: #555;
+      }
+
+      .instruction-text p {
+      margin: 0 0 12px 0;
+      }
+
+      .instruction-text p:last-child {
+      margin-bottom: 0;
+      }
+
+      .instruction-text strong {
       color: #252a53;
+      font-weight: 600;
       }
 
       .perspectives-filters {
@@ -522,35 +573,13 @@
 
     <div class="main-content">
       <div class="region-tabs">
+        <button class="tab-button active" onclick="switchTab('content-tab4')">Population flows</button>
         <button class="tab-button" onclick="switchTab('content-tab1')">Projections</button>
-        <button class="tab-button" onclick="switchTab('content-tab4')">Flows</button>
         <button class="tab-button" onclick="switchTab('content-tab2')">Perspectives</button>
         <button class="tab-button" onclick="switchTab('content-tab3')">Integration</button>
       </div>
 
-      <!-- Default tab content shown on load -->
-      <div id="tab-content" class="tab-content" style="font-size: 14px; line-height: 1.8;">
-        <p style="margin-bottom: 16px;">
-          This section of the dashboard brings together different perspectives on migration in Europe.
-        </p>
-
-        <ul style="margin-left: 20px; gap: 12px;">
-          <li style="margin-bottom: 12px;">
-            <strong>Projections:</strong> Explore past trends and future migration patterns shaping Europe.
-          </li>
-          <li style="margin-bottom: 12px;">
-            <strong>Flows:</strong> View an interactive visualization with bilateral migration flows between European countries.
-          </li>
-          <li style="margin-bottom: 12px;">
-            <strong>Perspectives:</strong> Hear voices and experiences collected through in-depth interviews across Europe.
-          </li>
-          <li style="margin-bottom: 12px;">
-            <strong>Integration:</strong> View an interactive map comparing integration across European regions.
-          </li>
-        </ul>
-      </div>
-
-      <!-- Tab 1: Projections - Lazy loaded -->
+      <!-- Projections -->
       <div id="content-tab1" class="tab-content hidden" style="width: 100%; padding: 0; margin: 0; overflow: visible;">
         <iframe
           id="iframe-projections"
@@ -559,89 +588,87 @@
         ></iframe>
       </div>
 
-      <!-- Tab 2: Perspectives -->
+      <!-- Perspectives -->
       <div id="content-tab2" class="tab-content hidden">
-        <div class="perspectives-intro">
-          <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
-            <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
-              On this page, you can explore first-hand insights from migrants to better understand the motivations behind moving and moving back.
-            </p>
-            <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
-              Filter by economic, social, or living environment factors to see quotes and perspectives describing what influences decisions about work, belonging, housing, and quality of life.
-            </p>
-            <p style="margin-bottom: 15px; line-height: 1.6; font-size: 14px; color: #333;">
-              These stories add context to the data shown elsewhere in the Dashboard, helping you see how real experiences shape mobility patterns and what makes regions more or less attractive to newcomers.
-            </p>
-            <p style="margin-bottom: 0px; line-height: 1.6; font-size: 14px; color: #333;"> Start by selecting the topic you are interested in. </p>
-          </div>
-        </div>
-
-        <div class="perspectives-filters">
-          <div class="filter-section">
-            <h3>Select topics</h3>
-            <div class="main-topic-buttons" id="main-topic-buttons"></div>
-          </div>
-
-          <div class="filter-section">
-            <h3>Sub-topics</h3>
-            <div class="topic-connection-info" id="topic-connection-info">
-              Select a main topic to see related sub-topics
+        <div class="perspectives-main">
+          <div class="perspectives-filters">
+            <div class="filter-section">
+              <h3>Select topics</h3>
+              <div class="main-topic-buttons" id="main-topic-buttons"></div>
             </div>
-            <div class="topic-groups" id="topic-groups"></div>
+
+            <div class="filter-section">
+              <h3>Sub-topics</h3>
+              <div class="topic-connection-info" id="topic-connection-info">
+                Select a main topic to see related sub-topics
+              </div>
+              <div class="topic-groups" id="topic-groups"></div>
+            </div>
+
+            <div class="filter-section">
+              <h3>Filter by characteristics</h3>
+              <div class="dropdown-filters">
+                <div class="dropdown-filter">
+                  <label for="gender-filter">Gender</label>
+                  <select id="gender-filter" name="gender">
+                    <option value="">All genders</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+                <div class="dropdown-filter">
+                  <label for="age-filter">Age group</label>
+                  <select id="age-filter" name="age_group">
+                    <option value="">All ages</option>
+                  </select>
+                </div>
+                <div class="dropdown-filter">
+                  <label for="migration-type-filter">Migration type</label>
+                  <select id="migration-type-filter" name="migration_type">
+                    <option value="">All types</option>
+                    <option value="seasonal">Seasonal</option>
+                    <option value="permanent">Permanent</option>
+                    <option value="temporary">Temporary</option>
+                    <option value="return">Return</option>
+                  </select>
+                </div>
+                <div class="dropdown-filter">
+                  <label for="birth-location-filter">Country of birth</label>
+                  <select id="birth-location-filter" name="birth_location">
+                    <option value="">All countries</option>
+                  </select>
+                </div>
+                <div class="dropdown-filter">
+                  <label for="interview-location-filter">Interview location</label>
+                  <select id="interview-location-filter" name="interview_location">
+                    <option value="">All locations</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="filter-section">
-            <h3>Filter by characteristics</h3>
-            <div class="dropdown-filters">
-              <div class="dropdown-filter">
-                <label for="gender-filter">Gender</label>
-                <select id="gender-filter" name="gender">
-                  <option value="">All genders</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>
-              </div>
-              <div class="dropdown-filter">
-                <label for="age-filter">Age group</label>
-                <select id="age-filter" name="age_group">
-                  <option value="">All ages</option>
-                </select>
-              </div>
-              <div class="dropdown-filter">
-                <label for="migration-type-filter">Migration type</label>
-                <select id="migration-type-filter" name="migration_type">
-                  <option value="">All types</option>
-                  <option value="seasonal">Seasonal</option>
-                  <option value="permanent">Permanent</option>
-                  <option value="temporary">Temporary</option>
-                  <option value="return">Return</option>
-                </select>
-              </div>
-              <div class="dropdown-filter">
-                <label for="birth-location-filter">Country of birth</label>
-                <select id="birth-location-filter" name="birth_location">
-                  <option value="">All countries</option>
-                </select>
-              </div>
-              <div class="dropdown-filter">
-                <label for="interview-location-filter">Interview location</label>
-                <select id="interview-location-filter" name="interview_location">
-                  <option value="">All locations</option>
-                </select>
-              </div>
+          <div id="perspectives-count" class="perspectives-count" style="display: none;"></div>
+          <div id="perspectives-quotes-container" class="perspectives-quotes">
+            <div class="no-quotes-message">
+              Select topics and filters above to explore migration perspectives.
             </div>
           </div>
         </div>
 
-        <div id="perspectives-count" class="perspectives-count" style="display: none;"></div>
-        <div id="perspectives-quotes-container" class="perspectives-quotes">
-          <div class="no-quotes-message">
-            Select topics and filters above to explore migration perspectives.
+        <div class="perspectives-sidebar">
+          <div class="instructions-panel">
+            <div class="instruction-text">
+              <p><strong>Explore migration perspectives:</strong> On this page, you can explore first-hand insights from migrants to better understand the motivations behind moving and moving back.</p>
+              <p><strong>Filter options:</strong> Filter by economic, social, or living environment factors to see quotes and perspectives describing what influences decisions about work, belonging, housing, and quality of life.</p>
+              <p><strong>Context and insights:</strong> These stories add context to the data shown elsewhere in the Dashboard, helping you see how real experiences shape mobility patterns and what makes regions more or less attractive to newcomers.</p>
+              <p><strong>Getting started:</strong> Start by selecting the topic you are interested in.</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Tab 3: Integration - Lazy loaded -->
+      <!-- Integration -->
       <div id="content-tab3" class="tab-content hidden">
         <iframe
           id="iframe-integration"
@@ -652,8 +679,8 @@
         ></iframe>
       </div>
 
-      <!-- Tab 4: Flows - Lazy loaded -->
-      <div id="content-tab4" class="tab-content hidden">
+      <!-- Flows -->
+      <div id="content-tab4" class="tab-content">
         <iframe
           id="iframe-flows"
           data-src="migration_flows.html"
@@ -725,6 +752,8 @@
      document.addEventListener('DOMContentLoaded', function() {
        loadPerspectivesData();
        bindEvents();
+       // Load flows iframe on page load
+       loadIframeIfNeeded('iframe-flows');
      });
 
      async function loadPerspectivesData() {
@@ -1141,14 +1170,8 @@
 
      // Tab switching function with lazy loading
      function switchTab(tabId) {
-       // Hide the default tab content
-       const defaultTab = document.getElementById('tab-content');
-       if (defaultTab) {
-         defaultTab.classList.add('hidden');
-       }
-
-       // Hide all other tab content
-       document.querySelectorAll('.tab-content:not(#tab-content)').forEach(tab => {
+       // Hide all tab content
+       document.querySelectorAll('.tab-content').forEach(tab => {
          tab.classList.add('hidden');
        });
 

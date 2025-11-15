@@ -92,10 +92,16 @@
         background: white;
         box-shadow: 0 2px 8px rgba(37, 42, 83, 0.08);
         border: 1px solid rgba(37, 42, 83, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
       .homepage-actions {
         font-weight: 500;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
       }
 
       .homepage-actions button {
@@ -113,6 +119,10 @@
         justify-content: space-between;
         font-weight: 500;
       }
+
+     .homepage-actions button:first-of-type {
+       margin-top: 0;
+     }
 
      .homepage-actions button:hover {
        background-color: #252a53;
@@ -304,7 +314,7 @@
      }
 
       .content-section {
-        margin-bottom: 2rem;
+        margin-bottom: 0.5rem;
         line-height: 1.6;
         color: #252a53;
       }
@@ -390,6 +400,62 @@
 
         .form-iframe {
           height: 500px;
+        }
+      }
+
+      @media (max-width: 1400px) and (min-width: 1024px) {
+        .main-content {
+          padding: 140px 2rem 40px 2rem;
+        }
+
+        .container {
+          gap: 1.5rem;
+          max-width: 100%;
+        }
+
+        .homepage-left, .homepage-right {
+          padding: 2.5rem;
+          font-size: 0.95rem;
+        }
+
+        .welcome-title {
+          font-size: 1.5rem;
+          margin-bottom: 2rem;
+        }
+
+        .homepage-actions button {
+          font-size: 0.95rem;
+          padding: 1.2rem;
+        }
+
+        .disclaimer-banner {
+          font-size: 0.9rem;
+          padding: 0.9rem 1.5rem;
+        }
+
+        .footer {
+          gap: 1rem;
+          font-size: 0.65rem;
+        }
+
+        footer h1 {
+          font-size: 0.65rem;
+        }
+
+        footer h2 {
+          font-size: 0.55rem;
+        }
+
+        footer p {
+          font-size: 0.65rem;
+        }
+
+        .header {
+          padding: 15px 30px;
+        }
+
+        .header img {
+          height: 3rem;
         }
       }
 
@@ -548,47 +614,54 @@
       <div class="container">
         <div class="homepage-left">
           <h2 class="welcome-title" style="font-family: 'Lora', sans-serif; font-weight: 700;">
-            Welcome to the PREMIUM_EU Dashboard
+            Attracting people or accepting decline: What is your regional strategy?
           </h2>
 
           <div class="content-section">
             <p style="font-family: 'Montserrat', sans-serif;">
-              A thriving region is no accident – it's the result of smart strategies that attract and keep the people you need.
+              <strong>The Resilient Regions Policy Dashboard</strong> helps you turn regional development data, migration insights and real policy examples into strategies for rebuilding your region.
             </p>
           </div>
 
           <div class="content-section section-intro">
             <p style="font-family: 'Montserrat', sans-serif;">
-              This Dashboard shows how targeted migration and regional development policies can stop regional decline and spark new growth. By combining cutting-edge data with real policy examples, it helps you:
+              Built for regional policymakers, planners, researchers, and changemakers, the dashboard combines novel data and future projections, with human stories to help you:
             </p>
           </div>
 
           <div class="bullet-point">
             <span style="font-family: 'Montserrat', sans-serif;">
-              Identify the migrants your region needs – and what draws them in
+              Identify the strengths and weaknesses in your regional development
             </span>
           </div>
 
           <div class="bullet-point">
             <span style="font-family: 'Montserrat', sans-serif;">
-              See how mobility trends shape resilience, innovation, and local economies
+              See which migration trends your region will face in the near future
             </span>
           </div>
 
           <div class="bullet-point">
             <span style="font-family: 'Montserrat', sans-serif;">
-              Learn from regions that turned brain drain into brain gain
+              Learn from regions that are coping with or reversing brain drain
             </span>
+          </div>
+
+          <div class="content-section" style="margin-top: 2rem;">
+            <p style="font-family: 'Montserrat', sans-serif;">
+              The Dashboard is built for regional policymakers, planners, researchers, and anyone working to make their region more resilient, attractive, and future-ready.
+            </p>
+          </div>
+
+          <div class="content-section cta-text">
+            <p style="font-family: 'Montserrat', sans-serif;">
+              Policy alone can't reverse every decline trend but it can shape a more resilient future.
+            </p>
           </div>
         </div>
 
         <div class="homepage-right">
           <div class="homepage-actions">
-            <div style="margin-bottom: 2rem;">
-              <p class="section-intro" style="font-family: 'Montserrat', sans-serif;">
-                Three ways to explore:
-              </p>
-            </div>
 
             <a href="regional.html">
               <button>
