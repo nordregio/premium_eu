@@ -63,7 +63,9 @@ df_grouped = (
     .reset_index()
 )
 
-# Define main/additional topics
+df_grouped["topic"] = df_grouped["topic"].apply(lambda lst: list(dict.fromkeys(lst)))
+
+# Main + additional topic definitions
 main_topics = ["Economic", "Social", "Living environment"]
 additional_topics = [
     "Discrimination",
@@ -85,9 +87,7 @@ additional_topics = [
 
 
 def split_topics(topics):
-    # main = any of the main topics present in the list
     main = [t for t in topics if t in main_topics]
-    # additional = any of the allowed additional topics, excluding main ones
     additional = [t for t in topics if t in additional_topics]
     return (
         ", ".join(main) if main else None,
@@ -127,17 +127,19 @@ df_final = df_grouped.rename(
 
 df_final["birth_location"] = (
     df_final["birth_location"]
-    .str.replace("\t", " ", regex=False)
+    .astype(str)
+    .str.replace("\t", " ", regex=False)  # fix “The<TAB>Netherlands”
     .str.replace("T�rkiye", "Türkiye", regex=False)
 )
+
+df_final["gender"] = df_final["gender"].str.capitalize()
 
 unwanted_phrases = [
     "farming thing",
     "cried all summer",
-    "yes liqourice",
-    "wanted herring",
-    "we had a house there",
-    "He just had a job",
+    "yes liquorice",
+    "place is over.",
+    "quite an intelligent woman",
 ]
 
 pattern = "|".join(unwanted_phrases)
@@ -147,16 +149,5 @@ df_final = df_final[
     .apply(lambda row: row.str.contains(pattern, case=False, na=False))
     .any(axis=1)
 ]
-df_final["gender"] = df_final["gender"].str.capitalize()
-
-
-print(df_final.head())
-print(df_final.info())
-print(df_final.head())
-
-print(df_final["topic_main"].unique())
-print(df_final["topic_additional"].unique())
-print(df_final["age_group"].unique())
-print(df_final["gender"].unique())
 
 df_final.to_csv("data/migration_perspectives/quotes.csv", index=False)
