@@ -1047,14 +1047,14 @@
 
        if (perspectives.length === 0) {
          const message = selectedMainTopics.length === 0
-                       ? 'Select a topic above to explore migration perspectives'
-                       : 'No perspectives found for the selected criteria. Try adjusting your filters.';
+                       ? 'Select a topic above to explore migrant perspectives'
+                       : 'No quotes found for the selected criteria. Try adjusting your filters.';
          container.innerHTML = `<div class="no-quotes-message">${message}</div>`;
          countElement.style.display = 'none';
          return;
        }
 
-       countElement.textContent = `${perspectives.length} perspective${perspectives.length === 1 ? '' : 's'} found`;
+       countElement.textContent = `${perspectives.length} quote${perspectives.length === 1 ? '' : 's'} found`;
        countElement.style.display = 'block';
 
        container.innerHTML = '';
