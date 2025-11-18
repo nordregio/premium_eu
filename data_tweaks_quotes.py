@@ -130,6 +130,14 @@ df_final["birth_location"] = (
     .astype(str)
     .str.replace("\t", " ", regex=False)  # fix “The<TAB>Netherlands”
     .str.replace("T�rkiye", "Türkiye", regex=False)
+    .str.replace("Türkiye", "Turkey", regex=False)
+)
+
+
+df_final["interview_location"] = (
+    df_final["interview_location"]
+    .astype(str)
+    .str.replace("Türkiye", "Turkey", regex=False)
 )
 
 df_final["gender"] = df_final["gender"].str.capitalize()
