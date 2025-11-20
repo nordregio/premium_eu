@@ -6,15 +6,18 @@
     <title>PREMIUM_EU</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
     <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png">
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       body {
         font-family: 'Montserrat', sans-serif;
         font-weight: 400;
         color: #252a53;
-        margin: 0;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -37,6 +40,33 @@
         left: 0;
         z-index: 1001;
         padding: 20px 40px;
+      }
+
+      .header img {
+        height: 3rem;
+      }
+
+      .nav-buttons {
+        display: flex;
+        gap: 0.5rem;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px;
+      }
+
+      .nav-button {
+        color: black;
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 10px 20px;
+        margin: 0 8px 8px 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .nav-button:hover {
+        background-color: #f0f0f0;
       }
 
       .disclaimer-banner {
@@ -71,12 +101,13 @@
        display: flex;
        justify-content: space-between;
        width: 100%;
-       max-width: 1400px;
+       max-width: 1500px;
        gap: 2rem;
+       padding: 0 2rem;
      }
 
      .homepage-left {
-       width: 48%;
+       width: 49%;
        background: white;
        flex-wrap: wrap;
        padding: 3rem;
@@ -87,7 +118,7 @@
 
       .homepage-right {
         padding: 3rem;
-        width: 48%;
+        width: 49%;
         font-size: 0.9rem;
         background: white;
         box-shadow: 0 2px 8px rgba(37, 42, 83, 0.08);
@@ -104,6 +135,10 @@
         gap: 1rem;
       }
 
+      .homepage-actions a {
+        text-decoration: none;
+      }
+
       .homepage-actions button {
         display: flex;
         margin-top: 1.2rem;
@@ -118,6 +153,7 @@
         align-items: center;
         justify-content: space-between;
         font-weight: 500;
+        font-family: 'Montserrat', sans-serif;
       }
 
      .homepage-actions button:first-of-type {
@@ -147,6 +183,7 @@
        font-weight: 600;
        font-size: 0.85rem;
        transition: all 0.3s ease;
+       font-family: 'Montserrat', sans-serif;
      }
 
      .corner-feedback:hover {
@@ -224,6 +261,7 @@
        height: 600px;
        border: none;
        border-radius: 4px;
+       margin-bottom: 1rem;
      }
 
      .popup-close-btn {
@@ -255,6 +293,7 @@
        border: 2px solid #e2e6f0;
        transition: all 0.3s ease;
        font-weight: 500;
+       font-family: 'Montserrat', sans-serif;
      }
 
      .popup-option-button:hover {
@@ -277,6 +316,11 @@
        padding: 0rem 0.625rem 0rem 0.625rem;
      }
 
+     .footer-column img {
+       height: 2.5rem;
+       margin-bottom: 0.5rem;
+     }
+
      footer h1 {
        font-size: 0.625rem;
        font-weight: 700;
@@ -292,6 +336,16 @@
      footer p {
        margin-bottom: 0.375rem;
        font-size: 0.625rem;
+       color: #252a53;
+     }
+
+     footer a {
+       color: #252a53;
+       text-decoration: none;
+     }
+
+     footer a:hover {
+       text-decoration: underline;
      }
 
      .welcome-title {
@@ -300,6 +354,8 @@
        font-size: 1.6rem;
        color: #252a53;
        line-height: 1.3;
+       font-family: 'Lora', serif;
+       font-weight: 700;
      }
 
      .welcome-title::after {
@@ -317,6 +373,7 @@
         margin-bottom: 0.5rem;
         line-height: 1.6;
         color: #252a53;
+        font-family: 'Montserrat', sans-serif;
       }
 
       .content-section p {
@@ -329,6 +386,7 @@
         align-items: flex-start;
         gap: 0.8rem;
         margin-bottom: 1.2rem;
+        font-family: 'Montserrat', sans-serif;
       }
 
       .bullet-point::before {
@@ -345,11 +403,19 @@
         font-weight: 500;
         color: #252a53;
         margin-bottom: 1.5rem;
+        font-family: 'Montserrat', sans-serif;
       }
 
       .cta-text {
         font-weight: 500;
         color: #252a53;
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      .svg-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        flex-shrink: 0;
       }
 
       @media (max-width: 1600px) {
@@ -527,6 +593,10 @@
           height: 2rem !important;
         }
 
+        .nav-buttons {
+          font-size: 0.85rem;
+        }
+
         .disclaimer-banner {
           top: 3rem;
           font-size: 0.75rem;
@@ -576,27 +646,20 @@
 
   <body>
 
-
     <div class="header">
       <div>
         <a href="index.html">
-          <img src="img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png" class="h-12">
+          <img src="img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png">
         </a>
       </div>
-      <div style="font-family: 'Montserrat', sans-serif; font-size: 14px">
-        <button type="button"
-                onclick="window.location.href='index.html';"
-                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+      <div class="nav-buttons">
+        <button class="nav-button" onclick="window.location.href='index.html';">
           HOME
         </button>
-        <button type="button"
-                onclick="window.location.href='about.html';"
-                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+        <button class="nav-button" onclick="window.location.href='about.html';">
           ABOUT
         </button>
-        <button type="button"
-                onclick="window.open('https://premium-eu.org/', '_blank')"
-                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
+        <button class="nav-button" onclick="window.open('https://premium-eu.org/', '_blank')">
           PROJECT PAGE
         </button>
       </div>
@@ -613,48 +676,48 @@
     <div class="main-content">
       <div class="container">
         <div class="homepage-left">
-          <h2 class="welcome-title" style="font-family: 'Lora', sans-serif; font-weight: 700;">
+          <h2 class="welcome-title">
             Attracting people or accepting decline: What is your regional strategy?
           </h2>
 
           <div class="content-section">
-            <p style="font-family: 'Montserrat', sans-serif;">
+            <p>
               <strong>The Resilient Regions Policy Dashboard</strong> helps you turn regional development data, migration insights and real policy examples into strategies for rebuilding your region.
             </p>
           </div>
 
           <div class="content-section section-intro">
-            <p style="font-family: 'Montserrat', sans-serif;">
+            <p>
               Built for regional policymakers, planners, researchers, and changemakers, the dashboard combines novel data and future projections, with human stories to help you:
             </p>
           </div>
 
           <div class="bullet-point">
-            <span style="font-family: 'Montserrat', sans-serif;">
+            <span>
               Identify the strengths and weaknesses in your regional development
             </span>
           </div>
 
           <div class="bullet-point">
-            <span style="font-family: 'Montserrat', sans-serif;">
+            <span>
               See which migration trends your region will face in the near future
             </span>
           </div>
 
           <div class="bullet-point">
-            <span style="font-family: 'Montserrat', sans-serif;">
+            <span>
               Learn from regions that are coping with or reversing brain drain
             </span>
           </div>
 
           <div class="content-section" style="margin-top: 2rem;">
-            <p style="font-family: 'Montserrat', sans-serif;">
+            <p>
               The Dashboard is built for regional policymakers, planners, researchers, and anyone working to make their region more resilient, attractive, and future-ready.
             </p>
           </div>
 
           <div class="content-section cta-text">
-            <p style="font-family: 'Montserrat', sans-serif;">
+            <p>
               Policy alone can't reverse every decline trend but it can shape a more resilient future.
             </p>
           </div>
@@ -666,8 +729,7 @@
             <a href="regional.html">
               <button>
                 <span>Your Region – Profiles, trends & tailored policy ideas</span>
-                <svg class="w-6 h-6 flex-shrink-0" aria-hidden="true"
-                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
               </button>
@@ -676,8 +738,7 @@
             <a href="development.html">
               <button>
                 <span>Europe's Regions – Compare patterns & strategies</span>
-                <svg class="w-6 h-6 flex-shrink-0" aria-hidden="true"
-                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
               </button>
@@ -686,8 +747,7 @@
             <a href="migration.html">
               <button>
                 <span>Migration Trends – See who's moving and why</span>
-                <svg class="w-6 h-6 flex-shrink-0" aria-hidden="true"
-                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
               </button>
@@ -702,7 +762,6 @@
       <div class="popup-content">
         <button onclick="closePopup()" class="popup-close-btn">×</button>
 
-        <!-- <div class="popup-title">Add your input</div> -->
         <div class="popup-subtitle">
           <br>
 
@@ -710,7 +769,6 @@
           <br>
           <br>
           Help us expand the network of regions learning from each other while facing decline.
-
 
         </div>
 
@@ -729,8 +787,7 @@
 
     <footer class="footer">
       <div class="footer-column">
-        <img src="img/eu_logo.png" class="h-10">
-        <br>
+        <img src="img/eu_logo.png">
         <p style="width: 260px; color: white;">PREMIUM_EU was made possible thanks to funding from the European Union's Horizon Europe programme.</p>
       </div>
       <div class="footer-column"></div>
