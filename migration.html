@@ -349,7 +349,8 @@
       color: #666;
       font-style: italic;
       margin-bottom: 8px;
-      min-height: 15px;
+      min-height: 0;
+      display: none;
       }
 
       .dropdown-filters {
@@ -600,7 +601,6 @@
             <div class="filter-section">
               <h3>Sub-topics</h3>
               <div class="topic-connection-info" id="topic-connection-info">
-                Select a main topic to see related sub-topics
               </div>
               <div class="topic-groups" id="topic-groups"></div>
             </div>
@@ -649,11 +649,8 @@
             </div>
           </div>
 
-          <div id="perspectives-count" class="perspectives-count" style="display: none;"></div>
+          <div id="perspectives-count" class="perspectives-count"></div>
           <div id="perspectives-quotes-container" class="perspectives-quotes">
-            <div class="no-quotes-message">
-              Select topics and filters above to explore migration perspectives.
-            </div>
           </div>
         </div>
 
@@ -663,7 +660,7 @@
               <p><strong>Explore migration perspectives:</strong> On this page, you can explore first-hand insights from migrants to better understand the motivations behind moving and moving back.</p>
               <p><strong>Filter options:</strong> Filter by economic, social, or living environment factors to see quotes and perspectives describing what influences decisions about work, belonging, housing, and quality of life.</p>
               <p><strong>Context and insights:</strong> These stories add context to the data shown elsewhere in the Dashboard, helping you see how real experiences shape mobility patterns and what makes regions more or less attractive to newcomers.</p>
-              <p><strong>Getting started:</strong> Start by selecting the topic you are interested in.</p>
+              <p><strong>Getting started:</strong> Start by selecting the sub-topic you are interested in.</p>
             </div>
           </div>
         </div>
@@ -869,8 +866,15 @@
        populateMainTopicButtons();
        populateTopicGroupButtons();
        populateDropdownFilters();
+
+       // Select all main topics by default
+       selectedMainTopics = [...allMainTopics];
+       document.querySelectorAll('.main-topic-button').forEach(btn => {
+         btn.classList.add('active');
+       });
+
        updateTopicGroupVisibility();
-       displayPerspectives([]);
+       filterAndDisplayPerspectives();
      }
 
      function populateMainTopicButtons() {
@@ -955,7 +959,7 @@
        });
 
        if (selectedMainTopics.length === 0) {
-         connectionInfo.textContent = 'Select a main topic to see related sub-topics';
+         connectionInfo.textContent = '';
          topicGroupButtons.forEach(button => {
            button.classList.add('dimmed');
          });
@@ -971,12 +975,7 @@
          }
        });
 
-       if (relatedTopics.size > 0) {
-         const mainTopicsText = selectedMainTopics.join(', ');
-         connectionInfo.textContent = `Sub-topics related to ${mainTopicsText}:`;
-       } else {
-         connectionInfo.textContent = 'No sub-topics found for selected main topics';
-       }
+       connectionInfo.textContent = '';
 
        topicGroupButtons.forEach(button => {
          const topicName = button.textContent;
@@ -1046,8 +1045,8 @@
        const countElement = document.getElementById('perspectives-count');
 
        if (perspectives.length === 0) {
-         const message = selectedMainTopics.length === 0
-                       ? 'Select a topic above to explore migrant perspectives'
+         const message = selectedTopicGroups.length === 0
+                       ? 'Select a sub-topic above to explore migrant perspectives'
                        : 'No quotes found for the selected criteria. Try adjusting your filters.';
          container.innerHTML = `<div class="no-quotes-message">${message}</div>`;
          countElement.style.display = 'none';
