@@ -1045,10 +1045,7 @@
        const countElement = document.getElementById('perspectives-count');
 
        if (perspectives.length === 0) {
-         const message = selectedTopicGroups.length === 0
-                       ? 'Select a sub-topic above to explore migrant perspectives'
-                       : 'No quotes found for the selected criteria. Try adjusting your filters.';
-         container.innerHTML = `<div class="no-quotes-message">${message}</div>`;
+         container.innerHTML = `<div class="no-quotes-message">No quotes found for the selected criteria. Try adjusting your filters.</div>`;
          countElement.style.display = 'none';
          return;
        }
