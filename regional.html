@@ -1113,7 +1113,7 @@
         <div class="policy-modal-title" id="policy-modal-title"></div>
         <div class="policy-modal-description" id="policy-modal-description"></div>
         <div class="policy-modal-meta" id="policy-modal-meta"></div>
-        <a id="policy-modal-link" class="policy-modal-link" target="_blank">More info</a>
+        <a id="policy-modal-link" class="policy-modal-link" target="_blank">See the origonal document</a>
       </div>
     </div>
 
@@ -1542,12 +1542,12 @@
        const countElement = document.getElementById('policy-count');
 
        if (policies.length === 0) {
-         container.innerHTML = '<div class="no-policies-message">No policies found for the selected region.</div>';
+         container.innerHTML = '<div class="no-policies-message">No documents found for the selected region.</div>';
          countElement.style.display = 'none';
          return;
        }
 
-       countElement.textContent = `${policies.length} polic${policies.length === 1 ? 'y' : 'ies'} found`;
+       countElement.textContent = `${policies.length} document${policies.length === 1 ? '' : 's'} found`;
        countElement.style.display = 'block';
 
        container.innerHTML = '';
