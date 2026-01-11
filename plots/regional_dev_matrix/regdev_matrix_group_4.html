@@ -107,12 +107,12 @@
         <div class="intro-text">
           <p>This page helps you see where your region stands in relation to others across Europe and who shares your development path.</p>
           <p>The diagram automatically places your region on a graph where:<br>
-            <strong>Y-axis:</strong> Current development status (from low to high)<br>
-            <strong>X-axis:</strong> Development trend (from declining to growing)
+            <strong>Y-axis:</strong> Current development status (from vulnerable to leading)<br>
+            <strong>X-axis:</strong> Development trend (improving or not)
           </p>
-          <p>Your region’s position is accompanied by a short, custom description explaining how it compares to others—whether it’s catching up, keeping pace, or falling behind.</p>
+          <p>Your region's position is accompanied by a short, custom description explaining how it compares to others—whether it's catching up, keeping pace, or falling behind.</p>
           <p>Alongside the diagram, the map of Europe highlights regions with a similar profile and comparable challenges or opportunities. These are your peer regions—places to watch, learn from, and potentially collaborate with.</p>
-          <p>Together, the graph and map give you a visual overview of how your region is performing, how it’s evolving, and who’s on a similar journey.</p>
+          <p>Together, the graph and map give you a visual overview of how your region is performing, how it's evolving, and who's on a similar journey.</p>
         </div>
       </div>
 
@@ -151,30 +151,26 @@
           <rect x="0" y="0" width="480" height="360" fill="url(#statusGradient)" opacity="0.3"/>
           <rect x="0" y="0" width="480" height="360" fill="url(#trendGradient)" opacity="0.3"/>
 
-          <!-- Matrix cells without rounded corners -->
-          <!-- Row 1 - Leading (Green tones) -->
-          <rect x="0" y="0" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
-          <rect x="160" y="0" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
-          <rect x="320" y="0" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
+          <!-- Matrix cells without rounded corners (2 columns x 4 rows) -->
+          <!-- Row 1 - Leading -->
+          <rect x="0" y="0" width="240" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
+          <rect x="240" y="0" width="240" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
 
-          <!-- Row 2 - Developed (Light green) -->
-          <rect x="0" y="90" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
-          <rect x="160" y="90" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
-          <rect x="320" y="90" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
+          <!-- Row 2 - Developed -->
+          <rect x="0" y="90" width="240" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
+          <rect x="240" y="90" width="240" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
 
-          <!-- Row 3 - Underdeveloped (Yellow/orange tones) -->
-          <rect x="0" y="180" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
-          <rect x="160" y="180" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
-          <rect x="320" y="180" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
+          <!-- Row 3 - Underdeveloped -->
+          <rect x="0" y="180" width="240" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
+          <rect x="240" y="180" width="240" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
 
-          <!-- Row 4 - Vulnerable (Red tones) -->
-          <rect x="0" y="270" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
-          <rect x="160" y="270" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
-          <rect x="320" y="270" width="160" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
+          <!-- Row 4 - Vulnerable -->
+          <rect x="0" y="270" width="240" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
+          <rect x="240" y="270" width="240" height="90" fill="#f7fafc" stroke="#cbc9db" stroke-width="2" filter="url(#cellShadow)"/>
 
 
-          <!-- Indicator for the current region (Vulnerable + Declining) -->
-          <g transform="translate(80, 45)">
+          <!-- Indicator for the current region (Leading + Not Improving) -->
+          <g transform="translate(120, 45)">
             <!-- Pulsing circle background -->
             <circle cx="0" cy="0" r="12" fill="#AC5737" opacity="0.2">
               <animate attributeName="r" values="12;16;12" dur="2s" repeatCount="indefinite"/>
@@ -189,26 +185,24 @@
 
           <!-- Enhanced column headers -->
           <g transform="translate(0, 380)">
-            <rect x="0" y="0" width="160" height="40" fill="#AC5737" opacity="0.8" filter="url(#headerShadow)"/>
-            <rect x="160" y="0" width="160" height="40" fill="#E0A779" opacity="0.8" filter="url(#headerShadow)"/>
-            <rect x="320" y="0" width="160" height="40" fill="#252a53" opacity="0.8" filter="url(#headerShadow)"/>
+            <rect x="0" y="0" width="240" height="40" fill="#AC5737" opacity="0.8" filter="url(#headerShadow)"/>
+            <rect x="240" y="0" width="240" height="40" fill="#252a53" opacity="0.8" filter="url(#headerShadow)"/>
 
-            <text x="80" y="26" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="10" font-weight="700" fill="white">Declining</text>
-            <text x="240" y="26" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="10" font-weight="700" fill="white">Stagnant</text>
-            <text x="400" y="26" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="10" font-weight="700" fill="white">Improving</text>
+            <text x="120" y="26" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="11" font-weight="700" fill="white">Not Improving</text>
+            <text x="360" y="26" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="11" font-weight="700" fill="white">Improving</text>
           </g>
 
           <!-- Enhanced row headers -->
-          <g transform="translate(-120, 0)">
-            <rect x="0" y="0" width="100" height="90" fill="#252a53" opacity="0.8" filter="url(#headerShadow)"/>
-            <rect x="0" y="90" width="100" height="90" fill="#79799d" opacity="0.8" filter="url(#headerShadow)"/>
-            <rect x="0" y="180" width="100" height="90" fill="#E0A779" opacity="0.8" filter="url(#headerShadow)"/>
-            <rect x="0" y="270" width="100" height="90" fill="#AC5737" opacity="0.8" filter="url(#headerShadow)"/>
+          <g transform="translate(-150, 0)">
+            <rect x="0" y="0" width="130" height="90" fill="#252a53" opacity="0.8" filter="url(#headerShadow)"/>
+            <rect x="0" y="90" width="130" height="90" fill="#79799d" opacity="0.8" filter="url(#headerShadow)"/>
+            <rect x="0" y="180" width="130" height="90" fill="#E0A779" opacity="0.8" filter="url(#headerShadow)"/>
+            <rect x="0" y="270" width="130" height="90" fill="#AC5737" opacity="0.8" filter="url(#headerShadow)"/>
 
-            <text x="50" y="50" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="10" font-weight="700" fill="white">Leading</text>
-            <text x="50" y="140" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="10" font-weight="700" fill="white">Developed</text>
-            <text x="50" y="225" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="10" font-weight="700" fill="white">Underdeveloped</text>
-            <text x="50" y="320" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="10" font-weight="700" fill="white">Vulnerable</text>
+            <text x="65" y="50" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="11" font-weight="700" fill="white">Leading</text>
+            <text x="65" y="140" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="11" font-weight="700" fill="white">Developed</text>
+            <text x="65" y="225" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="11" font-weight="700" fill="white">Underdeveloped</text>
+            <text x="65" y="320" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="11" font-weight="700" fill="white">Vulnerable</text>
           </g>
 
           <!-- Stylized axis labels -->
@@ -239,17 +233,24 @@
 
       <div class="legend">
         <p>
-          This region is leading, meaning it has one of the highest regional development scores in Europe. This means at the moment it is performing very well across many development indicators.
+
+
+
+          These regions are leading, meaning they have some of the highest regional development scores in Europe. At present, they are performing very well across many development indicators. Such regions often have very similar scores across all three dimensions of regional development (economic, social, and living environment), without any obvious weaknesses or strengths toward which to target regional development policy.
           <br><br>
-          However, over time the region has experienced a decline in development performance. Meaning, attention must be paid at these development scores. One of the possible reasons for this decline could be a mismatch in adapting new strategies for dealing with internal and external risks, and ongoing transitions such as climate change, de-industrialization, and demographic shifts.
+          However, despite their high level of regional development, these regions have not shown improvement over time, and addressing this requires attention and intervention. One possible reason for this lack of improvement could be a mismatch in adapting new strategies to deal with internal and external risks. These regions should develop a coordinated and multidimensional development strategy to enable adaptation to transitions such as climate change, deindustrialization, and demographic shifts.
           <br><br>
-          Most of the regions are geographically in northern and western Europe. Remarkably, the regions of some of the European capitals (Stockholm, Helsinki and Madrid and Warsaw), are in this category.
+          Almost all of these regions are experiencing net in-migration, which is driving population growth. However, just over 50% of them have negative natural population change, i.e., more people are dying than are being born, which exerts downward pressure on population size. Despite this, in more than 95% of these regions, the net population is increasing; in this context, migration is the stronger force shaping population trends.
+          <br><br>
+          Very few of these regions are rural; they are generally urban or very urban, although a significant number also have intermediate urbanisation.
+
 
         </p>
+
       </div>
       <br>
 
-     <div class="map-section">
+      <div class="map-section">
         <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
           <!-- Background -->
           <rect width="1000" height="500" fill="url(#bgGradient)"/>
@@ -261,44 +262,8 @@
             </iframe>
           </foreignObject>
         </svg>
-     </div>
-
-
+      </div>
 
     </div>
   </body>
 </html>
-
-
-
-<!--
-     Row 1 - Leading regions:
-
-     Leading + Declining: translate(80, 45)
-     Leading + Stagnant: translate(240, 45)
-     Leading + Improving: translate(400, 45)
-
-     Row 2 - Developed regions:
-
-     Developed + Declining: translate(80, 135)
-     Developed + Stagnant: translate(240, 135)
-     Developed + Improving: translate(400, 135)
-
-     Row 3 - Underdeveloped regions:
-
-     Underdeveloped + Declining: translate(80, 225)
-     Underdeveloped + Stagnant: translate(240, 225)
-     Underdeveloped + Improving: translate(400, 225)
-
-     Row 4 - Vulnerable regions:
-
-     Vulnerable + Declining: translate(80, 315) ← Currently selected
-     Vulnerable + Stagnant: translate(240, 315)
-     Vulnerable + Improving: translate(400, 315)
-
-     Example: To move it to "Developed + Improving" (top-right), change:
-     svg<g transform="translate(400, 45)">
-     The coordinates are calculated as:
-
-     X = (column × 160) + 80 (where column 0=left, 1=middle, 2=right)
-     Y = (row × 90) + 45 (where row 0=top, 1=second, 2=third, 3=bottom) -->
