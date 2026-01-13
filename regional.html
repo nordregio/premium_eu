@@ -278,8 +278,8 @@
      }
 
      .total {
-       background: #252a53;
-       color: white;
+       background: #eee;
+       color: #252a53;
        border: 1px solid #252a53;
      }
 
@@ -1158,6 +1158,7 @@
    let DEVELOPMENT_TAG_DATA = {};
    let MIGRATION_TAG_DATA = {};
    let REGION_SCORES = {};
+   let REGION_TRENDS = {};
    let STRENGTHS_WEAKNESSES_DATA = {};
    let TYPE_DESCRIPTION_DATA = {};
    let POLICY_DATA = [];
@@ -1225,6 +1226,9 @@
 
          const scoresResponse = await fetch('data/region_scores.json');
          REGION_SCORES = await scoresResponse.json();
+
+         const trendsResponse = await fetch('data/region_trends.json');
+         REGION_TRENDS = await trendsResponse.json();
 
          const strengthsResponse = await fetch('data/strengths_weaknesses.json');
          STRENGTHS_WEAKNESSES_DATA = await strengthsResponse.json();
@@ -1935,6 +1939,7 @@
      loadDevelopmentScores(regionCode) {
        const container = document.getElementById('regional_development_scores');
        const data = REGION_SCORES[regionCode];
+       const trends = REGION_TRENDS[regionCode];
 
        if (!data) {
          container.innerHTML = '<p>No data available.</p>';
@@ -1943,24 +1948,36 @@
 
        const formatScore = (val) => `${Math.round(val * 10)}/10`;
 
+       const getTrendIndicator = (trend) => {
+         if (!trend) return '';
+         const isImproving = trend === 'Improving';
+         const arrowIcon = isImproving ? '↑' : '↓';
+         const color = isImproving ? '#697D61' : '#ac5737';
+         return `<span style="color: ${color}; font-weight: 600; margin-left: 8px;">${arrowIcon} ${trend}</span>`;
+       };
+
        const html = `
          <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Development scores</p>
          <div class="score-cards">
            <div class="card">
              <h3>Economic</h3>
              <p>${formatScore(data.econ_index)}</p>
+             <div style="font-size: 11px; margin-top: 4px;">${getTrendIndicator(trends?.trend_econ_index || '')}</div>
            </div>
            <div class="card">
              <h3>Social</h3>
              <p>${formatScore(data.social_index)}</p>
+             <div style="font-size: 11px; margin-top: 4px;">${getTrendIndicator(trends?.trend_social_index || '')}</div>
            </div>
            <div class="card">
              <h3>Living environment</h3>
              <p>${formatScore(data.liv_env_index)}</p>
+             <div style="font-size: 11px; margin-top: 4px;">${getTrendIndicator(trends?.trend_liv_env_index || '')}</div>
            </div>
            <div class="card total">
              <h3>Overall</h3>
              <p>${formatScore(data.devel_score)}</p>
+             <div style="font-size: 11px; margin-top: 4px; color: white;">${getTrendIndicator(trends?.trend_devel_score || '')}</div>
            </div>
          </div>
          <br>
