@@ -1002,6 +1002,9 @@
             <br>
           </div>
 
+          <div id="national_comparisons">
+          </div>
+
           <div id="regional_development_scores_plot_wrapper">
           </div>
 
@@ -1162,6 +1165,7 @@
    let STRENGTHS_WEAKNESSES_DATA = {};
    let TYPE_DESCRIPTION_DATA = {};
    let POLICY_DATA = [];
+   let NATIONAL_COMPARISONS_DATA = {};
 
    const RegionalApp = {
      map: {
@@ -1232,6 +1236,9 @@
 
          const strengthsResponse = await fetch('data/strengths_weaknesses.json');
          STRENGTHS_WEAKNESSES_DATA = await strengthsResponse.json();
+
+         const comparisonsResponse = await fetch('data/national_comparisons.json');
+         NATIONAL_COMPARISONS_DATA = await comparisonsResponse.json();
 
          const typeDescResponse = await fetch('data/migration_type_descriptions.json');
          TYPE_DESCRIPTION_DATA = await typeDescResponse.json();
@@ -1912,6 +1919,7 @@
        this.loadDevelopmentTags(regionCode);
        this.loadDevelopmentScores(regionCode);
        this.loadStrengthsWeaknesses(regionCode);
+       this.loadNationalComparisons(regionCode);
        this.loadDevelopmentPlot(regionCode);
      },
 
@@ -2007,6 +2015,28 @@
 
        container.innerHTML = html;
      },
+
+     loadNationalComparisons(regionCode) {
+       const container = document.getElementById('national_comparisons');
+       const data = NATIONAL_COMPARISONS_DATA[regionCode];
+
+       if (!data) {
+         container.innerHTML = '<br>';
+         return;
+       }
+
+       const html = `
+         <div class="national_comparisons">
+           <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">National comparisons</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.overall_status_txt || 'No data available.'}</p>
+           <p style="font-size: 12px; margin-bottom: 6px;">${data.country_compare_txt || 'No data available.'}</p>
+           <br>
+         </div>
+       `;
+
+       container.innerHTML = html;
+     },
+
 
      loadDevelopmentPlot(regionCode) {
        const container = document.getElementById('regional_development_scores_plot_wrapper');
@@ -2209,6 +2239,7 @@
        document.getElementById('regional_development_tags').innerHTML = '<p>Select a region</p>';
        document.getElementById('regional_development_scores').innerHTML = '';
        document.getElementById('strengths_weaknesses').innerHTML = '<br>';
+       document.getElementById('national_comparisons').innerHTML = '';
        document.getElementById('regional_development_scores_plot_wrapper').innerHTML = '';
        document.getElementById('regional_migration_tags').innerHTML = '<p>Select a region</p>';
        document.getElementById('migration_type_description').innerHTML = '';
