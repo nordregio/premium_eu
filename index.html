@@ -6,6 +6,7 @@
     <title>PREMIUM_EU</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png">
     <style>
       * {
@@ -23,7 +24,7 @@
         flex-direction: column;
         justify-content: center;
         background-image: url('img/PREMIUM_icons/PNG/PREMIUM_EU_Illustration_Brain-graphics_01_RED.png');
-        background-size: 48% 26%;
+        background-size: 48% 20%;
         background-repeat: no-repeat;
         background-position: left bottom;
       }
@@ -40,33 +41,6 @@
         left: 0;
         z-index: 1001;
         padding: 20px 40px;
-      }
-
-      .header img {
-        height: 3rem;
-      }
-
-      .nav-buttons {
-        display: flex;
-        gap: 0.5rem;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 14px;
-      }
-
-      .nav-button {
-        color: black;
-        font-weight: 500;
-        border-radius: 8px;
-        padding: 10px 20px;
-        margin: 0 8px 8px 0;
-        background: none;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-
-      .nav-button:hover {
-        background-color: #f0f0f0;
       }
 
       .disclaimer-banner {
@@ -519,10 +493,6 @@
         .header {
           padding: 15px 30px;
         }
-
-        .header img {
-          height: 3rem;
-        }
       }
 
       @media (min-width: 2400px) {
@@ -593,10 +563,6 @@
           height: 2rem !important;
         }
 
-        .nav-buttons {
-          font-size: 0.85rem;
-        }
-
         .disclaimer-banner {
           top: 3rem;
           font-size: 0.75rem;
@@ -649,17 +615,23 @@
     <div class="header">
       <div>
         <a href="index.html">
-          <img src="img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png">
+          <img src="img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png" class="h-12">
         </a>
       </div>
-      <div class="nav-buttons">
-        <button class="nav-button" onclick="window.location.href='index.html';">
+      <div style="font-family: 'Montserrat', sans-serif; font-size: 14px">
+        <button type="button"
+                onclick="window.location.href='index.html';"
+                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
           HOME
         </button>
-        <button class="nav-button" onclick="window.location.href='about.html';">
+        <button type="button"
+                onclick="window.location.href='about.html';"
+                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
           ABOUT
         </button>
-        <button class="nav-button" onclick="window.open('https://premium-eu.org/', '_blank')">
+        <button type="button"
+                onclick="window.open('https://premium-eu.org/', '_blank')"
+                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
           PROJECT PAGE
         </button>
       </div>
@@ -728,7 +700,7 @@
 
             <a href="regional.html">
               <button>
-                <span>Your Region – Profiles, trends & tailored policy ideas</span>
+                <span>Your Region – Policy ideas, development & migration data</span>
                 <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
@@ -737,7 +709,7 @@
 
             <a href="development.html">
               <button>
-                <span>Europe's Regions – Compare patterns & strategies</span>
+                <span>Europe's Regions – Compare development patterns</span>
                 <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
@@ -746,7 +718,7 @@
 
             <a href="migration.html">
               <button>
-                <span>Migration Trends – See who's moving and why</span>
+                <span>Migration Explorer – Europe-wide trends</span>
                 <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
                 </svg>
