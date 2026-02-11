@@ -571,7 +571,9 @@
 
     <div id="footer-root"></div>
 
-    <script>
+    <script type="module">
+     import { parseCSVLine, parseArrayField } from './js/shared/csvParser.js';
+
      let PERSPECTIVES_DATA = [];
      let selectedMainTopics = [];
      let selectedTopicGroups = [];
@@ -630,37 +632,7 @@
        }
      }
 
-     function parseCSVLine(line) {
-       const result = [];
-       let current = '';
-       let inQuotes = false;
-
-       for (let i = 0; i < line.length; i++) {
-         const char = line[i];
-
-         if (char === '"') {
-           inQuotes = !inQuotes;
-         } else if (char === ',' && !inQuotes) {
-           result.push(current);
-           current = '';
-         } else {
-           current += char;
-         }
-       }
-
-       result.push(current);
-       return result;
-     }
-
-     function parseArrayField(field) {
-       try {
-         const cleaned = field.replace(/^"/, '').replace(/"$/, '').trim();
-         return cleaned.split(',').map(item => item.trim()).filter(item => item.length > 0);
-       } catch (error) {
-         console.error('Error parsing array field:', field, error);
-         return [];
-       }
-     }
+     // parseCSVLine and parseArrayField imported from js/shared/csvParser.js
 
      function initializePerspectivesData() {
        const mainTopics = new Set();
@@ -1004,6 +976,7 @@
      }
 
      // Tab switching function with lazy loading
+     window.switchTab = switchTab;
      function switchTab(tabId) {
        // Hide all tab content
        document.querySelectorAll('.tab-content').forEach(tab => {

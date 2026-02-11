@@ -1004,1255 +1004,446 @@
 
   </body>
 
-  <script>
-
-   let REGION_DATA = {};
-   let DEVELOPMENT_TAG_DATA = {};
-   let MIGRATION_TAG_DATA = {};
-   let REGION_SCORES = {};
-   let REGION_TRENDS = {};
-   let STRENGTHS_WEAKNESSES_DATA = {};
-   let TYPE_DESCRIPTION_DATA = {};
-   let POLICY_DATA = [];
-   let NATIONAL_COMPARISONS_DATA = {};
-
-   const RegionalApp = {
-     map: {
-       selectedPolygonId: null,
-       polygonLayer: null,
-       deckgl: null,
-       defaultFillColor: [160, 159, 188, 255],
-       selectedFillColor: [172, 87, 55, 255]
-     },
-
-     policy: {
-       data: [],
-       selectedTags: [],
-       selectedScopes: [],
-       selectedOrigins: [],
-       currentRegion: null,
-       allTags: [],
-       allScopes: [],
-       allOrigins: [],
-       isLoaded: false
-     },
-
-     config: {
-       mapDataUrl: "layers/polygon_layer.json",
-       mapStyle: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-       initialViewState: {
-         bearing: 0,
-         latitude: 55,
-         longitude: 10,
-         maxZoom: 20,
-         minZoom: 3,
-         pitch: 0,
-         zoom: 3,
-       }
-     },
-
-     state: {
-       isProgrammaticSelection: false
-     },
-
-
-     regionGroups: {},
-
-     async init() {
-       await this.loadStaticData();
-       this.initializeMap();
-       this.bindEvents();
-       this.initializePolicyData();
-       this.restoreSessionState();
-     },
-
-     async loadStaticData() {
-       try {
-         const regionResponse = await fetch('data/regions.json');
-         REGION_DATA = await regionResponse.json();
-
-         const devTagsResponse = await fetch('data/development_tags.json');
-         DEVELOPMENT_TAG_DATA = await devTagsResponse.json();
-
-         const migTagsResponse = await fetch('data/migration_tags.json');
-         MIGRATION_TAG_DATA = await migTagsResponse.json();
-
-         const scoresResponse = await fetch('data/region_scores.json');
-         REGION_SCORES = await scoresResponse.json();
-
-         const trendsResponse = await fetch('data/region_trends.json');
-         REGION_TRENDS = await trendsResponse.json();
-
-         const strengthsResponse = await fetch('data/strengths_weaknesses.json');
-         STRENGTHS_WEAKNESSES_DATA = await strengthsResponse.json();
-
-         const comparisonsResponse = await fetch('data/national_comparisons.json');
-         NATIONAL_COMPARISONS_DATA = await comparisonsResponse.json();
-
-         const typeDescResponse = await fetch('data/migration_type_descriptions.json');
-         TYPE_DESCRIPTION_DATA = await typeDescResponse.json();
-
-         const regionGroupsResponse = await fetch('data/regional_groups.json');
-         this.regionGroups = await regionGroupsResponse.json();
-
-         await this.loadPolicyData();
-
-         console.log('All static data loaded successfully');
-       } catch (error) {
-         console.error('Error loading static data:', error);
-       }
-     },
-
-     async loadPolicyData() {
-       try {
-         const response = await fetch('data/regional_policies/policies.csv');
-         const csvText = await response.text();
-
-         const lines = csvText.trim().split('\n');
-         const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
-
-         const data = [];
-         for (let i = 1; i < lines.length; i++) {
-           const line = lines[i];
-           if (!line.trim()) continue;
-
-           const values = this.parseCSVLine(line);
-
-           if (values.length >= 8) {
-             const policy = {
-               nuts_codes: this.parseArrayField(values[0]),
-               policy_tags: this.parseArrayField(values[1]),
-               policy_summary: values[2].replace(/"/g, '').trim(),
-               policy_description: values[3].replace(/"/g, '').trim(),
-               region_origin: this.parseArrayField(values[4]),
-               links: values[5].replace(/"/g, '').trim(),
-               scope: values[6] ? values[6].replace(/"/g, '').trim() : '',
-               origin: values[7] ? values[7].replace(/"/g, '').trim() : ''
-             };
-             data.push(policy);
-           }
-         }
-
-         this.policy.data = data;
-         this.policy.isLoaded = true;
-         POLICY_DATA = data;
-
-         console.log(`Loaded ${data.length} policies from CSV`);
-       } catch (error) {
-         console.error('Error loading policy data:', error);
-         this.policy.data = [];
-         this.policy.isLoaded = true;
-       }
-     },
-
-     parseCSVLine(line) {
-       const result = [];
-       let current = '';
-       let inQuotes = false;
-
-       for (let i = 0; i < line.length; i++) {
-         const char = line[i];
-
-         if (char === '"') {
-           inQuotes = ! inQuotes;
-         } else if (char === ',' && !inQuotes) {
-           result.push(current);
-           current = '';
-         } else {
-           current += char;
-         }
-       }
-
-       result.push(current);
-       return result;
-     },
-
-
-
-     parseArrayField(field) {
-       try {
-         const cleaned = field.replace(/^"/, '').replace(/"$/, '').trim();
-
-         if (cleaned.startsWith('[') && cleaned.endsWith(']')) {
-           const arrayContent = cleaned.slice(1, -1);
-           if (!arrayContent.trim()) return [];
-
-           return arrayContent.split(',').map(item =>
-             item.replace(/'/g, '').replace(/"/g, '').trim()
-           ).filter(item => item.length > 0);
-         }
-
-         return [cleaned];
-       } catch (error) {
-         console.error('Error parsing array field:', field, error);
-         return [];
-       }
-     },
-
-     initializePolicyData() {
-       const allTags = new Set();
-       const allScopes = new Set();
-       const allOrigins = new Set();
-
-       this.policy.data.forEach(policy => {
-         policy.policy_tags.forEach(tag => allTags.add(tag));
-         if (policy.scope) allScopes.add(policy.scope);
-         if (policy.origin) allOrigins.add(policy.origin);
-       });
-
-       this.policy.allTags = Array.from(allTags).sort();
-       this.policy.allScopes = Array.from(allScopes).sort();
-       this.policy.allOrigins = Array.from(allOrigins).sort();
-     },
-
-     loadPoliciesForRegion(regionCode) {
-       if (!regionCode) {
-         this.clearPolicyDisplay();
-         return;
-       }
-
-       if (!this.policy.isLoaded) {
-         console.log('Policy data not yet loaded');
-         return;
-       }
-
-       this.policy.currentRegion = regionCode;
-
-       this.policy.selectedTags = [];
-       this.policy.selectedScopes = [];
-       this.policy.selectedOrigins = [];
-
-       const applicablePolicies = this.policy.data.filter(policy =>
-         policy.nuts_codes && policy.nuts_codes.includes(regionCode)
-       );
-
-       // Always show intro when a region is selected
-       const intro = document.getElementById('policy-intro');
-       if (intro) intro.style.display = 'block';
-
-       const regionTags = new Set();
-       const regionScopes = new Set();
-       const regionOrigins = new Set();
-
-       applicablePolicies.forEach(policy => {
-         if (policy.policy_tags) {
-           policy.policy_tags.forEach(tag => regionTags.add(tag));
-         }
-         if (policy.scope) regionScopes.add(policy.scope);
-         if (policy.origin) regionOrigins.add(policy.origin);
-       });
-
-       this.displayPolicyTags(Array.from(regionTags).sort());
-       this.displayScopeTags(Array.from(regionScopes).sort());
-       this.displayOriginTags(Array.from(regionOrigins).sort());
-       this.displayPolicies(applicablePolicies);
-     },
-
-     displayPolicyTags(tags) {
-       const container = document.getElementById('policy-tags-container');
-       const section = document.getElementById('policy-areas-section');
-
-       if (tags.length === 0) {
-         section.style.display = 'none';
-         return;
-       }
-
-       section.style.display = 'block';
-       container.innerHTML = '';
-
-       tags.forEach(tag => {
-         const button = document.createElement('button');
-         button.className = 'policy-tag-button';
-         button.textContent = tag;
-         button.onclick = () => this.togglePolicyTag(tag, button);
-         container.appendChild(button);
-       });
-     },
-
-
-     displayScopeTags(scopes) {
-       const container = document.getElementById('policy-scope-container');
-       const section = document.getElementById('policy-scope-section');
-
-       if (scopes.length === 0) {
-         section.style.display = 'none';
-         return;
-       }
-
-       section.style.display = 'block';
-       container.innerHTML = '';
-
-       scopes.forEach(scope => {
-         const button = document.createElement('button');
-         button.className = 'policy-tag-button policy-scope-button';
-         button.textContent = scope;
-         button.onclick = () => this.toggleScopeTag(scope, button);
-         container.appendChild(button);
-       });
-     },
-
-     displayOriginTags(origins) {
-       const container = document.getElementById('policy-origin-container');
-       const section = document.getElementById('policy-origin-section');
-
-       if (origins.length === 0) {
-         section.style.display = 'none';
-         return;
-       }
-
-       section.style.display = 'block';
-       container.innerHTML = '';
-
-       origins.forEach(origin => {
-         const button = document.createElement('button');
-         button.className = 'policy-tag-button policy-origin-button';
-         button.textContent = origin;
-         button.onclick = () => this.toggleOriginTag(origin, button);
-         container.appendChild(button);
-       });
-     },
-
-     togglePolicyTag(tag, buttonElement) {
-       const isSelected = this.policy.selectedTags.includes(tag);
-
-       if (isSelected) {
-         this.policy.selectedTags = this.policy.selectedTags.filter(t => t !== tag);
-         buttonElement.classList.remove('active');
-       } else {
-         this.policy.selectedTags.push(tag);
-         buttonElement.classList.add('active');
-       }
-
-       this.filterAndDisplayPolicies();
-     },
-
-     toggleScopeTag(scope, buttonElement) {
-       const isSelected = this.policy.selectedScopes.includes(scope);
-
-       if (isSelected) {
-         this.policy.selectedScopes = this.policy.selectedScopes.filter(s => s !== scope);
-         buttonElement.classList.remove('active');
-       } else {
-         this.policy.selectedScopes.push(scope);
-         buttonElement.classList.add('active');
-       }
-
-       this.filterAndDisplayPolicies();
-     },
-
-
-     toggleOriginTag(origin, buttonElement) {
-       const isSelected = this.policy.selectedOrigins.includes(origin);
-
-       if (isSelected) {
-         this.policy.selectedOrigins = this.policy.selectedOrigins.filter(o => o !== origin);
-         buttonElement.classList.remove('active');
-       } else {
-         this.policy.selectedOrigins.push(origin);
-         buttonElement.classList.add('active');
-       }
-
-       this.filterAndDisplayPolicies();
-     },
-
-
-     filterAndDisplayPolicies() {
-       if (!this.policy.currentRegion || !this.policy.isLoaded) {
-         return;
-       }
-
-       let applicablePolicies = this.policy.data.filter(policy =>
-         policy.nuts_codes && policy.nuts_codes.includes(this.policy.currentRegion)
-       );
-
-       if (this.policy.selectedTags.length > 0) {
-         applicablePolicies = applicablePolicies.filter(policy => {
-           return policy.policy_tags && this.policy.selectedTags.some(selectedTag =>
-             policy.policy_tags.includes(selectedTag)
-           );
-         });
-       }
-
-       if (this.policy.selectedScopes.length > 0) {
-         applicablePolicies = applicablePolicies.filter(policy => {
-           return policy.scope && this.policy.selectedScopes.includes(policy.scope);
-         });
-       }
-
-       if (this.policy.selectedOrigins.length > 0) {
-         applicablePolicies = applicablePolicies.filter(policy => {
-           return policy.origin && this.policy.selectedOrigins.includes(policy.origin);
-         });
-       }
-
-       this.displayPolicies(applicablePolicies);
-     },
-
-     displayPolicies(policies) {
-       const container = document.getElementById('policy-summaries-container');
-       const countElement = document.getElementById('policy-count');
-
-       if (policies.length === 0) {
-         container.innerHTML = '<div class="no-policies-message">No documents found for the selected region.</div>';
-         countElement.style.display = 'none';
-         return;
-       }
-
-       countElement.textContent = `${policies.length} document${policies.length === 1 ? '' : 's'} found`;
-       countElement.style.display = 'block';
-
-       container.innerHTML = '';
-       policies.forEach((policy, index) => {
-         const card = this.createPolicyCard(policy, index);
-         container.appendChild(card);
-       });
-     },
-
-     createPolicyCard(policy, index) {
-       const card = document.createElement('div');
-       card.className = 'policy-card';
-       card.onclick = () => this.openPolicyModal(policy);
-
-       // Policy area tags (existing)
-       const policyTagsHtml = policy.policy_tags.map(tag =>
-         `<span class="policy-card-tag">${tag}</span>`
-       ).join('');
-
-       // Scope tag
-       const scopeTagHtml = policy.scope ?
-                            `<span class="policy-card-tag" style="background: #4a90a4;">${policy.scope}</span>` : '';
-
-       // Origin tag
-       const originTagHtml = policy.origin ?
-                             `<span class="policy-card-tag" style="background: #ac5737;">${policy.origin}</span>` : '';
-
-       card.innerHTML = `
-         <div class="policy-card-tags">
-           ${policyTagsHtml}
-           ${scopeTagHtml}
-           ${originTagHtml}
-         </div>
-         <div class="policy-card-summary">${policy.policy_summary}</div>
-       `;
-
-       return card;
-     },
-
-
-     openPolicyModal(policy) {
-       const modal = document.getElementById('policy-modal');
-       const title = document.getElementById('policy-modal-title');
-       const description = document.getElementById('policy-modal-description');
-       const meta = document.getElementById('policy-modal-meta');
-       const link = document.getElementById('policy-modal-link');
-
-       title.textContent = 'Policy details';
-       description.textContent = policy.policy_description;
-
-       meta.innerHTML = `
-         <div class="policy-modal-meta-item">
-           <span class="policy-modal-meta-label">Policy tags:</span>
-           ${policy.policy_tags.join(', ')}
-         </div>
-         <div class="policy-modal-meta-item">
-           <span class="policy-modal-meta-label">Policy origin region:</span>
-           ${policy.region_origin.join(', ')}
-         </div>
-         <div class="policy-modal-meta-item">
-           <span class="policy-modal-meta-label">Scope:</span>
-           ${policy.scope}
-         </div>
-         <div class="policy-modal-meta-item">
-           <span class="policy-modal-meta-label">Origin:</span>
-           ${policy.origin}
-         </div>
-       `;
-
-       link.href = policy.links;
-       modal.style.display = 'block';
-     },
-
-
-     closePolicyModal() {
-       document.getElementById('policy-modal').style.display = 'none';
-     },
-
-     clearPolicyDisplay() {
-       this.policy.currentRegion = null;
-       this.policy.selectedTags = [];
-       this.policy.selectedScopes = [];
-       this.policy.selectedOrigins = [];
-
-       document.querySelectorAll('.policy-tag-button').forEach(button => {
-         button.classList.remove('active');
-       });
-
-       const intro = document.getElementById('policy-intro');
-       if (intro) intro.style.display = 'none';
-
-       document.getElementById('policy-areas-section').style.display = 'none';
-       document.getElementById('policy-scope-section').style.display = 'none';
-       document.getElementById('policy-origin-section').style.display = 'none';
-       document.getElementById('policy-count').style.display = 'none';
-       document.getElementById('policy-summaries-container').innerHTML = '';
-     },
-
-     // Map Methods
-     initializeMap() {
-       const { DeckGL, MapView, PolygonLayer, CompassWidget, ZoomWidget } = deck;
-
-       this.map.polygonLayer = this.createPolygonLayer();
-
-       this.map.deckgl = new DeckGL({
-         container: 'map-container',
-         map: maplibregl,
-         mapStyle: this.config.mapStyle,
-         initialViewState: this.config.initialViewState,
-         views: [new MapView({ id: "map", controller: true })],
-         getTooltip: ({ object }) =>
-           object ? `${object.NUTS_ID}\n${object.NUTS_NAME}` : null,
-         getCursor: ({ isHovering }) => (isHovering ? 'crosshair' : 'default'),
-         layers: [this.map.polygonLayer],
-         onClick: this.handlePolygonClick.bind(this),
-         widgets: [
-           new CompassWidget({ id: "compass", viewId: "map" }),
-           new ZoomWidget({ id: "zoom", viewId: "map" }),
-         ],
-       });
-     },
-
-     createPolygonLayer() {
-       return new deck.PolygonLayer({
-         id: "PolygonLayer",
-         data: this.config.mapDataUrl,
-         pickable: true,
-         getPolygon: d => d.border,
-         filled: true,
-         getLineColor: [37, 42, 83, 255],
-         getFillColor: d =>
-           d.NUTS_ID === this.map.selectedPolygonId ?
-           this.map.selectedFillColor : this.map.defaultFillColor,
-         updateTriggers: {
-           getFillColor: this.map.selectedPolygonId
-         },
-         lineWidthMinPixels: 0.7,
-         opacity: 0.2,
-       });
-     },
-
-     handlePolygonClick({ object }) {
-       if (object) {
-         this.map.selectedPolygonId = object.NUTS_ID;
-         this.updateMapSelection();
-         this.findAndSelectRegion(object.NUTS_ID, object.NUTS_NAME);
-       }
-     },
-
-     updateMapSelection() {
-       this.map.polygonLayer = this.createPolygonLayer();
-       if (this.map.deckgl) {
-         this.map.deckgl.setProps({ layers: [this.map.polygonLayer] });
-       }
-     },
-
-     selectRegionOnMap(regionId) {
-       this.map.selectedPolygonId = regionId;
-       this.updateMapSelection();
-     },
-
-     clearMapSelection() {
-       this.map.selectedPolygonId = null;
-       this.updateMapSelection();
-     },
-
-     bindEvents() {
-       document.addEventListener('click', this.handleTabClick.bind(this));
-       document.getElementById('country').addEventListener('change', this.handleCountryChange.bind(this));
-       document.getElementById('regions').addEventListener('change', this.handleRegionChange.bind(this));
-
-       document.getElementById('start-over-btn').addEventListener('click', this.handleStartOver.bind(this));
-
-       document.getElementById('age').addEventListener('change', this.handleMigrationControlChange.bind(this));
-       document.getElementById('gender').addEventListener('change', this.handleMigrationControlChange.bind(this));
-       document.getElementById('education').addEventListener('change', this.handleMigrationControlChange.bind(this));
-       document.getElementById('yearSlider').addEventListener('input', this.updateYear.bind(this));
-       document.getElementById('yearSlider').addEventListener('change', this.handleYearSliderChange.bind(this));
-
-       document.getElementById('policy-modal').addEventListener('click', (e) => {
-         if (e.target.id === 'policy-modal') {
-           this.closePolicyModal();
-         }
-       });
-
-       document.querySelector('.policy-modal-close').addEventListener('click', () => {
-         this.closePolicyModal();
-       });
-     },
-
-     handleStartOver() {
-       document.getElementById('country').value = '';
-       document.getElementById('regions').innerHTML = '<option value="">Select Region</option>';
-       this.clearRegionSelection();
-     },
-
-     handleTabClick(event) {
-       if (!event.target.classList.contains('tab-button')) return;
-
-       const regionSelect = document.getElementById('regions');
-       if (!regionSelect || !regionSelect.value) {
-         this.showRegionRequiredMessage();
-         return;
-       }
-
-       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-       event.target.classList.add('active');
-       const tabId = event.target.getAttribute('data-tab');
-       const contentElement = document.getElementById(`content-${tabId}`);
-       if (contentElement) {
-         contentElement.classList.add('active');
-       }
-
-       document.getElementById('default-instructions').classList.remove('active');
-
-       if (tabId === 'tab1') {
-         if (regionSelect && regionSelect.value && this.policy.isLoaded) {
-           this.loadPoliciesForRegion(regionSelect.value);
-         }
-       }
-
-       if (tabId === 'tab2') {
-         setTimeout(() => {
-           const iframe = document.querySelector('#regional_development_scores_plot_wrapper iframe');
-           if (iframe) {
-             iframe.src = iframe.src; // Force reload
-           }
-         }, 50);
-       }
-
-       if (tabId === 'tab3') {
-         this.handleMigrationTabActivation();
-       }
-     },
-
-     showRegionRequiredMessage() {
-       const instructionsDiv = document.getElementById('default-instructions');
-       const originalContent = instructionsDiv.innerHTML;
-
-       instructionsDiv.innerHTML = `
-         <div style="text-align: center; padding: 40px 20px;">
-           <h2 style="font-family: 'Lora', serif; font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #252a53;">
-             Please Select a Region First
-           </h2>
-           <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
-             Choose a country and region from the dropdowns on the left to access the data tabs.
-           </p>
-           <div style="padding: 10px; background: #f8f9fa; border-left: 3px solid #252a53; margin: 20px auto; max-width: 300px;">
-             <p style="font-size: 12px; margin: 0; color: #252a53;">
-               Tip: You can also click directly on any region in the map
-             </p>
-           </div>
-         </div>
-       `;
-
-       setTimeout(() => {
-         instructionsDiv.innerHTML = originalContent;
-       }, 3000);
-     },
-
-     handleCountryChange() {
-       const countrySelect = document.getElementById('country');
-       const regionSelect = document.getElementById('regions');
-       const selectedCountry = countrySelect.value;
-
-       this.showLoading(regionSelect);
-
-       if (selectedCountry && REGION_DATA[selectedCountry]) {
-         const regions = REGION_DATA[selectedCountry];
-         let options = '<option value="">Select Region</option>';
-
-         regions.sort((a, b) => a[1].localeCompare(b[1]));
-
-         regions.forEach(([code, name]) => {
-           options += `<option value="${code}">${name}</option>`;
-         });
-
-         regionSelect.innerHTML = options;
-       } else {
-         regionSelect.innerHTML = '<option value="">Select Region</option>';
-       }
-
-       this.hideLoading(regionSelect);
-
-       if (!this.state.isProgrammaticSelection) {
-         this.clearRegionSelection();
-       }
-     },
-
-     handleRegionChange() {
-       const countrySelect = document.getElementById('country');
-       const regionSelect = document.getElementById('regions');
-       const country = countrySelect.options[countrySelect.selectedIndex].text;
-       const region = regionSelect.options[regionSelect.selectedIndex].text;
-
-       if (region !== "Select Region" && country !== "Select Country") {
-         document.getElementById('default-instructions').classList.remove('active');
-         document.getElementById('start-over-container').style.display = 'block';
-
-         const activeTab = document.querySelector('.tab-button.active');
-
-         if (!activeTab) {
-           document.querySelector('.tab-button[data-tab="tab1"]').classList.add('active');
-           document.getElementById('content-tab1').classList.add('active');
-         }
-
-         document.getElementById('region-title').textContent = `${region}, ${country}`;
-         this.selectRegionOnMap(regionSelect.value);
-
-         const currentActiveTab = document.querySelector('.tab-button.active');
-         if (currentActiveTab) {
-           const activeTabId = currentActiveTab.getAttribute('data-tab');
-
-           if (activeTabId === 'tab1' && this.policy.isLoaded) {
-             this.loadPoliciesForRegion(regionSelect.value);
-           } else if (activeTabId === 'tab2') {
-             this.loadRegionalDevelopmentData(regionSelect.value);
-           } else if (activeTabId === 'tab3') {
-             this.loadMigrationData(regionSelect.value);
-             this.showMigrationSections();
-           }
-         }
-
-         if (this.policy.isLoaded) {
-           this.loadPoliciesForRegion(regionSelect.value);
-         }
-         this.loadRegionalDevelopmentData(regionSelect.value);
-         this.loadMigrationData(regionSelect.value);
-         this.showMigrationSections();
-         this.showExploreButton();
-
-         this.saveSessionState(countrySelect.value, regionSelect.value);
-       } else {
-         this.clearRegionSelection();
-       }
-     },
-
-     handleMigrationControlChange() {
-       const regionSelect = document.getElementById('regions');
-       if (regionSelect.value) {
-         this.loadMigrationProjection(regionSelect.value);
-       }
-     },
-
-     handleMigrationTabActivation() {
-       const regionSelect = document.getElementById('regions');
-       if (regionSelect && regionSelect.value) {
-         this.loadMigrationProjection(regionSelect.value);
-         this.loadMigrationPyramid(regionSelect.value);
-       }
-     },
-
-     handleYearSliderChange() {
-       const regionSelect = document.getElementById('regions');
-       if (regionSelect.value) {
-         this.loadMigrationPyramid(regionSelect.value);
-       }
-     },
-
-     loadRegionalDevelopmentData(regionCode) {
-
-       const intro = document.getElementById('development-intro');
-       if (intro) intro.style.display = 'block';
-
-       this.loadDevelopmentTags(regionCode);
-       this.loadDevelopmentScores(regionCode);
-       this.loadStrengthsWeaknesses(regionCode);
-       this.loadNationalComparisons(regionCode);
-       this.loadDevelopmentPlot(regionCode);
-     },
-
-     loadDevelopmentTags(regionCode) {
-       const container = document.getElementById('regional_development_tags');
-       const tags = DEVELOPMENT_TAG_DATA[regionCode];
-
-       if (!tags) {
-         container.innerHTML = '<p></p>';
-         return;
-       }
-
-       let html = '<div class="regional_development_tags">';
-       ['urban_type', 'devel_status_type', 'devel_trend_type',].forEach(key => {
-         const tagValue = tags[key];
-         if (tagValue) {
-           html += `<button>${tagValue}</button>`;
-         }
-       });
-       html += '</div>';
-
-       container.innerHTML = html;
-     },
-
-     loadDevelopmentScores(regionCode) {
-       const container = document.getElementById('regional_development_scores');
-       const data = REGION_SCORES[regionCode];
-       const trends = REGION_TRENDS[regionCode];
-
-       if (!data) {
-         container.innerHTML = '<p>No data available.</p>';
-         return;
-       }
-
-       const formatScore = (val) => `${Math.round(val * 10)}/10`;
-
-       const getTrendIndicator = (trend) => {
-         if (!trend) return '';
-         const isImproving = trend === 'Improving';
-         const arrowIcon = isImproving ? '↑' : '↓';
-         const color = isImproving ? '#697D61' : '#ac5737';
-         return `<span style="color: ${color}; font-weight: 600; margin-left: 8px;">${arrowIcon} ${trend}</span>`;
-       };
-
-       const html = `
-         <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Development scores</p>
-         <div class="score-cards">
-           <div class="card">
-             <h3>Economic</h3>
-             <p>${formatScore(data.econ_index)}</p>
-             <div style="font-size: 11px; margin-top: 4px;">${getTrendIndicator(trends?.trend_econ_index || '')}</div>
-           </div>
-           <div class="card">
-             <h3>Social</h3>
-             <p>${formatScore(data.social_index)}</p>
-             <div style="font-size: 11px; margin-top: 4px;">${getTrendIndicator(trends?.trend_social_index || '')}</div>
-           </div>
-           <div class="card">
-             <h3>Living environment</h3>
-             <p>${formatScore(data.liv_env_index)}</p>
-             <div style="font-size: 11px; margin-top: 4px;">${getTrendIndicator(trends?.trend_liv_env_index || '')}</div>
-           </div>
-           <div class="card total">
-             <h3>Overall</h3>
-             <p>${formatScore(data.devel_score)}</p>
-             <div style="font-size: 11px; margin-top: 4px; color: white;">${getTrendIndicator(trends?.trend_devel_score || '')}</div>
-           </div>
-         </div>
-         <br>
-       `;
-
-       container.innerHTML = html;
-     },
-
-     loadStrengthsWeaknesses(regionCode) {
-       const container = document.getElementById('strengths_weaknesses');
-       const data = STRENGTHS_WEAKNESSES_DATA[regionCode];
-
-       if (!data) {
-         container.innerHTML = '<br>';
-         return;
-       }
-
-       const html = `
-         <div class="strengths_weaknesses">
-           <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Strengths and weaknesses</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.regional_development_status || 'No data available.'}</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.regional_development_strengths || 'No data available.'}</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.regional_development_weaknesses || 'No data available.'}</p>
-           <br>
-         </div>
-       `;
-
-       container.innerHTML = html;
-     },
-
-     loadNationalComparisons(regionCode) {
-       const container = document.getElementById('national_comparisons');
-       const data = NATIONAL_COMPARISONS_DATA[regionCode];
-
-       if (!data) {
-         container.innerHTML = '<br>';
-         return;
-       }
-
-       const html = `
-         <div class="national_comparisons">
-           <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">National comparisons</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.overall_status_txt || 'No data available.'}</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.country_compare_txt || 'No data available.'}</p>
-           <br>
-         </div>
-       `;
-
-       container.innerHTML = html;
-     },
-
-
-     loadDevelopmentPlot(regionCode) {
-       const container = document.getElementById('regional_development_scores_plot_wrapper');
-       const plotPath = `plots/regional-scores/${regionCode}.html`;
-
-       fetch(plotPath)
-         .then(response => {
-           if (response.ok) {
-             const html = `
-               <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Development scores over time</p>
-               <iframe src="${plotPath}" width="100%" height="320" frameborder="0"></iframe>
-               <br>
-             `;
-             container.innerHTML = html;
-           } else {
-             container.innerHTML = '<p style="color:#999;">No data available for this region.</p>';
-           }
-         })
-         .catch(() => {
-           container.innerHTML = '<p style="color:#999;">No data available for this region.</p>';
-         });
-     },
-
-     loadMigrationData(regionCode) {
-
-       const intro = document.getElementById('migration-intro');
-       if (intro) intro.style.display = 'block';
-
-       this.loadMigrationTags(regionCode);
-       this.loadMigrationTypeDescription(regionCode);
-       if (document.getElementById('content-tab3').classList.contains('active')) {
-         this.loadMigrationProjection(regionCode);
-         this.loadMigrationPyramid(regionCode);
-       }
-     },
-
-     loadMigrationTags(regionCode) {
-       const container = document.getElementById('regional_migration_tags');
-       const tags = MIGRATION_TAG_DATA[regionCode];
-
-       if (!tags) {
-         container.innerHTML = '<p>No data available.</p>';
-         return;
-       }
-
-       let html = '<div class="regional_migration_tags">';
-       ['pop_growth_tag', 'nat_change_tag', 'migr_tag', 'pop_age_tag', 'age_rate_tag'].forEach(key => {
-         const tagValue = tags[key];
-         if (tagValue) {
-           html += `<button>${tagValue}</button>`;
-         }
-       });
-       html += '</div>';
-
-       container.innerHTML = html;
-     },
-
-
-
-     loadMigrationTypeDescription(regionCode) {
-       const container = document.getElementById('migration_type_description');
-       const data = TYPE_DESCRIPTION_DATA[regionCode];
-
-       if (!data) {
-         container.innerHTML = '';
-         return;
-       }
-
-       const html = `
-         <div class="migration_type_description">
-           <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Strengths and weaknesses</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.pop_growth_text || 'No data available.'}</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.nat_change_text || ''}</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.migr_text || ''}</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.pop_age_text || ''}</p>
-           <p style="font-size: 12px; margin-bottom: 6px;">${data.age_rate_text || ''}</p>
-           <br>
-         </div>
-       `;
-
-       container.innerHTML = html;
-     },
-
-     loadMigrationProjection(regionCode) {
-       const age = document.getElementById('age').value.replace(/[–—]/g, '-');
-       const gender = document.getElementById('gender').value;
-       const education = document.getElementById('education').value;
-
-       const filename = `${regionCode}_${age}_${gender.toLowerCase()}_${education.toLowerCase()}.html`;
-       const plotPath = `plots/regional-projections/${filename}`;
-
-       fetch(plotPath)
-         .then(response => {
-           if (response.ok) {
-             document.getElementById('plot-content').innerHTML =
-               `<iframe src="${plotPath}" width="100%" height="400" frameborder="0" style="border: none;"></iframe>`;
-           } else {
-             throw new Error('No data');
-           }
-         })
-         .catch(() => {
-           document.getElementById('plot-content').innerHTML = `
-             <div class="plot-error" style="text-align: center; padding: 20px; color: #666;">
-               <p>No data</p>
-               <small style="color: #fff;">File not found: ${filename}</small>
-             </div>
-           `;
-         });
-     },
-
-
-
-
-     loadMigrationPyramid(regionCode) {
-       const year = document.getElementById('yearSlider').value;
-       const pyramidPath = `plots/regional-pyramids/${regionCode}_${year}.html`;
-
-       fetch(pyramidPath)
-         .then(response => {
-           if (response.ok) {
-             document.getElementById('pyramid-content').innerHTML =
-               `<iframe src="${pyramidPath}" width="100%" height="340" frameborder="0"></iframe>`;
-           } else {
-             document.getElementById('pyramid-content').innerHTML =
-               `<div style="text-align: center; padding: 20px; color: #666;"><p>No data for ${year}</p></div>`;
-           }
-         })
-         .catch(() => {
-           document.getElementById('pyramid-content').innerHTML =
-             `<div style="text-align: center; padding: 20px; color: #fff;"><p>Population pyramid not available for ${regionCode} in ${year}</p></div>`;
-         });
-     },
-
-     showLoading(element) {
-       const parent = element.parentElement;
-       const indicator = parent.querySelector('.loading-indicator');
-       if (indicator) {
-         indicator.style.display = 'block';
-       }
-       parent.classList.add('loading');
-     },
-
-     hideLoading(element) {
-       const parent = element.parentElement;
-       const indicator = parent.querySelector('.loading-indicator');
-       if (indicator) {
-         indicator.style.display = 'none';
-       }
-       parent.classList.remove('loading');
-     },
-
-     showMigrationSections() {
-       const projectionSection = document.getElementById('migration-projection');
-       const pyramidSection = document.getElementById('migration-pyramid');
-       if (projectionSection) projectionSection.classList.add('show');
-       if (pyramidSection) pyramidSection.classList.add('show');
-     },
-
-     hideMigrationSections() {
-       const projectionSection = document.getElementById('migration-projection');
-       const pyramidSection = document.getElementById('migration-pyramid');
-       if (projectionSection) projectionSection.classList.remove('show');
-       if (pyramidSection) pyramidSection.classList.remove('show');
-     },
-
-     showExploreButton() {
-       const button = document.getElementById('viewImageButtonDevelopment');
-       const buttonContainer = document.querySelector('.explore-comparable');
-       if (buttonContainer) buttonContainer.classList.add('show');
-       if (button) button.disabled = false;
-     },
-
-     hideExploreButton() {
-       const button = document.getElementById('viewImageButtonDevelopment');
-       const buttonContainer = document.querySelector('.explore-comparable');
-       if (buttonContainer) buttonContainer.classList.remove('show');
-       if (button) button.disabled = true;
-     },
-
-     clearRegionSelection() {
-       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-       document.getElementById('default-instructions').classList.add('active');
-       document.getElementById('start-over-container').style.display = 'none';
-
-       document.getElementById('region-title').textContent = "";
-       this.clearMapSelection();
-       this.clearPolicyDisplay();
-       this.hideMigrationSections();
-       this.hideExploreButton();
-       this.clearSessionState();
-
-       const devIntro = document.getElementById('development-intro');
-       if (devIntro) devIntro.style.display = 'none';
-
-       const migIntro = document.getElementById('migration-intro');
-       if (migIntro) migIntro.style.display = 'none';
-
-       document.getElementById('regional_development_tags').innerHTML = '<p>Select a region</p>';
-       document.getElementById('regional_development_scores').innerHTML = '';
-       document.getElementById('strengths_weaknesses').innerHTML = '<br>';
-       document.getElementById('national_comparisons').innerHTML = '';
-       document.getElementById('regional_development_scores_plot_wrapper').innerHTML = '';
-       document.getElementById('regional_migration_tags').innerHTML = '<p>Select a region</p>';
-       document.getElementById('migration_type_description').innerHTML = '';
-       document.getElementById('plot-content').innerHTML = '';
-       document.getElementById('pyramid-content').innerHTML = '';
-     },
-
-     findAndSelectRegion(regionId, regionName) {
-       const regionSelect = document.getElementById('regions');
-       const countrySelect = document.getElementById('country');
-
-       const existingOption = Array.from(regionSelect.options).find(option => option.value === regionId);
-       if (existingOption) {
-         regionSelect.value = regionId;
-         this.handleRegionChange();
-         return;
-       }
-
-       this.searchRegionAcrossCountries(regionId, regionName, countrySelect, regionSelect);
-     },
-
-     async searchRegionAcrossCountries(regionId, regionName, countrySelect, regionSelect) {
-       this.showRegionSearchLoading(true);
-
-       const originalCountry = countrySelect.value;
-       const originalRegion = regionSelect.value;
-
-       for (const [countryCode, regions] of Object.entries(REGION_DATA)) {
-         const targetRegion = regions.find(([code, name]) => code === regionId);
-
-         if (targetRegion) {
-           this.state.isProgrammaticSelection = true;
-           countrySelect.value = countryCode;
-           this.handleCountryChange();
-
-           setTimeout(() => {
-             regionSelect.value = regionId;
-             this.showRegionSearchLoading(false);
-             this.handleRegionChange();
-             this.state.isProgrammaticSelection = false;
-           }, 100);
-           return;
-         }
-       }
-
-       console.log('Region not found in any country');
-       countrySelect.value = originalCountry;
-       regionSelect.value = originalRegion;
-       this.showRegionSearchLoading(false);
-       this.state.isProgrammaticSelection = false;
-     },
-
-     showRegionSearchLoading(isLoading) {
-       const regionTitle = document.getElementById('region-title');
-       const dropdownContainer = document.querySelector('.dropdown-container');
-
-       if (isLoading) {
-         regionTitle.textContent = 'Searching for region...';
-         regionTitle.style.opacity = '0.7';
-         regionTitle.style.fontStyle = 'italic';
-         dropdownContainer.style.visibility = 'hidden';
-         dropdownContainer.style.opacity = '0';
-         dropdownContainer.style.transition = 'opacity 0.2s ease';
-       } else {
-         regionTitle.style.opacity = '1';
-         regionTitle.style.fontStyle = 'normal';
-         dropdownContainer.style.visibility = 'visible';
-         dropdownContainer.style.opacity = '1';
-       }
-     },
-
-     saveSessionState(country, region) {
-       sessionStorage.setItem('selectedCountry', country);
-       sessionStorage.setItem('selectedRegion', region);
-     },
-
-     clearSessionState() {
-       sessionStorage.removeItem('selectedCountry');
-       sessionStorage.removeItem('selectedRegion');
-     },
-
-     restoreSessionState() {
-       const savedCountry = sessionStorage.getItem('selectedCountry');
-       const savedRegion = sessionStorage.getItem('selectedRegion');
-
-       if (savedCountry) {
-         document.getElementById('country').value = savedCountry;
-         this.handleCountryChange();
-
-         setTimeout(() => {
-           if (savedRegion) {
-             document.getElementById('regions').value = savedRegion;
-             this.handleRegionChange();
-
-             setTimeout(() => {
-               this.selectRegionOnMap(savedRegion);
-             }, 500);
-           }
-         }, 500);
-       }
-     },
-
-     updateYear() {
-       const slider = document.getElementById('yearSlider');
-       const yearValue = document.getElementById('yearValue');
-       if (slider && yearValue) {
-         yearValue.textContent = slider.value;
-       }
-     },
-
-     updatePyramid() {
-     },
-
-     openRegionalImage() {
-       const regionSelect = document.getElementById('regions');
-       if (!regionSelect || !regionSelect.value) {
-         alert('Please select a region first');
-         return;
-       }
-
-       const regionCode = regionSelect.value;
-       const groupNumber = this.findRegionGroup(regionCode);
-
-       if (groupNumber) {
-         const imagePath = `plots/regional_dev_matrix/regdev_matrix_group_${groupNumber}.html`;
-         window.open(imagePath, '_blank');
-       } else {
-         alert('No comparison data available for this region (yet!)');
-       }
-     },
-
-     findRegionGroup(regionCode) {
-       for (const [group, regions] of Object.entries(this.regionGroups)) {
-         if (regions.includes(regionCode)) {
-           return group;
-         }
-       }
-       return null;
-     }
-   };
-
-   document.addEventListener('DOMContentLoaded', function() {
-     RegionalApp.init();
-     RegionalApp.updateYear();
-   });
-
-   function updateYear() {
-     RegionalApp.updateYear();
-   }
-
-   function updatePyramid() {
-     RegionalApp.updatePyramid();
-   }
-
-   function openRegionalImage() {
-     RegionalApp.openRegionalImage();
-   }
-
-  </script>
-
   <script type="module">
     import { renderHeader, renderFooter } from './js/shared/layout.js';
+    import { loadAllData } from './js/regional/dataLoader.js';
+    import { initializeMap, selectRegion, clearSelection } from './js/regional/mapHandler.js';
+    import { initializePolicyData, loadPoliciesForRegion, closePolicyModal, clearPolicyDisplay, isPolicyLoaded } from './js/regional/policyManager.js';
+    import { loadRegionalDevelopmentData } from './js/regional/developmentDisplay.js';
+    import { loadMigrationData, loadMigrationProjection, loadMigrationPyramid, showMigrationSections, hideMigrationSections, updateYear as migrationUpdateYear, updatePyramid as migrationUpdatePyramid } from './js/regional/migrationDisplay.js';
+
     renderHeader('regional');
     renderFooter();
+
+    let appData = null;
+
+    const config = {
+      mapDataUrl: "layers/polygon_layer.json",
+      mapStyle: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+      initialViewState: {
+        bearing: 0,
+        latitude: 55,
+        longitude: 10,
+        maxZoom: 20,
+        minZoom: 3,
+        pitch: 0,
+        zoom: 3,
+      }
+    };
+
+    const state = {
+      isProgrammaticSelection: false
+    };
+
+    const RegionalApp = {
+      async init() {
+        appData = await loadAllData();
+        if (!appData) return;
+
+        initializeMap(config, (regionId, regionName) => {
+          this.findAndSelectRegion(regionId, regionName);
+        });
+        this.bindEvents();
+        initializePolicyData(appData.policyData);
+        this.restoreSessionState();
+      },
+
+      bindEvents() {
+        document.addEventListener('click', this.handleTabClick.bind(this));
+        document.getElementById('country').addEventListener('change', this.handleCountryChange.bind(this));
+        document.getElementById('regions').addEventListener('change', this.handleRegionChange.bind(this));
+
+        document.getElementById('start-over-btn').addEventListener('click', this.handleStartOver.bind(this));
+
+        document.getElementById('age').addEventListener('change', this.handleMigrationControlChange.bind(this));
+        document.getElementById('gender').addEventListener('change', this.handleMigrationControlChange.bind(this));
+        document.getElementById('education').addEventListener('change', this.handleMigrationControlChange.bind(this));
+        document.getElementById('yearSlider').addEventListener('input', () => migrationUpdateYear());
+        document.getElementById('yearSlider').addEventListener('change', this.handleYearSliderChange.bind(this));
+
+        document.getElementById('policy-modal').addEventListener('click', (e) => {
+          if (e.target.id === 'policy-modal') {
+            closePolicyModal();
+          }
+        });
+
+        document.querySelector('.policy-modal-close').addEventListener('click', () => {
+          closePolicyModal();
+        });
+      },
+
+      handleStartOver() {
+        document.getElementById('country').value = '';
+        document.getElementById('regions').innerHTML = '<option value="">Select Region</option>';
+        this.clearRegionSelection();
+      },
+
+      handleTabClick(event) {
+        if (!event.target.classList.contains('tab-button')) return;
+
+        const regionSelect = document.getElementById('regions');
+        if (!regionSelect || !regionSelect.value) {
+          this.showRegionRequiredMessage();
+          return;
+        }
+
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+        event.target.classList.add('active');
+        const tabId = event.target.getAttribute('data-tab');
+        const contentElement = document.getElementById(`content-${tabId}`);
+        if (contentElement) {
+          contentElement.classList.add('active');
+        }
+
+        document.getElementById('default-instructions').classList.remove('active');
+
+        if (tabId === 'tab1') {
+          if (regionSelect && regionSelect.value && isPolicyLoaded()) {
+            loadPoliciesForRegion(regionSelect.value);
+          }
+        }
+
+        if (tabId === 'tab2') {
+          setTimeout(() => {
+            const iframe = document.querySelector('#regional_development_scores_plot_wrapper iframe');
+            if (iframe) {
+              iframe.src = iframe.src;
+            }
+          }, 50);
+        }
+
+        if (tabId === 'tab3') {
+          this.handleMigrationTabActivation();
+        }
+      },
+
+      showRegionRequiredMessage() {
+        const instructionsDiv = document.getElementById('default-instructions');
+        const originalContent = instructionsDiv.innerHTML;
+
+        instructionsDiv.innerHTML = `
+          <div style="text-align: center; padding: 40px 20px;">
+            <h2 style="font-family: 'Lora', serif; font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #252a53;">
+              Please Select a Region First
+            </h2>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+              Choose a country and region from the dropdowns on the left to access the data tabs.
+            </p>
+            <div style="padding: 10px; background: #f8f9fa; border-left: 3px solid #252a53; margin: 20px auto; max-width: 300px;">
+              <p style="font-size: 12px; margin: 0; color: #252a53;">
+                Tip: You can also click directly on any region in the map
+              </p>
+            </div>
+          </div>
+        `;
+
+        setTimeout(() => {
+          instructionsDiv.innerHTML = originalContent;
+        }, 3000);
+      },
+
+      handleCountryChange() {
+        const countrySelect = document.getElementById('country');
+        const regionSelect = document.getElementById('regions');
+        const selectedCountry = countrySelect.value;
+
+        this.showLoading(regionSelect);
+
+        if (selectedCountry && appData.regionData[selectedCountry]) {
+          const regions = appData.regionData[selectedCountry];
+          let options = '<option value="">Select Region</option>';
+
+          regions.sort((a, b) => a[1].localeCompare(b[1]));
+
+          regions.forEach(([code, name]) => {
+            options += `<option value="${code}">${name}</option>`;
+          });
+
+          regionSelect.innerHTML = options;
+        } else {
+          regionSelect.innerHTML = '<option value="">Select Region</option>';
+        }
+
+        this.hideLoading(regionSelect);
+
+        if (!state.isProgrammaticSelection) {
+          this.clearRegionSelection();
+        }
+      },
+
+      handleRegionChange() {
+        const countrySelect = document.getElementById('country');
+        const regionSelect = document.getElementById('regions');
+        const country = countrySelect.options[countrySelect.selectedIndex].text;
+        const region = regionSelect.options[regionSelect.selectedIndex].text;
+
+        if (region !== "Select Region" && country !== "Select Country") {
+          document.getElementById('default-instructions').classList.remove('active');
+          document.getElementById('start-over-container').style.display = 'block';
+
+          const activeTab = document.querySelector('.tab-button.active');
+
+          if (!activeTab) {
+            document.querySelector('.tab-button[data-tab="tab1"]').classList.add('active');
+            document.getElementById('content-tab1').classList.add('active');
+          }
+
+          document.getElementById('region-title').textContent = `${region}, ${country}`;
+          selectRegion(regionSelect.value, config.mapDataUrl);
+
+          const currentActiveTab = document.querySelector('.tab-button.active');
+          if (currentActiveTab) {
+            const activeTabId = currentActiveTab.getAttribute('data-tab');
+
+            if (activeTabId === 'tab1' && isPolicyLoaded()) {
+              loadPoliciesForRegion(regionSelect.value);
+            } else if (activeTabId === 'tab2') {
+              loadRegionalDevelopmentData(regionSelect.value, appData);
+            } else if (activeTabId === 'tab3') {
+              loadMigrationData(regionSelect.value, appData);
+              showMigrationSections();
+            }
+          }
+
+          if (isPolicyLoaded()) {
+            loadPoliciesForRegion(regionSelect.value);
+          }
+          loadRegionalDevelopmentData(regionSelect.value, appData);
+          loadMigrationData(regionSelect.value, appData);
+          showMigrationSections();
+          this.showExploreButton();
+
+          this.saveSessionState(countrySelect.value, regionSelect.value);
+        } else {
+          this.clearRegionSelection();
+        }
+      },
+
+      handleMigrationControlChange() {
+        const regionSelect = document.getElementById('regions');
+        if (regionSelect.value) {
+          loadMigrationProjection(regionSelect.value);
+        }
+      },
+
+      handleMigrationTabActivation() {
+        const regionSelect = document.getElementById('regions');
+        if (regionSelect && regionSelect.value) {
+          loadMigrationProjection(regionSelect.value);
+          loadMigrationPyramid(regionSelect.value);
+        }
+      },
+
+      handleYearSliderChange() {
+        const regionSelect = document.getElementById('regions');
+        if (regionSelect.value) {
+          loadMigrationPyramid(regionSelect.value);
+        }
+      },
+
+      showLoading(element) {
+        const parent = element.parentElement;
+        const indicator = parent.querySelector('.loading-indicator');
+        if (indicator) {
+          indicator.style.display = 'block';
+        }
+        parent.classList.add('loading');
+      },
+
+      hideLoading(element) {
+        const parent = element.parentElement;
+        const indicator = parent.querySelector('.loading-indicator');
+        if (indicator) {
+          indicator.style.display = 'none';
+        }
+        parent.classList.remove('loading');
+      },
+
+      showExploreButton() {
+        const button = document.getElementById('viewImageButtonDevelopment');
+        const buttonContainer = document.querySelector('.explore-comparable');
+        if (buttonContainer) buttonContainer.classList.add('show');
+        if (button) button.disabled = false;
+      },
+
+      hideExploreButton() {
+        const button = document.getElementById('viewImageButtonDevelopment');
+        const buttonContainer = document.querySelector('.explore-comparable');
+        if (buttonContainer) buttonContainer.classList.remove('show');
+        if (button) button.disabled = true;
+      },
+
+      clearRegionSelection() {
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+        document.getElementById('default-instructions').classList.add('active');
+        document.getElementById('start-over-container').style.display = 'none';
+
+        document.getElementById('region-title').textContent = "";
+        clearSelection(config.mapDataUrl);
+        clearPolicyDisplay();
+        hideMigrationSections();
+        this.hideExploreButton();
+        this.clearSessionState();
+
+        const devIntro = document.getElementById('development-intro');
+        if (devIntro) devIntro.style.display = 'none';
+
+        const migIntro = document.getElementById('migration-intro');
+        if (migIntro) migIntro.style.display = 'none';
+
+        document.getElementById('regional_development_tags').innerHTML = '<p>Select a region</p>';
+        document.getElementById('regional_development_scores').innerHTML = '';
+        document.getElementById('strengths_weaknesses').innerHTML = '<br>';
+        document.getElementById('national_comparisons').innerHTML = '';
+        document.getElementById('regional_development_scores_plot_wrapper').innerHTML = '';
+        document.getElementById('regional_migration_tags').innerHTML = '<p>Select a region</p>';
+        document.getElementById('migration_type_description').innerHTML = '';
+        document.getElementById('plot-content').innerHTML = '';
+        document.getElementById('pyramid-content').innerHTML = '';
+      },
+
+      findAndSelectRegion(regionId, regionName) {
+        const regionSelect = document.getElementById('regions');
+        const countrySelect = document.getElementById('country');
+
+        const existingOption = Array.from(regionSelect.options).find(option => option.value === regionId);
+        if (existingOption) {
+          regionSelect.value = regionId;
+          this.handleRegionChange();
+          return;
+        }
+
+        this.searchRegionAcrossCountries(regionId, regionName, countrySelect, regionSelect);
+      },
+
+      async searchRegionAcrossCountries(regionId, regionName, countrySelect, regionSelect) {
+        this.showRegionSearchLoading(true);
+
+        const originalCountry = countrySelect.value;
+        const originalRegion = regionSelect.value;
+
+        for (const [countryCode, regions] of Object.entries(appData.regionData)) {
+          const targetRegion = regions.find(([code, name]) => code === regionId);
+
+          if (targetRegion) {
+            state.isProgrammaticSelection = true;
+            countrySelect.value = countryCode;
+            this.handleCountryChange();
+
+            setTimeout(() => {
+              regionSelect.value = regionId;
+              this.showRegionSearchLoading(false);
+              this.handleRegionChange();
+              state.isProgrammaticSelection = false;
+            }, 100);
+            return;
+          }
+        }
+
+        console.log('Region not found in any country');
+        countrySelect.value = originalCountry;
+        regionSelect.value = originalRegion;
+        this.showRegionSearchLoading(false);
+        state.isProgrammaticSelection = false;
+      },
+
+      showRegionSearchLoading(isLoading) {
+        const regionTitle = document.getElementById('region-title');
+        const dropdownContainer = document.querySelector('.dropdown-container');
+
+        if (isLoading) {
+          regionTitle.textContent = 'Searching for region...';
+          regionTitle.style.opacity = '0.7';
+          regionTitle.style.fontStyle = 'italic';
+          dropdownContainer.style.visibility = 'hidden';
+          dropdownContainer.style.opacity = '0';
+          dropdownContainer.style.transition = 'opacity 0.2s ease';
+        } else {
+          regionTitle.style.opacity = '1';
+          regionTitle.style.fontStyle = 'normal';
+          dropdownContainer.style.visibility = 'visible';
+          dropdownContainer.style.opacity = '1';
+        }
+      },
+
+      saveSessionState(country, region) {
+        sessionStorage.setItem('selectedCountry', country);
+        sessionStorage.setItem('selectedRegion', region);
+      },
+
+      clearSessionState() {
+        sessionStorage.removeItem('selectedCountry');
+        sessionStorage.removeItem('selectedRegion');
+      },
+
+      restoreSessionState() {
+        const savedCountry = sessionStorage.getItem('selectedCountry');
+        const savedRegion = sessionStorage.getItem('selectedRegion');
+
+        if (savedCountry) {
+          document.getElementById('country').value = savedCountry;
+          this.handleCountryChange();
+
+          setTimeout(() => {
+            if (savedRegion) {
+              document.getElementById('regions').value = savedRegion;
+              this.handleRegionChange();
+
+              setTimeout(() => {
+                selectRegion(savedRegion, config.mapDataUrl);
+              }, 500);
+            }
+          }, 500);
+        }
+      },
+
+      updateYear() {
+        migrationUpdateYear();
+      },
+
+      updatePyramid() {
+        migrationUpdatePyramid();
+      },
+
+      openRegionalImage() {
+        const regionSelect = document.getElementById('regions');
+        if (!regionSelect || !regionSelect.value) {
+          alert('Please select a region first');
+          return;
+        }
+
+        const regionCode = regionSelect.value;
+        const groupNumber = this.findRegionGroup(regionCode);
+
+        if (groupNumber) {
+          const imagePath = `plots/regional_dev_matrix/regdev_matrix_group_${groupNumber}.html`;
+          window.open(imagePath, '_blank');
+        } else {
+          alert('No comparison data available for this region (yet!)');
+        }
+      },
+
+      findRegionGroup(regionCode) {
+        for (const [group, regions] of Object.entries(appData.regionGroups)) {
+          if (regions.includes(regionCode)) {
+            return group;
+          }
+        }
+        return null;
+      }
+    };
+
+    // Expose on window for inline HTML handlers (onchange, onclick)
+    window.RegionalApp = RegionalApp;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      RegionalApp.init();
+      migrationUpdateYear();
+    });
   </script>
 
 </html>
