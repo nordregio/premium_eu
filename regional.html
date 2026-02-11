@@ -746,6 +746,22 @@
           </button>
         </div>
 
+        <div id="region-required-message" class="tab-content" style="display: none;">
+          <div style="text-align: center; padding: 40px 20px;">
+            <h2 style="font-family: 'Lora', serif; font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #252a53;">
+              Please select a region first
+            </h2>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+              Choose a country and region from the dropdowns on the left to access the data tabs.
+            </p>
+            <div style="padding: 10px; background: #f8f9fa; border-left: 3px solid #252a53; margin: 20px auto; max-width: 300px;">
+              <p style="font-size: 12px; margin: 0; color: #252a53;">
+                Tip: You can also click directly on any region in the map
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div id="default-instructions" class="tab-content active">
           <div style="background: #f8f9fa; border-left: 4px solid #252a53; padding: 20px; margin-bottom: 25px; border-radius: 4px;">
             <h2 style="font-family: 'Lora', serif; font-size: 18px; font-weight: 700; margin-bottom: 14px; margin-top: 0; color: #252a53;">
@@ -1100,18 +1116,9 @@
         document.getElementById('default-instructions').classList.remove('active');
 
         if (tabId === 'tab1') {
-          if (regionSelect && regionSelect.value && isPolicyLoaded()) {
+          if (isPolicyLoaded()) {
             loadPoliciesForRegion(regionSelect.value);
           }
-        }
-
-        if (tabId === 'tab2') {
-          setTimeout(() => {
-            const iframe = document.querySelector('#regional_development_scores_plot_wrapper iframe');
-            if (iframe) {
-              iframe.src = iframe.src;
-            }
-          }, 50);
         }
 
         if (tabId === 'tab3') {
@@ -1121,26 +1128,14 @@
 
       showRegionRequiredMessage() {
         const instructionsDiv = document.getElementById('default-instructions');
-        const originalContent = instructionsDiv.innerHTML;
+        const messageDiv = document.getElementById('region-required-message');
 
-        instructionsDiv.innerHTML = `
-          <div style="text-align: center; padding: 40px 20px;">
-            <h2 style="font-family: 'Lora', serif; font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #252a53;">
-              Please Select a Region First
-            </h2>
-            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
-              Choose a country and region from the dropdowns on the left to access the data tabs.
-            </p>
-            <div style="padding: 10px; background: #f8f9fa; border-left: 3px solid #252a53; margin: 20px auto; max-width: 300px;">
-              <p style="font-size: 12px; margin: 0; color: #252a53;">
-                Tip: You can also click directly on any region in the map
-              </p>
-            </div>
-          </div>
-        `;
+        instructionsDiv.style.display = 'none';
+        messageDiv.style.display = 'block';
 
         setTimeout(() => {
-          instructionsDiv.innerHTML = originalContent;
+          messageDiv.style.display = 'none';
+          instructionsDiv.style.display = '';
         }, 3000);
       },
 
@@ -1152,10 +1147,8 @@
         this.showLoading(regionSelect);
 
         if (selectedCountry && appData.regionData[selectedCountry]) {
-          const regions = appData.regionData[selectedCountry];
+          const regions = [...appData.regionData[selectedCountry]].sort((a, b) => a[1].localeCompare(b[1]));
           let options = '<option value="">Select Region</option>';
-
-          regions.sort((a, b) => a[1].localeCompare(b[1]));
 
           regions.forEach(([code, name]) => {
             options += `<option value="${code}">${name}</option>`;
@@ -1192,20 +1185,6 @@
 
           document.getElementById('region-title').textContent = `${region}, ${country}`;
           selectRegion(regionSelect.value, config.mapDataUrl);
-
-          const currentActiveTab = document.querySelector('.tab-button.active');
-          if (currentActiveTab) {
-            const activeTabId = currentActiveTab.getAttribute('data-tab');
-
-            if (activeTabId === 'tab1' && isPolicyLoaded()) {
-              loadPoliciesForRegion(regionSelect.value);
-            } else if (activeTabId === 'tab2') {
-              loadRegionalDevelopmentData(regionSelect.value, appData);
-            } else if (activeTabId === 'tab3') {
-              loadMigrationData(regionSelect.value, appData);
-              showMigrationSections();
-            }
-          }
 
           if (isPolicyLoaded()) {
             loadPoliciesForRegion(regionSelect.value);
@@ -1320,7 +1299,7 @@
         this.searchRegionAcrossCountries(regionId, regionName, countrySelect, regionSelect);
       },
 
-      async searchRegionAcrossCountries(regionId, regionName, countrySelect, regionSelect) {
+      searchRegionAcrossCountries(regionId, regionName, countrySelect, regionSelect) {
         this.showRegionSearchLoading(true);
 
         const originalCountry = countrySelect.value;
@@ -1334,12 +1313,12 @@
             countrySelect.value = countryCode;
             this.handleCountryChange();
 
-            setTimeout(() => {
+            requestAnimationFrame(() => {
               regionSelect.value = regionId;
               this.showRegionSearchLoading(false);
               this.handleRegionChange();
               state.isProgrammaticSelection = false;
-            }, 100);
+            });
             return;
           }
         }
@@ -1440,10 +1419,8 @@
     // Expose on window for inline HTML handlers (onchange, onclick)
     window.RegionalApp = RegionalApp;
 
-    document.addEventListener('DOMContentLoaded', function() {
-      RegionalApp.init();
-      migrationUpdateYear();
-    });
+    RegionalApp.init();
+    migrationUpdateYear();
   </script>
 
 </html>
