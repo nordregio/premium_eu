@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
 
     <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png" />
+    <link rel="stylesheet" href="css/layout.css">
 
     <style>
 
@@ -25,117 +26,8 @@
        flex-direction: column;
      }
 
-     .footer {
-       display: grid;
-       grid-template-columns: repeat(4, 1fr);
-       gap: 1.25rem;
-       padding: 1.25rem;
-       color: #252a53;
-       text-align: left;
-       font-size: 0.625rem;
-       background-color: #252a53;
-       margin-top: auto;
-     }
-
-      .footer-column {
-      padding: 0rem 0.625rem 0rem 0.625rem;
-      }
-
-      footer h1 {
-      font-size: 0.625rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: white;
-      }
-
-      footer h2 {
-      font-size: 0.5625rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-      color: white;
-      }
-
-      footer p {
-      margin-bottom: 0.375rem;
-      font-size: 0.625rem;
-      color: white;
-      }
-
-      footer a {
-      color: white;
-      text-decoration: none;
-      }
-
-      footer a:hover {
-      text-decoration: underline;
-      }
-
-      @media (max-width: 1600px) {
       .footer {
-      font-size: 0.5rem;
-      }
-
-      footer h1 {
-      font-size: 0.5rem;
-      }
-
-      footer h2 {
-      font-size: 0.45rem;
-      }
-
-      footer p {
-      font-size: 0.5rem;
-      }
-      }
-
-      @media (min-width: 2400px) {
-      .footer {
-      font-size: 0.8rem;
-      }
-
-      footer h1 {
-      font-size: 0.8rem;
-      }
-
-      footer h2 {
-      font-size: 0.7rem;
-      }
-
-      footer p {
-      font-size: 0.8rem;
-      }
-      }
-
-      @media (max-width: 1200px) {
-      .footer {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.8rem;
-      }
-      }
-
-      @media (max-width: 768px) {
-      .footer {
-      grid-template-columns: 1fr;
-      font-size: 0.6rem;
-      }
-
-      .footer-column p {
-      width: auto !important;
-      }
-      }
-
-      .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: white;
-      position: fixed;
-      width: 100%;
-      height: 80px;
-      top: 0;
-      left: 0;
-      z-index: 1001;
-      padding: 20px 40px;
+      margin-top: auto;
       }
 
       .main-content {
@@ -547,30 +439,7 @@
 
   <body>
 
-    <div class="header">
-      <div>
-        <a href="index.html">
-          <img src="img/PREMIUM_logos/PNG/PREMIUM_EU_Logo_Stack_Payoff_BLUE.png" class="h-12">
-        </a>
-      </div>
-      <div style="font-family: 'Montserrat', sans-serif; font-size: 14px">
-        <button type="button"
-                onclick="window.location.href='index.html';"
-                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
-          HOME
-        </button>
-        <button type="button"
-                onclick="window.location.href='about.html';"
-                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
-          ABOUT
-        </button>
-        <button type="button"
-                onclick="window.open('https://premium-eu.org/', '_blank')"
-                class="text-black font-medium rounded-lg px-5 py-2.5 me-2 mb-2">
-          PROJECT PAGE
-        </button>
-      </div>
-    </div>
+    <div id="header-root"></div>
 
     <div class="main-content">
       <div class="region-tabs">
@@ -700,38 +569,7 @@
       </div>
     </div>
 
-    <footer class="footer">
-      <div class="footer-column">
-        <img src="img/eu_logo.png" class="h-10">
-        <br>
-        <p style="width: 260px; color: white;">PREMIUM_EU was made possible thanks to funding from the European Union's Horizon Europe programme.</p>
-      </div>
-      <div class="footer-column"></div>
-      <div class="footer-column">
-        <h1> _Site map </h1>
-        <p><a href="index.html">Homepage</a></p>
-        <p><a href="about.html">About</a></p>
-        <p><a href="methodology.html">Methodology</a></p>
-        <p><a href="regional.html">Regional profiles</a></p>
-        <p><a href="development.html">Europe's Regions</a></p>
-        <p><a href="migration.html">Migration Trends</a></p>
-      </div>
-      <div class="footer-column">
-        <h1> _Contacts </h1>
-        <h2> Lead project manager: </h2>
-        <p>
-          Leo van Wissen <br>
-          wissen@nidi.nl <br>
-          Netherlands Interdisciplinary Demographic Institute
-        </p>
-        <h2> Communications: </h2>
-        <p>
-          Anne Katrine Ebbesen <br>
-          anne-katrine.ebbesen@nordregio.org <br>
-          Nordregio
-        </p>
-      </div>
-    </footer>
+    <div id="footer-root"></div>
 
     <script>
      let PERSPECTIVES_DATA = [];
@@ -1191,6 +1029,12 @@
        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
        event.target.classList.add('active');
      }
+    </script>
+
+    <script type="module">
+      import { renderHeader, renderFooter } from './js/shared/layout.js';
+      renderHeader('migration');
+      renderFooter();
     </script>
   </body>
 </html>
