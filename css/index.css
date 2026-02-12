@@ -14,10 +14,10 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-image: url('../img/PREMIUM_icons/PNG/PREMIUM_EU_Illustration_Brain-graphics_01_RED.png');
-  background-size: 48% 20%;
-  background-repeat: no-repeat;
-  background-position: left bottom;
+  /* background-image: url('../img/PREMIUM_icons/PNG/PREMIUM_EU_Illustration_Brain-graphics_01_RED.png'); */
+  /* background-size: 48% 20%; */
+  /* background-repeat: no-repeat; */
+  /* background-position: left bottom; */
 }
 
 .main-content {
