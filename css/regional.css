@@ -250,16 +250,100 @@ body {
 
 .migration_projections_controls {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
   width: 100%;
 }
 
-.migration_projections_control-group {
-  flex: 1 1 200px;
+.migration-breakby label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #666;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.migration-breakby-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.migration-breakby-btn {
+  background: #eee;
+  border: 1px solid #252a53;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 11px;
+  color: #252a53;
+  font-family: 'Montserrat', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.migration-breakby-btn.active {
+  background: #252a53;
+  color: white;
+  font-weight: 600;
+}
+
+.migration-multiselect {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.migration-multiselect label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #666;
+  margin-right: 4px;
+}
+
+.migration-toggle-btn {
+  padding: 6px 12px;
+  border: 1px solid #252a53;
+  background: #eee;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: 'Montserrat', sans-serif;
+  color: #252a53;
+  transition: all 0.2s ease;
+}
+
+.migration-toggle-btn.active {
+  color: white;
+  font-weight: 600;
+}
+
+.migration-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.migration-filter-group {
+  flex: 1 1 140px;
   display: flex;
   flex-direction: column;
+}
+
+.migration-filter-group label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.migration-filter-group select {
+  appearance: none;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-family: 'Montserrat', sans-serif;
+  color: #252a53;
+  cursor: pointer;
 }
 
 .migration-projection,

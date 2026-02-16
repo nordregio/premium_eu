@@ -15,6 +15,8 @@
     <script src="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl@3.0.0/dist/maplibre-gl.css" rel="stylesheet" />
 
+    <script src="https://cdn.plot.ly/plotly-2.35.0.min.js" charset="utf-8"></script>
+
     <link rel="icon" type="image/png" href="img/PREMIUM_icons/PNG/favicon.png" />
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/regional.css">
@@ -296,38 +298,17 @@
             <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Net migration projection</p>
 
             <div class="migration_projections_controls">
-              <div class="migration_projections_control-group">
-                <label for="age">Age</label>
-                <select id="age" name="age">
-                  <option value="total">Total</option>
-
-                  <option value="0-19">0-19</option>
-                  <option value="20–39">20–39</option>
-                  <option value="40–64">40–64</option>
-                  <option value="65+">65+</option>
-
-                </select>
+              <div class="migration-breakby">
+                <label>Compare by</label>
+                <div class="migration-breakby-buttons">
+                  <button class="migration-breakby-btn active" data-dim="age">Age</button>
+                  <button class="migration-breakby-btn" data-dim="sex">Gender</button>
+                  <button class="migration-breakby-btn" data-dim="educ">Education</button>
+                  <button class="migration-breakby-btn" data-dim="none">None</button>
+                </div>
               </div>
-              <div class="migration_projections_control-group">
-                <label for="gender">Gender</label>
-                <select id="gender" name="gender">
-                  <option value="total">Total</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>
-              </div>
-              <div class="migration_projections_control-group">
-                <label for="education">Education</label>
-                <select id="education" name="education">
-                  <option value="total">Total</option>
-
-                  <option value="Low">Low</option>
-                  <option value="Middle">Middle</option>
-                  <option value="High">High</option>
-
-
-                </select>
-              </div>
+              <div id="migration-multiselect" class="migration-multiselect"></div>
+              <div id="migration-filters" class="migration-filters"></div>
             </div>
 
             <div class="plot-container">
@@ -386,7 +367,7 @@
     import { initializeMap, selectRegion, clearSelection } from './js/regional/mapHandler.js';
     import { initializePolicyData, loadPoliciesForRegion, closePolicyModal, clearPolicyDisplay, isPolicyLoaded } from './js/regional/policyManager.js';
     import { loadRegionalDevelopmentData } from './js/regional/developmentDisplay.js';
-    import { loadMigrationData, loadMigrationProjection, loadMigrationPyramid, showMigrationSections, hideMigrationSections, updateYear as migrationUpdateYear, updatePyramid as migrationUpdatePyramid } from './js/regional/migrationDisplay.js';
+    import { loadMigrationData, loadMigrationProjection, loadMigrationPyramid, showMigrationSections, hideMigrationSections, updateYear as migrationUpdateYear, updatePyramid as migrationUpdatePyramid, initMigrationControls } from './js/regional/migrationDisplay.js';
 
     renderHeader('regional');
     renderFooter();
@@ -431,9 +412,7 @@
 
         document.getElementById('start-over-btn').addEventListener('click', this.handleStartOver.bind(this));
 
-        document.getElementById('age').addEventListener('change', this.handleMigrationControlChange.bind(this));
-        document.getElementById('gender').addEventListener('change', this.handleMigrationControlChange.bind(this));
-        document.getElementById('education').addEventListener('change', this.handleMigrationControlChange.bind(this));
+        initMigrationControls();
         document.getElementById('yearSlider').addEventListener('input', () => migrationUpdateYear());
         document.getElementById('yearSlider').addEventListener('change', this.handleYearSliderChange.bind(this));
 
@@ -557,13 +536,6 @@
           this.saveSessionState(countrySelect.value, regionSelect.value);
         } else {
           this.clearRegionSelection();
-        }
-      },
-
-      handleMigrationControlChange() {
-        const regionSelect = document.getElementById('regions');
-        if (regionSelect.value) {
-          loadMigrationProjection(regionSelect.value);
         }
       },
 
