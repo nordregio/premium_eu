@@ -26,6 +26,25 @@ const LINE_COLORS = {
   'total':    '#C97F55'
 };
 
+// --- No-data placeholder ---
+function noDataHTML() {
+  return `
+    <div style="display:flex;align-items:center;justify-content:center;
+                height:200px;text-align:center;">
+      <div style="font-size:12px;color:#bbb;">No data for this region</div>
+    </div>`;
+}
+
+function setProjectionHasData(hasData) {
+  const controls = document.querySelector('.migration_projections_controls');
+  if (controls) controls.style.display = hasData ? '' : 'none';
+}
+
+function setPyramidHasData(hasData) {
+  const slider = document.querySelector('.slider-container');
+  if (slider) slider.style.display = hasData ? '' : 'none';
+}
+
 // --- Existing functions (unchanged) ---
 
 export function loadMigrationData(regionCode, data) {
@@ -45,7 +64,8 @@ export function loadMigrationTags(regionCode, tagData) {
   const tags = tagData[regionCode];
 
   if (!tags) {
-    container.innerHTML = '<p>No data available.</p>';
+    container.innerHTML = '';
+    document.getElementById('migration_type_description').innerHTML = '';
     return;
   }
 
@@ -89,19 +109,24 @@ export function loadMigrationPyramid(regionCode) {
   const year = document.getElementById('yearSlider').value;
   const pyramidPath = `plots/regional-pyramids/${regionCode}_${year}.html`;
 
+  // Clear immediately while loading
+  document.getElementById('pyramid-content').innerHTML = '';
+  setPyramidHasData(false);
+
   fetch(pyramidPath)
     .then(response => {
       if (response.ok) {
+        setPyramidHasData(true);
         document.getElementById('pyramid-content').innerHTML =
           `<iframe src="${pyramidPath}" width="100%" height="340" frameborder="0"></iframe>`;
       } else {
-        document.getElementById('pyramid-content').innerHTML =
-          `<div style="text-align: center; padding: 20px; color: #666;"><p>No data for ${year}</p></div>`;
+        setPyramidHasData(false);
+        document.getElementById('pyramid-content').innerHTML = noDataHTML();
       }
     })
     .catch(() => {
-      document.getElementById('pyramid-content').innerHTML =
-        `<div style="text-align: center; padding: 20px; color: #fff;"><p>Population pyramid not available for ${regionCode} in ${year}</p></div>`;
+      setPyramidHasData(false);
+      document.getElementById('pyramid-content').innerHTML = noDataHTML();
     });
 }
 
@@ -152,21 +177,27 @@ export function initMigrationControls() {
 
 export async function loadMigrationProjection(regionCode) {
   migrationState.regionCode = regionCode;
+  migrationState.data = null;
 
   // Reset state for new region
   migrationState.breakdownDim = 'age';
   migrationState.selectedValues = [...DIMENSIONS.age.values];
   migrationState.filters = { age: 'total', sex: 'total', educ: 'total' };
 
+  // Clear immediately while loading
+  document.getElementById('plot-content').innerHTML = '';
+  setProjectionHasData(false);
+
   try {
     const response = await fetch(`data/migration_projections/regions/${regionCode}.json`);
     if (!response.ok) throw new Error('No data');
     migrationState.data = await response.json();
+    setProjectionHasData(true);
     renderControls();
     renderProjectionChart();
   } catch (e) {
-    document.getElementById('plot-content').innerHTML =
-      '<div style="text-align:center;padding:20px;color:#666;"><p>No projection data available</p></div>';
+    setProjectionHasData(false);
+    document.getElementById('plot-content').innerHTML = noDataHTML();
   }
 }
 
@@ -281,7 +312,7 @@ function renderProjectionChart() {
   const plotDiv = document.getElementById('plot-content');
 
   if (!migrationState.data) {
-    plotDiv.innerHTML = '<div style="text-align:center;padding:20px;color:#666;"><p>No data</p></div>';
+    plotDiv.innerHTML = noDataHTML();
     return;
   }
 
