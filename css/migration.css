@@ -80,10 +80,11 @@ body {
 .perspectives-sidebar {
   width: 340px;
   background: white;
-  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
   overflow-y: auto;
   padding: 20px;
   flex-shrink: 0;
+  order: -1;
 }
 
 .instructions-panel {
