@@ -105,29 +105,118 @@ export function loadMigrationTypeDescription(regionCode, descData) {
   container.innerHTML = html;
 }
 
-export function loadMigrationPyramid(regionCode) {
-  const year = document.getElementById('yearSlider').value;
-  const pyramidPath = `plots/regional-pyramids/${regionCode}_${year}.html`;
+// --- Pyramid state ---
+let pyramidData = null;
+let pyramidRegionCode = null;
 
-  // Clear immediately while loading
+const AGE_ORDER = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85];
+
+export async function loadMigrationPyramid(regionCode) {
+  // Clear immediately
   document.getElementById('pyramid-content').innerHTML = '';
   setPyramidHasData(false);
 
-  fetch(pyramidPath)
-    .then(response => {
-      if (response.ok) {
-        setPyramidHasData(true);
-        document.getElementById('pyramid-content').innerHTML =
-          `<iframe src="${pyramidPath}" width="100%" height="340" frameborder="0"></iframe>`;
-      } else {
-        setPyramidHasData(false);
-        document.getElementById('pyramid-content').innerHTML = noDataHTML();
-      }
-    })
-    .catch(() => {
-      setPyramidHasData(false);
-      document.getElementById('pyramid-content').innerHTML = noDataHTML();
-    });
+  // Only re-fetch if region changed
+  if (regionCode !== pyramidRegionCode) {
+    pyramidRegionCode = regionCode;
+    pyramidData = null;
+    try {
+      const response = await fetch(`data/migration_projections/pyramid_regions/${regionCode}.json`);
+      if (!response.ok) throw new Error('No data');
+      pyramidData = await response.json();
+    } catch (e) {
+      pyramidData = null;
+    }
+  }
+
+  if (!pyramidData) {
+    document.getElementById('pyramid-content').innerHTML = noDataHTML();
+    return;
+  }
+
+  setPyramidHasData(true);
+  renderPyramidChart();
+}
+
+function renderPyramidChart() {
+  const plotDiv = document.getElementById('pyramid-content');
+  const year = parseInt(document.getElementById('yearSlider').value);
+
+  const yearData = pyramidData.filter(r => r.y === year);
+  if (yearData.length === 0) {
+    plotDiv.innerHTML = noDataHTML();
+    setPyramidHasData(false);
+    return;
+  }
+
+  // Build maps for male/female by age
+  const maleMap = {};
+  const femaleMap = {};
+  yearData.forEach(r => {
+    if (r.s === 'Male') maleMap[r.a] = r.v;
+    else femaleMap[r.a] = r.v;
+  });
+
+  const labels = AGE_ORDER.map(a => a >= 85 ? '85+' : `${a}-${a + 4}`);
+  const maleVals = AGE_ORDER.map(a => maleMap[a] || 0);
+  const femaleVals = AGE_ORDER.map(a => femaleMap[a] || 0);
+
+  const maxVal = Math.max(...maleVals, ...femaleVals);
+  const tickMax = Math.ceil(maxVal / 1000) * 1000;
+  const tickStep = Math.max(1000, Math.round(tickMax / 4 / 500) * 500);
+
+  const tickVals = [];
+  for (let t = -tickMax; t <= tickMax; t += tickStep) {
+    tickVals.push(t);
+  }
+
+  const traces = [
+    {
+      y: labels,
+      x: maleVals.map(v => -v),
+      name: 'Male',
+      type: 'bar',
+      orientation: 'h',
+      marker: { color: '#5B8DBE' },
+      customdata: maleVals,
+      hovertemplate: 'Age: %{y}<br>Population: %{customdata:,.0f}<extra>Male</extra>'
+    },
+    {
+      y: labels,
+      x: femaleVals,
+      name: 'Female',
+      type: 'bar',
+      orientation: 'h',
+      marker: { color: '#C97F55' },
+      hovertemplate: 'Age: %{y}<br>Population: %{x:,.0f}<extra>Female</extra>'
+    }
+  ];
+
+  const layout = {
+    barmode: 'relative',
+    bargap: 0.1,
+    bargroupgap: 0,
+    xaxis: {
+      title: 'Population',
+      tickvals: tickVals,
+      ticktext: tickVals.map(v => Math.abs(v).toLocaleString()),
+      gridcolor: '#f0f0f0'
+    },
+    yaxis: {
+      title: 'Age group',
+      categoryorder: 'array',
+      categoryarray: labels
+    },
+    legend: { x: 0.01, y: 0.95, font: { size: 10 } },
+    margin: { l: 50, r: 10, t: 10, b: 40 },
+    height: 340,
+    font: { family: 'Montserrat, sans-serif', size: 10, color: '#252a53' },
+    plot_bgcolor: 'white',
+    paper_bgcolor: 'white',
+    hovermode: 'closest'
+  };
+
+  Plotly.newPlot(plotDiv, traces, layout, { responsive: true, displayModeBar: false });
 }
 
 export function showMigrationSections() {
