@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" style="scroll-behavior: smooth;">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,7 +33,7 @@
           </div>
 
           <div class="content-section">
-            <h3>Regional Development Indicators</h3>
+            <h3 id="regional-development">Regional Development Indicators</h3>
             <p style="font-family: 'Montserrat', sans-serif;">
               Regional development data were collected from authoritative sources including <strong>Eurostat and the OECD</strong>. Indicators are organized into three categories: <strong>economic</strong> (including GDP per capita), <strong>social</strong> (such as hospital beds per 1,000 people), and <strong>living environment</strong> (including air pollution). Each region receives a score from 0 to 1 for each indicator, with the highest-performing region scoring 1 and the lowest scoring 0.
             </p>
@@ -43,7 +43,7 @@
           </div>
 
           <div class="content-section">
-            <h3>Population Estimates and Projections</h3>
+            <h3 id="population-projections">Population Estimates and Projections</h3>
             <p style="font-family: 'Montserrat', sans-serif;">
               Population data are constructed by integrating multiple data sources to capture the distribution of populations by age, gender, education level, and region. We combined <strong>population estimates for 2010, 2015, and 2020 from Eurostat</strong> (by NUTS3 region, age, and gender) with <strong>national population estimates from the Wittgenstein Centre Human Capital Data Explorer (WIC)</strong> (by age, gender, and education level). Since Eurostat data do not include regional variation in education levels, we developed a predictive model that estimates regional shares of low, middle, and high education based on economic, social, and environmental indicators from our Regional Development Module.
             </p>
@@ -54,7 +54,7 @@
           </div>
 
           <div class="content-section">
-            <h3>Net Migration Estimates</h3>
+            <h3 id="net-migration">Net Migration Estimates</h3>
             <p style="font-family: 'Montserrat', sans-serif;">
               Net migration is estimated using the population balancing equation, which accounts for changes in both internal and international migration flows. For historical periods (2010–2015 and 2015–2020), net migration is calculated as:
             </p>
@@ -67,7 +67,7 @@
           </div>
 
           <div class="content-section">
-            <h3>Migration Flows</h3>
+            <h3 id="migration-flows">Migration Flows</h3>
             <p style="font-family: 'Montserrat', sans-serif;">
               Migration flow data are derived from the <strong>Human Migration Database (HMigD)</strong>, developed at the Max Planck Institute for Demographic Research and partially supported by PREMIUM_EU. The HMigD combines bilateral flow data from <strong>Eurostat, the UN, and National Statistical Institutes</strong> with information from the <strong>EU Labour Force Survey</strong> and online-based migration estimates. Since these sources differ in definitions, coverage, and data quality, they are integrated using a <strong>hierarchical Bayesian model</strong> that corrects for undercounting, duration-of-stay rules, and other measurement issues. The model predicts missing corridors and captures sudden changes in migration patterns.
             </p>
@@ -77,7 +77,7 @@
           </div>
 
           <div class="content-section">
-            <h3>Policy Data Collection</h3>
+            <h3 id="policy-data">Policy Data Collection</h3>
             <p style="font-family: 'Montserrat', sans-serif;">
               Policy data were collected using both <strong>automated and manual methods</strong> to ensure comprehensive coverage of relevant policy initiatives across Europe. Following Knoepfel (2011), we define policies as "a connection of intentionally consistent decisions and activities taken from different public actors, and sometimes private ones, in order to solve in a targeted way a problem which, politically, is defined as collective."
             </p>
@@ -90,7 +90,7 @@
           </div>
 
           <div class="content-section">
-            <h3>Integration Index</h3>
+            <h3 id="integration-index">Integration Index</h3>
             <p style="font-family: 'Montserrat', sans-serif;">
               The Integration Index provides a comprehensive measure of how well <strong>first- and second-generation migrants</strong> are integrated across European regions. The index is based on responses to selected questionnaires from the <strong>European Social Survey (ESS)</strong>, collected at different time points depending on when specific modules were fielded in each country.
             </p>
