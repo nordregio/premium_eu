@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Migration - PREMIUM_EU</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Lora&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
@@ -23,10 +22,10 @@
 
     <div class="main-content">
       <div class="region-tabs">
-        <button class="tab-button active" onclick="switchTab('content-tab4')">Population flows</button>
-        <button class="tab-button" onclick="switchTab('content-tab1')">Projections</button>
-        <button class="tab-button" onclick="switchTab('content-tab2')">Perspectives</button>
-        <button class="tab-button" onclick="switchTab('content-tab3')">Integration</button>
+        <button class="tab-button active" onclick="switchTab('content-tab4', this)">Population flows</button>
+        <button class="tab-button" onclick="switchTab('content-tab1', this)">Projections</button>
+        <button class="tab-button" onclick="switchTab('content-tab2', this)">Perspectives</button>
+        <button class="tab-button" onclick="switchTab('content-tab3', this)">Integration</button>
       </div>
 
       <!-- Projections -->
@@ -153,6 +152,11 @@
 
     <script type="module">
      import { parseCSVLine, parseArrayField } from './js/shared/csvParser.js';
+
+     function escapeHTML(str) {
+       if (!str) return '';
+       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+     }
 
      let PERSPECTIVES_DATA = [];
      let selectedMainTopics = [];
@@ -456,7 +460,7 @@
        card.onclick = () => openQuoteModal(perspective);
 
        const tagsHtml = perspective.topic_additional.map(tag =>
-         `<span class="quote-card-tag">${tag}</span>`
+         `<span class="quote-card-tag">${escapeHTML(tag)}</span>`
        ).join('');
 
        const truncatedQuote = perspective.quote.length > 200
@@ -465,7 +469,7 @@
 
        card.innerHTML = `
          <div class="quote-card-tags">${tagsHtml}</div>
-         <div class="quote-card-content">"${truncatedQuote}"</div>
+         <div class="quote-card-content">"${escapeHTML(truncatedQuote)}"</div>
        `;
 
        return card;
@@ -485,31 +489,31 @@
        meta.innerHTML = `
          <div class="quote-modal-meta-item">
            <span class="quote-modal-meta-label">Main topic:</span>
-           ${perspective.topic_main.join(', ')}
+           ${perspective.topic_main.map(escapeHTML).join(', ')}
          </div>
          <div class="quote-modal-meta-item">
            <span class="quote-modal-meta-label">Sub-topic:</span>
-           ${perspective.topic_additional.join(', ')}
+           ${perspective.topic_additional.map(escapeHTML).join(', ')}
          </div>
          <div class="quote-modal-meta-item">
            <span class="quote-modal-meta-label">Gender:</span>
-           ${perspective.gender}
+           ${escapeHTML(perspective.gender)}
          </div>
          <div class="quote-modal-meta-item">
            <span class="quote-modal-meta-label">Age group:</span>
-           ${perspective.age_group}
+           ${escapeHTML(perspective.age_group)}
          </div>
          <div class="quote-modal-meta-item">
            <span class="quote-modal-meta-label">Migration type:</span>
-           ${perspective.migration_type}
+           ${escapeHTML(perspective.migration_type)}
          </div>
          <div class="quote-modal-meta-item">
            <span class="quote-modal-meta-label">Country of birth:</span>
-           ${perspective.birth_location}
+           ${escapeHTML(perspective.birth_location)}
          </div>
          <div class="quote-modal-meta-item">
            <span class="quote-modal-meta-label">Interview location:</span>
-           ${perspective.interview_location}
+           ${escapeHTML(perspective.interview_location)}
          </div>
        `;
 
@@ -557,7 +561,7 @@
 
      // Tab switching function with lazy loading
      window.switchTab = switchTab;
-     function switchTab(tabId) {
+     function switchTab(tabId, clickedBtn) {
        // Hide all tab content
        document.querySelectorAll('.tab-content').forEach(tab => {
          tab.classList.add('hidden');
@@ -580,7 +584,7 @@
 
        // Update active button state
        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-       event.target.classList.add('active');
+       if (clickedBtn) clickedBtn.classList.add('active');
      }
     </script>
 

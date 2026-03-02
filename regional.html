@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regional - PREMIUM_EU</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Lora&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -158,10 +157,10 @@
 
               <ol style="margin-left: 20px; margin-bottom: 14px; line-height: 1.7; font-size: 14px; color: #333;">
                 <li style="margin-bottom: 6px;">
-                  1. AI-scraped and summarised from public sources
+                  AI-scraped and summarised from public sources
                 </li>
                 <li style="margin-bottom: 6px;">
-                  2. Verified by the PREMIUM_EU research team
+                  Verified by the PREMIUM_EU research team
                 </li>
               </ol>
               <div style="background: #f8f9fa; border-left: 3px solid #ccc; padding: 10px 14px; margin-top: 14px; border-radius: 2px;">
@@ -341,9 +340,7 @@
 
     <div id="footer-root"></div>
 
-  </body>
-
-  <script type="module">
+    <script type="module">
     import { renderHeader, renderFooter } from './js/shared/layout.js';
     import { loadAllData } from './js/regional/dataLoader.js';
     import { initializeMap, selectRegion, clearSelection } from './js/regional/mapHandler.js';
@@ -736,5 +733,5 @@
     RegionalApp.init();
     migrationUpdateYear();
   </script>
-
+  </body>
 </html>

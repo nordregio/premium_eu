@@ -3,6 +3,7 @@ import { parseCSVLine, parseArrayField } from '../shared/csvParser.js';
 async function loadPolicyData() {
   try {
     const response = await fetch('data/regional_policies/policies.csv');
+    if (!response.ok) throw new Error(`Failed to load policies.csv (${response.status})`);
     const csvText = await response.text();
 
     const lines = csvText.trim().split('\n');
@@ -40,27 +41,24 @@ async function loadPolicyData() {
 
 export async function loadAllData() {
   try {
-    const [
-      regionResponse,
-      devTagsResponse,
-      migTagsResponse,
-      scoresResponse,
-      trendsResponse,
-      strengthsResponse,
-      comparisonsResponse,
-      typeDescResponse,
-      regionGroupsResponse
-    ] = await Promise.all([
-      fetch('data/regions.json'),
-      fetch('data/development_tags.json'),
-      fetch('data/migration_tags.json'),
-      fetch('data/region_scores.json'),
-      fetch('data/region_trends.json'),
-      fetch('data/strengths_weaknesses.json'),
-      fetch('data/national_comparisons.json'),
-      fetch('data/migration_type_descriptions.json'),
-      fetch('data/regional_groups.json')
-    ]);
+    const urls = [
+      'data/regions.json',
+      'data/development_tags.json',
+      'data/migration_tags.json',
+      'data/region_scores.json',
+      'data/region_trends.json',
+      'data/strengths_weaknesses.json',
+      'data/national_comparisons.json',
+      'data/migration_type_descriptions.json',
+      'data/regional_groups.json'
+    ];
+
+    const responses = await Promise.all(urls.map(url => fetch(url)));
+
+    const failed = responses.filter(r => !r.ok);
+    if (failed.length > 0) {
+      throw new Error(`Failed to load: ${failed.map(r => `${r.url} (${r.status})`).join(', ')}`);
+    }
 
     const [
       regionData,
@@ -72,17 +70,7 @@ export async function loadAllData() {
       nationalComparisonsData,
       typeDescriptionData,
       regionGroups
-    ] = await Promise.all([
-      regionResponse.json(),
-      devTagsResponse.json(),
-      migTagsResponse.json(),
-      scoresResponse.json(),
-      trendsResponse.json(),
-      strengthsResponse.json(),
-      comparisonsResponse.json(),
-      typeDescResponse.json(),
-      regionGroupsResponse.json()
-    ]);
+    ] = await Promise.all(responses.map(r => r.json()));
 
     const policyData = await loadPolicyData();
 

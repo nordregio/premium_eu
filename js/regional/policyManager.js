@@ -1,3 +1,8 @@
+function escapeHTML(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
 const state = {
   selectedTags: [],
   selectedScopes: [],
@@ -233,14 +238,14 @@ export function createPolicyCard(policy, index) {
   card.onclick = () => openPolicyModal(policy);
 
   const policyTagsHtml = policy.policy_tags.map(tag =>
-    `<span class="policy-card-tag">${tag}</span>`
+    `<span class="policy-card-tag">${escapeHTML(tag)}</span>`
   ).join('');
 
   const scopeTagHtml = policy.scope ?
-    `<span class="policy-card-tag" style="background: #4a90a4;">${policy.scope}</span>` : '';
+    `<span class="policy-card-tag" style="background: #4a90a4;">${escapeHTML(policy.scope)}</span>` : '';
 
   const originTagHtml = policy.origin ?
-    `<span class="policy-card-tag" style="background: #ac5737;">${policy.origin}</span>` : '';
+    `<span class="policy-card-tag" style="background: #ac5737;">${escapeHTML(policy.origin)}</span>` : '';
 
   card.innerHTML = `
     <div class="policy-card-tags">
@@ -248,7 +253,7 @@ export function createPolicyCard(policy, index) {
       ${scopeTagHtml}
       ${originTagHtml}
     </div>
-    <div class="policy-card-summary">${policy.policy_summary}</div>
+    <div class="policy-card-summary">${escapeHTML(policy.policy_summary)}</div>
   `;
 
   return card;
@@ -267,23 +272,26 @@ export function openPolicyModal(policy) {
   meta.innerHTML = `
     <div class="policy-modal-meta-item">
       <span class="policy-modal-meta-label">Policy tags:</span>
-      ${policy.policy_tags.join(', ')}
+      ${policy.policy_tags.map(escapeHTML).join(', ')}
     </div>
     <div class="policy-modal-meta-item">
       <span class="policy-modal-meta-label">Policy origin region:</span>
-      ${policy.region_origin.join(', ')}
+      ${policy.region_origin.map(escapeHTML).join(', ')}
     </div>
     <div class="policy-modal-meta-item">
       <span class="policy-modal-meta-label">Scope:</span>
-      ${policy.scope}
+      ${escapeHTML(policy.scope)}
     </div>
     <div class="policy-modal-meta-item">
       <span class="policy-modal-meta-label">Origin:</span>
-      ${policy.origin}
+      ${escapeHTML(policy.origin)}
     </div>
   `;
 
-  link.href = policy.links;
+  const safeUrl = policy.links && (policy.links.startsWith('http://') || policy.links.startsWith('https://'))
+    ? policy.links : '#';
+  link.href = safeUrl;
+  link.style.display = safeUrl === '#' ? 'none' : '';
   modal.style.display = 'block';
 }
 
