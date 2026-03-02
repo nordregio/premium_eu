@@ -22,9 +22,9 @@
 
     <div class="main-content">
       <div class="region-tabs">
-        <button class="tab-button active" onclick="switchTab('content-tab4', this)">Population flows</button>
+        <button class="tab-button active" onclick="switchTab('content-tab2', this)">Perspectives</button>
+        <button class="tab-button" onclick="switchTab('content-tab4', this)">Population flows</button>
         <button class="tab-button" onclick="switchTab('content-tab1', this)">Projections</button>
-        <button class="tab-button" onclick="switchTab('content-tab2', this)">Perspectives</button>
         <button class="tab-button" onclick="switchTab('content-tab3', this)">Integration</button>
       </div>
 
@@ -38,7 +38,7 @@
       </div>
 
       <!-- Perspectives -->
-      <div id="content-tab2" class="tab-content hidden">
+      <div id="content-tab2" class="tab-content">
         <div class="perspectives-main">
           <div class="perspectives-filters">
             <div class="filter-section">
@@ -126,7 +126,7 @@
       </div>
 
       <!-- Flows -->
-      <div id="content-tab4" class="tab-content">
+      <div id="content-tab4" class="tab-content hidden">
         <iframe
           id="iframe-flows"
           data-src="migration_flows.html"
@@ -174,8 +174,6 @@
      document.addEventListener('DOMContentLoaded', function() {
        loadPerspectivesData();
        bindEvents();
-       // Load flows iframe on page load
-       loadIframeIfNeeded('iframe-flows');
      });
 
      async function loadPerspectivesData() {
