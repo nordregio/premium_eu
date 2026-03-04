@@ -72,6 +72,7 @@ export function renderFooter({ dark = false } = {}) {
         <p><a href="regional.html">Regional profiles</a></p>
         <p><a href="development.html">Europe's Regions</a></p>
         <p><a href="migration.html">Migration Trends</a></p>
+        <p><a href="community_inputs.html">Community Inputs</a></p>
       </div>
       <div class="footer-column">
         <h1> _Contacts </h1>

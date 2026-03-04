@@ -25,35 +25,6 @@
     <!-- Header Section -->
     <div id="header-root"></div>
 
-    <button onclick="openPopup()" id="feedback-button" class="corner-feedback">
-      💡 Add your input
-    </button>
-
-    <div id="popupOverlay" class="popup-overlay">
-      <div class="popup-content">
-        <button onclick="closePopup()" class="popup-close-btn">×</button>
-
-        <div class="popup-subtitle">
-          <br>
-          The Dashboard is a community knowledge hub where you can share your best practices, implemented policies from your region, and policy suggestions – to inspire others from regions like yours.
-          <br>
-          <br>
-          Help us expand the network of regions learning from each other while facing decline.
-        </div>
-
-        <iframe
-          src="https://forms.gle/NTSfnwofF92U8bxQ8"
-          class="form-iframe"
-          title="Policy input form">
-          Loading form...
-        </iframe>
-
-        <a href="https://forms.gle/NTSfnwofF92U8bxQ8" target="_blank" class="popup-option-button">
-          🔗 Open in new tab
-        </a>
-      </div>
-    </div>
-
     <!-- Main Content -->
     <div class="main-content">
       <!-- Left Panel -->
@@ -185,10 +156,10 @@
 
               <ol style="margin-left: 20px; margin-bottom: 14px; line-height: 1.7; font-size: 14px; color: #333;">
                 <li style="margin-bottom: 6px;">
-                  AI-scraped and summarised from public sources
+                  - AI-scraped and summarised from public sources
                 </li>
                 <li style="margin-bottom: 6px;">
-                  Verified by the PREMIUM_EU research team
+                  - Verified by the PREMIUM_EU research team
                 </li>
               </ol>
               <div style="background: #f8f9fa; border-left: 3px solid #ccc; padding: 10px 14px; margin-top: 14px; border-radius: 2px;">
@@ -196,6 +167,10 @@
                   <strong style="color: #777;">Disclaimer:</strong> AI can make mistakes. Policies come in many formats, from one-page local council decisions to large policy documents. We cannot guarantee that each policy found by AI is relevant to your case or that the summary on screen is completely accurate.
                 </p>
               </div>
+
+              <a href="community_inputs.html" target="_blank" style="display: block; margin-top: 14px; padding: 10px 14px; font-size: 12px; font-weight: 600; color: #252a53; background: #f0f1f5; border-left: 3px solid #ac5737; border-radius: 2px; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.background='#e8e9ef'" onmouseout="this.style.background='#f0f1f5'">
+                See policies shared by policymakers &#8594;
+              </a>
 
               <p style="font-size: 12px; margin-top: 14px; margin-bottom: 0;">
                 <a href="methodology.html#policy-data" target="_blank" style="color: #999; text-decoration: none; font-style: italic;" onmouseover="this.style.color='#ac5737'" onmouseout="this.style.color='#999'">
@@ -367,30 +342,6 @@
 
     <div id="footer-root"></div>
 
-    <script>
-      function openPopup() {
-        document.getElementById('popupOverlay').classList.add('active');
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closePopup() {
-        document.getElementById('popupOverlay').classList.remove('active');
-        document.body.style.overflow = 'auto';
-      }
-
-      document.getElementById('popupOverlay').addEventListener('click', function(e) {
-        if (e.target === this) {
-          closePopup();
-        }
-      });
-
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && document.getElementById('popupOverlay').classList.contains('active')) {
-          closePopup();
-        }
-      });
-    </script>
-
     <script type="module">
     import { renderHeader, renderFooter } from './js/shared/layout.js';
     import { loadAllData } from './js/regional/dataLoader.js';
@@ -484,14 +435,10 @@
 
         document.getElementById('default-instructions').classList.remove('active');
 
-        const feedbackBtn = document.getElementById('feedback-button');
         if (tabId === 'tab1') {
-          feedbackBtn.classList.add('visible');
           if (isPolicyLoaded()) {
             loadPoliciesForRegion(regionSelect.value);
           }
-        } else {
-          feedbackBtn.classList.remove('visible');
         }
 
         if (tabId === 'tab3') {
@@ -632,7 +579,6 @@
         clearPolicyDisplay();
         hideMigrationSections();
         this.hideExploreButton();
-        document.getElementById('feedback-button').classList.remove('visible');
         this.clearSessionState();
 
         const devIntro = document.getElementById('development-intro');

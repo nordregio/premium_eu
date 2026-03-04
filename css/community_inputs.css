@@ -1,0 +1,213 @@
+/* community_inputs.html styles */
+
+.content-section > p,
+.form-button-container p {
+  font-size: 0.9rem;
+}
+
+.input-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.input-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-color: #252a53;
+}
+
+.input-card-region {
+  font-family: 'Lora', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #252a53;
+  margin-bottom: 8px;
+}
+
+.input-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.input-card-tag {
+  background: #252a53;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.input-card-type {
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.input-card-type.best-practice {
+  color: #2e7d32;
+}
+
+.input-card-type.suggestion {
+  color: #ac5737;
+}
+
+.input-card-text {
+  font-size: 0.75rem;
+  line-height: 1.7;
+  color: #333;
+}
+
+.input-card-text p {
+  margin: 0 0 0.8rem 0;
+}
+
+.input-card-text p:last-child {
+  margin-bottom: 0;
+}
+
+.input-card-text ul {
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
+}
+
+.input-card-text ul li {
+  margin-bottom: 0.4rem;
+}
+
+.input-card-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.7rem;
+  color: #252a53;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.input-card-link:hover {
+  color: #ac5737;
+}
+
+.form-button-container {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.form-button {
+  display: inline-block;
+  background: none;
+  color: #252a53;
+  border: 2px solid #252a53;
+  border-radius: 4px;
+  padding: 0.8rem 2rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  font-family: 'Montserrat', sans-serif;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.form-button:hover {
+  background: #252a53;
+  color: white;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.popup-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.popup-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 900px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: scale(0.8);
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.popup-overlay.active .popup-content {
+  transform: scale(1);
+}
+
+.popup-subtitle {
+  color: #252a53;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  font-size: 0.8rem;
+}
+
+.form-iframe {
+  width: 100%;
+  height: 600px;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.popup-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #e2e6f0;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #252a53;
+  transition: background-color 0.3s ease;
+}
+
+.popup-close-btn:hover {
+  background: #d4d8e3;
+}
+
+.popup-option-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #f8f9fb;
+  color: #252a53;
+  text-decoration: none;
+  border-radius: 4px;
+  border: 2px solid #e2e6f0;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+}
+
+.popup-option-button:hover {
+  background-color: #252a53;
+  color: white;
+  border-color: #252a53;
+}
