@@ -158,6 +158,30 @@
        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
      }
 
+     function standardizeAgeGroup(ageGroup) {
+       if (!ageGroup) return '';
+       const cleaned = ageGroup.trim();
+       let age;
+
+       if (cleaned.endsWith('+')) {
+         age = parseInt(cleaned);
+       } else if (/^\d+$/.test(cleaned)) {
+         age = parseInt(cleaned);
+       } else {
+         const match = cleaned.match(/^(\d+)-(\d+)$/);
+         if (match) {
+           age = (parseInt(match[1]) + parseInt(match[2])) / 2;
+         } else {
+           return cleaned;
+         }
+       }
+
+       if (age >= 65) return '65+';
+       if (age >= 50) return '50-64';
+       if (age >= 35) return '35-49';
+       return '18-34';
+     }
+
      let PERSPECTIVES_DATA = [];
      let selectedMainTopics = [];
      let selectedTopicGroups = [];
@@ -191,13 +215,15 @@
            const values = parseCSVLine(line);
 
            if (values.length >= 8) {
+             const rawAgeGroup = values[5].replace(/"/g, '').trim();
              const perspective = {
                quote: values[0].replace(/"/g, '').trim(),
                topic_main: values[1].replace(/"/g, '').trim().split(',').map(t => t.trim()),
                topic_additional: parseArrayField(values[2]),
                interview_location: values[3].replace(/"/g, '').trim(),
                migration_type: values[4].replace(/"/g, '').trim(),
-               age_group: values[5].replace(/"/g, '').trim(),
+               age_group: rawAgeGroup,
+               age_group_std: standardizeAgeGroup(rawAgeGroup),
                birth_location: values[6].replace(/"/g, '').trim(),
                gender: values[7].replace(/"/g, '').trim()
              };
@@ -242,7 +268,7 @@
 
          if (perspective.birth_location) birthLocations.add(perspective.birth_location);
          if (perspective.interview_location) interviewLocations.add(perspective.interview_location);
-         if (perspective.age_group) ageGroups.add(perspective.age_group);
+         if (perspective.age_group_std) ageGroups.add(perspective.age_group_std);
        });
 
        allMainTopics = Array.from(mainTopics).sort();
@@ -424,7 +450,7 @@
        const interviewLocationFilter = document.getElementById('interview-location-filter').value;
 
        if (genderFilter) filteredPerspectives = filteredPerspectives.filter(p => p.gender === genderFilter);
-       if (ageFilter) filteredPerspectives = filteredPerspectives.filter(p => p.age_group === ageFilter);
+       if (ageFilter) filteredPerspectives = filteredPerspectives.filter(p => p.age_group_std === ageFilter);
        if (migrationTypeFilter) filteredPerspectives = filteredPerspectives.filter(p => p.migration_type === migrationTypeFilter);
        if (birthLocationFilter) filteredPerspectives = filteredPerspectives.filter(p => p.birth_location === birthLocationFilter);
        if (interviewLocationFilter) filteredPerspectives = filteredPerspectives.filter(p => p.interview_location === interviewLocationFilter);
