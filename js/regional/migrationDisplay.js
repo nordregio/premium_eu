@@ -384,9 +384,9 @@ function getLineData(breakdownValue) {
     }
   }
 
-  // Group by period and sum
+  // Group by period and sum (starting from 2020)
   const periodSums = {};
-  filtered.forEach(r => {
+  filtered.filter(r => r.p >= 2020).forEach(r => {
     periodSums[r.p] = (periodSums[r.p] || 0) + r.v;
   });
 
