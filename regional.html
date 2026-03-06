@@ -169,7 +169,7 @@
               </div>
 
               <a href="community_inputs.html" target="_blank" style="display: block; margin-top: 14px; padding: 10px 14px; font-size: 12px; font-weight: 600; color: #252a53; background: #f0f1f5; border-left: 3px solid #ac5737; border-radius: 2px; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.background='#e8e9ef'" onmouseout="this.style.background='#f0f1f5'">
-                See policies shared by policymakers &#8594;
+                See community policies &#8594;
               </a>
 
               <p style="font-size: 12px; margin-top: 14px; margin-bottom: 0;">
@@ -347,7 +347,7 @@
     import { loadAllData } from './js/regional/dataLoader.js';
     import { initializeMap, selectRegion, clearSelection } from './js/regional/mapHandler.js';
     import { initializePolicyData, loadPoliciesForRegion, closePolicyModal, clearPolicyDisplay, isPolicyLoaded } from './js/regional/policyManager.js';
-    import { loadRegionalDevelopmentData } from './js/regional/developmentDisplay.js';
+    import { loadRegionalDevelopmentData, resizeDevelopmentPlot } from './js/regional/developmentDisplay.js';
     import { loadMigrationData, loadMigrationProjection, loadMigrationPyramid, showMigrationSections, hideMigrationSections, updateYear as migrationUpdateYear, updatePyramid as migrationUpdatePyramid, initMigrationControls } from './js/regional/migrationDisplay.js';
 
     renderHeader('regional');
@@ -439,6 +439,10 @@
           if (isPolicyLoaded()) {
             loadPoliciesForRegion(regionSelect.value);
           }
+        }
+
+        if (tabId === 'tab2') {
+          requestAnimationFrame(() => resizeDevelopmentPlot());
         }
 
         if (tabId === 'tab3') {

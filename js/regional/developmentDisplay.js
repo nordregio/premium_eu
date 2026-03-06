@@ -123,24 +123,111 @@ export function loadNationalComparisons(regionCode, compData) {
   container.innerHTML = html;
 }
 
-export function loadDevelopmentPlot(regionCode) {
-  const container = document.getElementById('regional_development_scores_plot_wrapper');
-  const plotPath = `plots/regional-scores/${regionCode}.html`;
+// --- Development scores plot ---
+let devScoresCache = null;
 
-  fetch(plotPath)
-    .then(response => {
-      if (response.ok) {
-        const html = `
-          <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Development scores over time</p>
-          <iframe src="${plotPath}" width="100%" height="320" frameborder="0"></iframe>
-          <br>
-        `;
-        container.innerHTML = html;
-      } else {
-        container.innerHTML = '<p style="color:#999;">No data available for this region.</p>';
-      }
-    })
-    .catch(() => {
-      container.innerHTML = '<p style="color:#999;">No data available for this region.</p>';
+async function fetchDevScores() {
+  if (devScoresCache) return devScoresCache;
+  const response = await fetch('data/dev-scores/development_scores_all_indicators.csv');
+  if (!response.ok) throw new Error('No data');
+  const text = await response.text();
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',');
+  const codeIdx = headers.indexOf('NUTS_Code');
+  const yearIdx = headers.indexOf('Year');
+  const econIdx = headers.indexOf('econ_index');
+  const socialIdx = headers.indexOf('social_index');
+  const livIdx = headers.indexOf('liv_env_index');
+  const develIdx = headers.indexOf('devel_score');
+
+  const parsed = {};
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',');
+    const code = cols[codeIdx];
+    if (!parsed[code]) parsed[code] = [];
+    parsed[code].push({
+      year: parseInt(cols[yearIdx]),
+      econ: parseFloat(cols[econIdx]),
+      social: parseFloat(cols[socialIdx]),
+      livEnv: parseFloat(cols[livIdx]),
+      devel: parseFloat(cols[develIdx])
     });
+  }
+  devScoresCache = parsed;
+  return parsed;
+}
+
+export async function loadDevelopmentPlot(regionCode) {
+  const container = document.getElementById('regional_development_scores_plot_wrapper');
+  container.innerHTML = '';
+
+  try {
+    const allData = await fetchDevScores();
+    const regionData = allData[regionCode];
+    if (!regionData || regionData.length === 0) {
+      container.innerHTML = '<p style="color:#999;">No data available for this region.</p>';
+      return;
+    }
+
+    regionData.sort((a, b) => a.year - b.year);
+    const years = regionData.map(d => d.year);
+
+    container.innerHTML = `
+      <p style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Development scores over time</p>
+      <div id="dev-scores-plot" style="width:100%"></div>
+      <br>
+    `;
+
+    const traces = [
+      {
+        x: years, y: regionData.map(d => d.devel),
+        mode: 'lines+markers', name: 'Overall',
+        line: { color: '#C97F55' }, marker: { size: 6 }
+      },
+      {
+        x: years, y: regionData.map(d => d.econ),
+        mode: 'lines+markers', name: 'Economic',
+        line: { color: '#656791' }, marker: { size: 6 }
+      },
+      {
+        x: years, y: regionData.map(d => d.social),
+        mode: 'lines+markers', name: 'Social',
+        line: { color: '#697D61' }, marker: { size: 6 }
+      },
+      {
+        x: years, y: regionData.map(d => d.livEnv),
+        mode: 'lines+markers', name: 'Living environment',
+        line: { color: '#826875' }, marker: { size: 6 }
+      }
+    ];
+
+    const plotDiv = document.getElementById('dev-scores-plot');
+
+    const layout = {
+      autosize: true,
+      height: 300,
+      xaxis: { gridcolor: '#f0f0f0' },
+      yaxis: { title: 'Score', tickformat: '.2f', gridcolor: '#f0f0f0' },
+      legend: {
+        orientation: 'h', y: -0.2, x: 0.5, xanchor: 'center',
+        font: { size: 10 }
+      },
+      font: { family: 'Montserrat, sans-serif', size: 10, color: '#252a53' },
+      margin: { l: 40, r: 10, t: 20, b: 30 },
+      plot_bgcolor: 'white',
+      paper_bgcolor: 'white',
+      hovermode: 'x unified'
+    };
+
+    Plotly.newPlot(plotDiv, traces, layout, { responsive: true, displayModeBar: false });
+  } catch (e) {
+    container.innerHTML = '<p style="color:#999;">No data available for this region.</p>';
+  }
+}
+
+export function resizeDevelopmentPlot() {
+  const plotDiv = document.getElementById('dev-scores-plot');
+  if (plotDiv && plotDiv.data) {
+    Plotly.Plots.resize(plotDiv);
+  }
 }
