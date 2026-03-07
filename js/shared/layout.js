@@ -99,8 +99,5 @@ export function renderDisclaimer() {
   const el = document.getElementById('disclaimer-root');
   if (!el) return;
 
-  el.innerHTML = `
-    <div class="disclaimer-banner">
-      \u26A0\uFE0F This Dashboard is still under construction, to be hard-launched in March. Data and policies are still in the draft stage.
-    </div>`;
+  el.innerHTML = '';
 }

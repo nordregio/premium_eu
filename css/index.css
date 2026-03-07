@@ -164,6 +164,21 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
+.tutorial-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.tutorial-link:hover {
+  color: #ac5737;
+}
+
 .svg-icon {
   width: 1.5rem;
   height: 1.5rem;
