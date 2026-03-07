@@ -244,9 +244,6 @@ body {
     font-size: 1.4rem;
   }
 
-  body {
-    background-color: #f8f9fb;
-  }
 
   .disclaimers-section {
     padding: 1.5rem;
@@ -277,9 +274,6 @@ body {
     gap: 1.5rem;
   }
 
-  body {
-    background-color: #f8f9fb;
-  }
 }
 
 @media (max-width: 768px) {
@@ -291,9 +285,6 @@ body {
     padding: 1.5rem;
   }
 
-  body {
-    background-color: #f8f9fb;
-  }
 
   .disclaimers-section {
     padding: 1rem;

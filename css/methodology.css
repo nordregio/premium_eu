@@ -137,9 +137,6 @@ body {
     font-size: 1.4rem;
   }
 
-  body {
-    background-color: #f8f9fb;
-  }
 }
 
 @media (min-width: 2400px) {
@@ -162,9 +159,6 @@ body {
     gap: 1.5rem;
   }
 
-  body {
-    background-color: #f8f9fb;
-  }
 }
 
 @media (max-width: 768px) {
@@ -176,9 +170,6 @@ body {
     padding: 1.5rem;
   }
 
-  body {
-    background-color: #f8f9fb;
-  }
 
   .content-section h3::before {
     width: 1.5rem;
