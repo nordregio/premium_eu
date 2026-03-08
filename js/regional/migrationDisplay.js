@@ -129,7 +129,7 @@ export async function loadMigrationPyramid(regionCode) {
     }
   }
 
-  if (!pyramidData) {
+  if (!pyramidData || !pyramidData.some(r => r.y >= 2020)) {
     document.getElementById('pyramid-content').innerHTML = noDataHTML();
     return;
   }
