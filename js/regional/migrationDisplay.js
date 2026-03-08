@@ -434,6 +434,12 @@ function renderProjectionChart() {
     });
   }
 
+  if (traces.every(t => t.x.length === 0)) {
+    plotDiv.innerHTML = noDataHTML();
+    setProjectionHasData(false);
+    return;
+  }
+
   const layout = {
     plot_bgcolor: 'white',
     paper_bgcolor: 'white',
